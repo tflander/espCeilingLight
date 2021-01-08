@@ -14,3 +14,11 @@ def pulse(l, t):
 
 def timeSpike():
     print(utime.mktime(utime.localtime()) - utime.mktime((2021, 1, 4, 17, 40, 4, 0, 4)))
+
+touch = machine.TouchPad(machine.Pin(4))
+
+def showTouch():
+    while True:
+        print(touch.read())
+        time.sleep_ms(200)
+
