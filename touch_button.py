@@ -48,5 +48,5 @@ class TouchButton:
 
             if new_state != self.state:
                 self.state = new_state
-                return new_state
+                return
             utime.sleep_ms(20)
