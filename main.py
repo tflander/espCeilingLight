@@ -26,33 +26,24 @@ async def led_off(event):
     led.duty(0)
 
 
-async def toggle_led_with_touch():
-    # Create an Event object.
-    # event = uasyncio.Event()
-    touch_selected_event = uasyncio.Event()
-    touch_release_event = uasyncio.Event()
+async def toggle_led_with_uasyncio():
 
-    # Spawn a Task to wait until 'event' is set.
-    # waiter_task = uasyncio.create_task(waiter(event))
-    led_on_task = uasyncio.create_task(led_on(touch_selected_event))
-    led_off_task = uasyncio.create_task(led_off(touch_release_event))
+    while True:
+        touch_selected_event = uasyncio.Event()
+        touch_release_event = uasyncio.Event()
 
-    # Sleep for 1 second and set the event.
-    # await asyncio.sleep(1)
-    # event.set()
+        led_on_task = uasyncio.create_task(led_on(touch_selected_event))
+        led_off_task = uasyncio.create_task(led_off(touch_release_event))
 
-    await uasyncio.sleep(1)
-    touch_selected_event.set()
-    await led_on_task
+        await uasyncio.sleep(1)
+        touch_selected_event.set()
+        await led_on_task
 
-    await uasyncio.sleep(1)
-    touch_release_event.set()
-    await led_off_task
+        await uasyncio.sleep(1)
+        touch_release_event.set()
+        await led_off_task
 
-    # Wait until the waiter task is finished.
-    # await waiter_task
-
-uasyncio.run(toggle_led_with_touch())
+# uasyncio.run(toggle_led_with_uasyncio())
 
 
 def pulse(l, t):
@@ -88,7 +79,36 @@ class TouchState:
     OUT_OF_RANGE = 5
 
 
-def touch_state():
+def activate_led_by_touch_latched():
+    current_state = TouchState.RELEASED
+    is_led_on = False
+    counter = 0
+
+    while True:
+        s = touch.read()
+        if min_released < s < max_released:
+            new_state = TouchState.RELEASED
+        elif min_selected < s < max_selected:
+            new_state = TouchState.SELECTED
+        elif s < min_selected or s > max_released:
+            new_state = TouchState.OUT_OF_RANGE
+        else:
+            new_state = TouchState.DEAD_BAND
+
+        if new_state != current_state:
+            counter += 1
+            current_state = new_state
+            if new_state == TouchState.SELECTED:
+                if is_led_on:
+                    led.duty(0)
+                    is_led_on = False
+                else:
+                    led.duty(1023)
+                    is_led_on = True
+
+        time.sleep_ms(20)
+
+def activate_led_by_touch_momentary():
     current_state = TouchState.UNKNOWN
     counter = 0
     while True:
@@ -105,9 +125,13 @@ def touch_state():
         if new_state != current_state:
             counter += 1
             current_state = new_state
-            print(new_state)
+            if new_state == TouchState.SELECTED:
+                led.duty(1023)
+            elif new_state == TouchState.RELEASED:
+                led.duty(0)
 
         time.sleep_ms(20)
+
 
 def testThread():
     while True:
