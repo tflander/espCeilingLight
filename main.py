@@ -13,18 +13,11 @@ led_touch_button = TouchButton(machine.Pin(4), touch_adjust_parameters)
 
 
 def activate_led_by_touch_latched():
-    activate_led_by_touch(handle_latched_touch)
+    poll_for_touch_state_change(handle_latched_touch)
 
 
 def activate_led_by_touch_momentary():
-
-    while True:
-        if led_touch_button.is_state_changed():
-            if led_touch_button.state == TouchState.SELECTED:
-                led.duty(1023)
-            elif led_touch_button.state == TouchState.RELEASED:
-                led.duty(0)
-        utime.sleep_ms(20)
+    poll_for_touch_state_change(handle_momentary_touch)
 
 
 def handle_latched_touch():
@@ -42,8 +35,11 @@ def handle_momentary_touch():
         led.duty(0)
 
 
-def activate_led_by_touch(touch_handler):
+def poll_for_touch_state_change(touch_handler):
+    """
 
+    :type touch_handler: function that takes no parameters and returns nothing
+    """
     while True:
         if led_touch_button.is_state_changed():
             touch_handler()
