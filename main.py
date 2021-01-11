@@ -14,14 +14,14 @@ touch_adjust_parameters = AdjustParameters(
 )
 
 led = machine.PWM(machine.Pin(2), freq=60)
-led_touch_sensor = TouchButton(machine.Pin(4), touch_adjust_parameters)
+led_touch_button = TouchButton(machine.Pin(4), touch_adjust_parameters)
 
 
 def activate_led_by_touch_latched():
     current_state = TouchState.UNKNOWN
 
     while True:
-        new_state = led_touch_sensor.wait_for_state_change(current_state)
+        new_state = led_touch_button.wait_for_state_change(current_state)
         if new_state == TouchState.SELECTED:
             if led.duty() > 0:
                 led.duty(0)
@@ -34,7 +34,7 @@ def activate_led_by_touch_momentary():
     current_state = TouchState.UNKNOWN
 
     while True:
-        new_state = led_touch_sensor.wait_for_state_change(current_state)
+        new_state = led_touch_button.wait_for_state_change(current_state)
         if new_state == TouchState.SELECTED:
             led.duty(1023)
         elif new_state == TouchState.RELEASED:
@@ -42,14 +42,14 @@ def activate_led_by_touch_momentary():
         current_state = new_state
 
 
-async def led_on(event):
-    await event.wait()
-    led.duty(1023)
-
-
-async def led_off(event):
-    await event.wait()
-    led.duty(0)
+# async def led_on(event):
+#     await event.wait()
+#     led.duty(1023)
+#
+#
+# async def led_off(event):
+#     await event.wait()
+#     led.duty(0)
 
 
 # async def toggle_led_with_uasyncio():
@@ -71,21 +71,16 @@ async def led_off(event):
 
 # uasyncio.run(toggle_led_with_uasyncio())
 
-
-def pulse(l, t):
-     for i in range(20):
-         l.duty(int(math.sin(i / 10 * math.pi) * 500 + 500))
-         utime.sleep_ms(t)
-
-
+# TODO: we want to eventually check last startup time to test if power was cycled twice as a reset signal.
+#  The reset would put the light in normal white light mode
 def timeSpike():
     print(utime.mktime(utime.localtime()) - utime.mktime((2021, 1, 4, 17, 40, 4, 0, 4)))
 
 
-def test_thread():
-    while True:
-        print("Hello from thread")
-        utime.sleep(2)
+# def test_thread():
+#     while True:
+#         print("Hello from thread")
+#         utime.sleep(2)
 
 
 # _thread.start_new_thread(testThread, ())
