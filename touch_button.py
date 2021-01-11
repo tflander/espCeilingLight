@@ -53,3 +53,8 @@ class TouchButton:
     def wait_for_state_change(self):
         while not self.is_state_changed():
             utime.sleep_ms(20)
+
+    def show_read_values(self):
+        while True:
+            print(self.touch.read())
+            utime.sleep_ms(20)

@@ -11,6 +11,24 @@ touch_adjust_parameters = AdjustParameters(limits=(50, 600), dead_band=(200, 400
 led = machine.PWM(machine.Pin(2), freq=60)
 led_touch_button = TouchButton(machine.Pin(4), touch_adjust_parameters)
 
+adjust_touch_button = TouchButton(machine.Pin(27), touch_adjust_parameters)
+
+def two_buttons():
+    while True:
+        if led_touch_button.is_state_changed():
+            if led_touch_button.state == TouchState.SELECTED:
+                if led.duty() > 0:
+                    led.duty(0)
+                else:
+                    led.duty(1023)
+        if adjust_touch_button.is_state_changed():
+            if adjust_touch_button.state == TouchState.SELECTED:
+                if led.duty() > 0:
+                    if led.duty() > 1000:
+                        led.duty(512)
+                    else:
+                        led.duty(1023)
+        utime.sleep_ms(20)
 
 def activate_led_by_touch_latched():
     poll_for_touch_state_change(handle_latched_touch)
