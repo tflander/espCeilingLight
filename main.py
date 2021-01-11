@@ -15,23 +15,24 @@ led_touch_button = TouchButton(machine.Pin(4), touch_adjust_parameters)
 def activate_led_by_touch_latched():
 
     while True:
-        led_touch_button.wait_for_state_change()
-        if led_touch_button.state == TouchState.SELECTED:
-            if led.duty() > 0:
-                led.duty(0)
-            else:
-                led.duty(1023)
+        if led_touch_button.is_state_changed():
+            if led_touch_button.state == TouchState.SELECTED:
+                if led.duty() > 0:
+                    led.duty(0)
+                else:
+                    led.duty(1023)
+        utime.sleep_ms(20)
 
 
 def activate_led_by_touch_momentary():
 
     while True:
-        led_touch_button.wait_for_state_change()
-        if led_touch_button.state == TouchState.SELECTED:
-            led.duty(1023)
-        elif led_touch_button.state == TouchState.RELEASED:
-            led.duty(0)
-
+        if led_touch_button.is_state_changed():
+            if led_touch_button.state == TouchState.SELECTED:
+                led.duty(1023)
+            elif led_touch_button.state == TouchState.RELEASED:
+                led.duty(0)
+        utime.sleep_ms(20)
 
 # async def led_on(event):
 #     await event.wait()
