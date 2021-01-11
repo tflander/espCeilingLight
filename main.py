@@ -3,6 +3,7 @@ import math, time, utime
 import _thread
 from array import array
 import uasyncio
+from touch_button import *
 
 from ntptime import settime
 
@@ -10,11 +11,13 @@ settime()
 
 led = machine.PWM(machine.Pin(2), freq=60)
 
-# adjust parameters for the touch sensor
-max_released = 600
-min_released = 400
-max_selected = 200
-min_selected = 50
+touch_adjust_parameters = AdustParameters(
+    max_released = 600,
+    min_released = 400,
+    max_selected = 200,
+    min_selected = 50
+)
+
 
 async def led_on(event):
     await event.wait()
@@ -72,14 +75,6 @@ def show_touch():
         time.sleep_ms(200)
 
 
-class TouchState:
-    UNKNOWN = 1
-    RELEASED = 2
-    SELECTED = 3
-    DEAD_BAND = 4
-    OUT_OF_RANGE = 5
-
-
 def activate_led_by_touch_latched():
     current_state = TouchState.UNKNOWN
 
@@ -108,11 +103,11 @@ def activate_led_by_touch_momentary():
 def wait_for_touch_state_change(current_state):
     while True:
         s = touch.read()
-        if min_released < s < max_released:
+        if touch_adjust_parameters.min_released < s < touch_adjust_parameters.max_released:
             new_state = TouchState.RELEASED
-        elif min_selected < s < max_selected:
+        elif touch_adjust_parameters.min_selected < s < touch_adjust_parameters.max_selected:
             new_state = TouchState.SELECTED
-        elif s < min_selected or s > max_released:
+        elif s < touch_adjust_parameters.min_selected or s > touch_adjust_parameters.max_released:
             new_state = TouchState.OUT_OF_RANGE
         else:
             new_state = TouchState.DEAD_BAND
@@ -121,7 +116,8 @@ def wait_for_touch_state_change(current_state):
             return new_state
         time.sleep_ms(20)
 
-def testThread():
+
+def test_thread():
     while True:
         print("Hello from thread")
         time.sleep(2)
