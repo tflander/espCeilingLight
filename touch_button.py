@@ -34,19 +34,22 @@ class TouchButton:
         self.adjust_parameters = adjust_parameters
         self.state = TouchState.UNKNOWN
 
-    def wait_for_state_change(self):
-        while True:
-            s = self.touch.read()
-            if self.adjust_parameters.min_released < s < self.adjust_parameters.max_released:
-                new_state = TouchState.RELEASED
-            elif self.adjust_parameters.min_selected < s < self.adjust_parameters.max_selected:
-                new_state = TouchState.SELECTED
-            elif s < self.adjust_parameters.min_selected or s > self.adjust_parameters.max_released:
-                new_state = TouchState.OUT_OF_RANGE
-            else:
-                new_state = TouchState.DEAD_BAND
+    def is_state_changed(self):
+        s = self.touch.read()
+        if self.adjust_parameters.min_released < s < self.adjust_parameters.max_released:
+            new_state = TouchState.RELEASED
+        elif self.adjust_parameters.min_selected < s < self.adjust_parameters.max_selected:
+            new_state = TouchState.SELECTED
+        elif s < self.adjust_parameters.min_selected or s > self.adjust_parameters.max_released:
+            new_state = TouchState.OUT_OF_RANGE
+        else:
+            new_state = TouchState.DEAD_BAND
 
-            if new_state != self.state:
-                self.state = new_state
-                return
+        if new_state != self.state:
+            self.state = new_state
+            return True
+        return False
+
+    def wait_for_state_change(self):
+        while not self.is_state_changed():
             utime.sleep_ms(20)
