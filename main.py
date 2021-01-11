@@ -71,6 +71,7 @@ def show_touch():
         print(touch.read())
         time.sleep_ms(200)
 
+
 class TouchState:
     UNKNOWN = 1
     RELEASED = 2
@@ -80,37 +81,34 @@ class TouchState:
 
 
 def activate_led_by_touch_latched():
-    current_state = TouchState.RELEASED
+    current_state = TouchState.UNKNOWN
     is_led_on = False
-    counter = 0
 
     while True:
-        s = touch.read()
-        if min_released < s < max_released:
-            new_state = TouchState.RELEASED
-        elif min_selected < s < max_selected:
-            new_state = TouchState.SELECTED
-        elif s < min_selected or s > max_released:
-            new_state = TouchState.OUT_OF_RANGE
-        else:
-            new_state = TouchState.DEAD_BAND
+        new_state = wait_for_touch_state_change(current_state)
+        if new_state == TouchState.SELECTED:
+            if is_led_on:
+                led.duty(0)
+                is_led_on = False
+            else:
+                led.duty(1023)
+                is_led_on = True
+        current_state = new_state
 
-        if new_state != current_state:
-            counter += 1
-            current_state = new_state
-            if new_state == TouchState.SELECTED:
-                if is_led_on:
-                    led.duty(0)
-                    is_led_on = False
-                else:
-                    led.duty(1023)
-                    is_led_on = True
-
-        time.sleep_ms(20)
 
 def activate_led_by_touch_momentary():
     current_state = TouchState.UNKNOWN
-    counter = 0
+
+    while True:
+        new_state = wait_for_touch_state_change(current_state)
+        if new_state == TouchState.SELECTED:
+            led.duty(1023)
+        elif new_state == TouchState.RELEASED:
+            led.duty(0)
+        current_state = new_state
+
+
+def wait_for_touch_state_change(current_state):
     while True:
         s = touch.read()
         if min_released < s < max_released:
@@ -123,15 +121,8 @@ def activate_led_by_touch_momentary():
             new_state = TouchState.DEAD_BAND
 
         if new_state != current_state:
-            counter += 1
-            current_state = new_state
-            if new_state == TouchState.SELECTED:
-                led.duty(1023)
-            elif new_state == TouchState.RELEASED:
-                led.duty(0)
-
+            return new_state
         time.sleep_ms(20)
-
 
 def testThread():
     while True:
