@@ -82,17 +82,14 @@ class TouchState:
 
 def activate_led_by_touch_latched():
     current_state = TouchState.UNKNOWN
-    is_led_on = False
 
     while True:
         new_state = wait_for_touch_state_change(current_state)
         if new_state == TouchState.SELECTED:
-            if is_led_on:
+            if led.duty() > 0:
                 led.duty(0)
-                is_led_on = False
             else:
                 led.duty(1023)
-                is_led_on = True
         current_state = new_state
 
 
