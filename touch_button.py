@@ -11,11 +11,20 @@ class TouchState:
 
 class AdjustParameters:
 
-    def __init__(self, max_released, min_released, max_selected, min_selected):
-        self.max_released = max_released
-        self.min_released = min_released
-        self.max_selected = max_selected
-        self.min_selected = min_selected
+    def __init__(self, limits: (int, int), dead_band: (int, int)):
+        if limits[0] < limits[1]:
+            self.max_released = limits[1]
+            self.min_selected = limits[0]
+        else:
+            self.max_released = limits[0]
+            self.min_selected = limits[1]
+
+        if dead_band[0] < dead_band[1]:
+            self.min_released = dead_band[1]
+            self.max_selected = dead_band[0]
+        else:
+            self.min_released = dead_band[0]
+            self.max_selected = dead_band[1]
 
 
 class TouchButton:
@@ -23,8 +32,9 @@ class TouchButton:
     def __init__(self, touch_pin: Pin, adjust_parameters: AdjustParameters):
         self.touch = TouchPad(touch_pin)
         self.adjust_parameters = adjust_parameters
+        self.state = TouchState.UNKNOWN
 
-    def wait_for_state_change(self, current_state):
+    def wait_for_state_change(self):
         while True:
             s = self.touch.read()
             if self.adjust_parameters.min_released < s < self.adjust_parameters.max_released:
@@ -36,6 +46,7 @@ class TouchButton:
             else:
                 new_state = TouchState.DEAD_BAND
 
-            if new_state != current_state:
+            if new_state != self.state:
+                self.state = new_state
                 return new_state
             utime.sleep_ms(20)
