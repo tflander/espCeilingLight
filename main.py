@@ -2,12 +2,58 @@ import machine
 import math, time, utime
 import _thread
 from array import array
+import uasyncio
 
 from ntptime import settime
 
 settime()
 
 led = machine.PWM(machine.Pin(2), freq=60)
+
+# adjust parameters for the touch sensor
+max_released = 600
+min_released = 400
+max_selected = 200
+min_selected = 50
+
+async def led_on(event):
+    await event.wait()
+    led.duty(1023)
+
+
+async def led_off(event):
+    await event.wait()
+    led.duty(0)
+
+
+async def toggle_led_with_touch():
+    # Create an Event object.
+    # event = uasyncio.Event()
+    touch_selected_event = uasyncio.Event()
+    touch_release_event = uasyncio.Event()
+
+    # Spawn a Task to wait until 'event' is set.
+    # waiter_task = uasyncio.create_task(waiter(event))
+    led_on_task = uasyncio.create_task(led_on(touch_selected_event))
+    led_off_task = uasyncio.create_task(led_off(touch_release_event))
+
+    # Sleep for 1 second and set the event.
+    # await asyncio.sleep(1)
+    # event.set()
+
+    await uasyncio.sleep(1)
+    touch_selected_event.set()
+    await led_on_task
+
+    await uasyncio.sleep(1)
+    touch_release_event.set()
+    await led_off_task
+
+    # Wait until the waiter task is finished.
+    # await waiter_task
+
+uasyncio.run(toggle_led_with_touch())
+
 
 def pulse(l, t):
      for i in range(20):
@@ -44,10 +90,6 @@ class TouchState:
 
 def touch_state():
     current_state = TouchState.UNKNOWN
-    max_released = 600
-    min_released = 400
-    max_selected = 200
-    min_selected = 50
     counter = 0
     while True:
         s = touch.read()
