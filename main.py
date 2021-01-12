@@ -73,6 +73,21 @@ class LightingModes:
         return self.current_mode()
 
 
+def demo_modes():
+    modes = LightingModes()
+
+    while True:
+        mode = modes.next()
+        print(mode)
+        print(type(mode))
+        if not type(mode) == int:
+            for i in range(len(mode.modes)):
+                sub_mode = mode.next()
+                print(sub_mode)
+        if modes.current_mode_index == 0:
+            return
+
+
 def two_buttons():
     while True:
         if led_touch_button.is_state_changed():
