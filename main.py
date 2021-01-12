@@ -14,17 +14,9 @@ led_touch_button = TouchButton(machine.Pin(4), touch_adjust_parameters)
 adjust_touch_button = TouchButton(machine.Pin(27), touch_adjust_parameters)
 
 
-# TODO: DRY
-class WhiteModes:
-    FULL = 1023
-    HALF = 512
-    QUARTER = 256
+class AbstractLightingMode:
 
-    modes = (FULL, HALF, QUARTER)
     current_mode_index = 0
-
-    def current_mode(self):
-        return self.modes[self.current_mode_index]
 
     def next(self):
         self.current_mode_index += 1
@@ -32,8 +24,22 @@ class WhiteModes:
             self.current_mode_index = 0
         return self.current_mode()
 
+    def current_mode(self):
+        return self.modes[self.current_mode_index]
 
-class RgbModes:
+
+class WhiteModes(AbstractLightingMode):
+    FULL = 1023
+    HALF = 512
+    QUARTER = 256
+
+    modes = (FULL, HALF, QUARTER)
+
+    def activate(self):
+        print("White brightness:", self.current_mode())
+
+
+class RgbModes(AbstractLightingMode):
     RED = (1,0,0)
     YELLOW = (1,1,0)
     GREEN = (0,1,0)
@@ -42,35 +48,26 @@ class RgbModes:
     MAGENTA = (1,0,1)
 
     modes = (RED, YELLOW, GREEN, BLUE, CYAN, MAGENTA)
-    current_mode_index = 0
 
-    def current_mode(self):
-        return self.modes[self.current_mode_index]
-
-    def next(self):
-        self.current_mode_index += 1
-        if self.current_mode_index == len(self.modes):
-            self.current_mode_index = 0
-        return self.current_mode()
+    def activate(self):
+        print("RGB values:", self.current_mode())
 
 
-class LightingModes:
+class Dark(AbstractLightingMode):
+
+    modes = "X"
+
+    def activate(self):
+        print("OFF")
+
+
+class LightingModes(AbstractLightingMode):
     WHITE = WhiteModes()
     RGB = RgbModes()
     UV = 3
-    OFF = 99
+    OFF = Dark()
 
     modes = (WHITE, RGB, UV, OFF)
-    current_mode_index = 0
-
-    def current_mode(self):
-        return self.modes[self.current_mode_index]
-
-    def next(self):
-        self.current_mode_index += 1
-        if self.current_mode_index == len(self.modes):
-            self.current_mode_index = 0
-        return self.current_mode()
 
 
 def demo_modes():
@@ -88,11 +85,10 @@ def demo_modes():
 
     while True:
         mode = modes.next()
-        show_mode()
         if not type(mode) == int:
             for i in range(len(mode.modes)):
+                mode.activate()
                 mode.next()
-                show_mode()
         if modes.current_mode_index == 0:
             return
 
