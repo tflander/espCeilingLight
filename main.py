@@ -88,8 +88,8 @@ def demo_modes():
 
     while True:
         mode = modes.next()
+        show_mode()
         if not type(mode) == int:
-            show_mode()
             for i in range(len(mode.modes)):
                 mode.next()
                 show_mode()
