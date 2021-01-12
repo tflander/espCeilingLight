@@ -52,6 +52,15 @@ class RgbModes(AbstractLightingMode):
     def activate(self):
         print("RGB values:", self.current_mode())
 
+class UvModes(AbstractLightingMode):
+    STEADY = 60
+    SLOW_STROBE = 1
+    FAST_STROBE = 2
+
+    modes = (STEADY, SLOW_STROBE, FAST_STROBE)
+
+    def activate(self):
+        print("Black Light Frequency (Strobe)", self.current_mode())
 
 class Dark(AbstractLightingMode):
 
@@ -64,7 +73,7 @@ class Dark(AbstractLightingMode):
 class LightingModes(AbstractLightingMode):
     WHITE = WhiteModes()
     RGB = RgbModes()
-    UV = 3
+    UV = UvModes()
     OFF = Dark()
 
     modes = (WHITE, RGB, UV, OFF)
@@ -72,16 +81,7 @@ class LightingModes(AbstractLightingMode):
 
 def demo_modes():
     modes = LightingModes()
-
-    def show_mode():
-        current_mode = modes.current_mode()
-        if type(current_mode) == int:
-            print(current_mode)
-        else:
-            child_mode = current_mode.current_mode()
-            print(current_mode, child_mode)
-
-    show_mode()
+    modes.current_mode().activate()
 
     while True:
         mode = modes.next()
