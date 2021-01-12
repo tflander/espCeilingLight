@@ -76,14 +76,23 @@ class LightingModes:
 def demo_modes():
     modes = LightingModes()
 
+    def show_mode():
+        current_mode = modes.current_mode()
+        if type(current_mode) == int:
+            print(current_mode)
+        else:
+            child_mode = current_mode.current_mode()
+            print(current_mode, child_mode)
+
+    show_mode()
+
     while True:
         mode = modes.next()
-        print(mode)
-        print(type(mode))
         if not type(mode) == int:
+            show_mode()
             for i in range(len(mode.modes)):
-                sub_mode = mode.next()
-                print(sub_mode)
+                mode.next()
+                show_mode()
         if modes.current_mode_index == 0:
             return
 
