@@ -13,6 +13,66 @@ led_touch_button = TouchButton(machine.Pin(4), touch_adjust_parameters)
 
 adjust_touch_button = TouchButton(machine.Pin(27), touch_adjust_parameters)
 
+
+# TODO: DRY
+class WhiteModes:
+    FULL = 1023
+    HALF = 512
+    QUARTER = 256
+
+    modes = (FULL, HALF, QUARTER)
+    current_mode_index = 0
+
+    def current_mode(self):
+        return self.modes[self.current_mode_index]
+
+    def next(self):
+        self.current_mode_index += 1
+        if self.current_mode_index == len(self.modes):
+            self.current_mode_index = 0
+        return self.current_mode()
+
+
+class RgbModes:
+    RED = (1,0,0)
+    YELLOW = (1,1,0)
+    GREEN = (0,1,0)
+    BLUE = (0,0,1)
+    CYAN = (0,1,1)
+    MAGENTA = (1,0,1)
+
+    modes = (RED, YELLOW, GREEN, BLUE, CYAN, MAGENTA)
+    current_mode_index = 0
+
+    def current_mode(self):
+        return self.modes[self.current_mode_index]
+
+    def next(self):
+        self.current_mode_index += 1
+        if self.current_mode_index == len(self.modes):
+            self.current_mode_index = 0
+        return self.current_mode()
+
+
+class LightingModes:
+    WHITE = WhiteModes()
+    RGB = RgbModes()
+    UV = 3
+    OFF = 99
+
+    modes = (WHITE, RGB, UV, OFF)
+    current_mode_index = 0
+
+    def current_mode(self):
+        return self.modes[self.current_mode_index]
+
+    def next(self):
+        self.current_mode_index += 1
+        if self.current_mode_index == len(self.modes):
+            self.current_mode_index = 0
+        return self.current_mode()
+
+
 def two_buttons():
     while True:
         if led_touch_button.is_state_changed():
@@ -29,6 +89,7 @@ def two_buttons():
                     else:
                         led.duty(1023)
         utime.sleep_ms(20)
+
 
 def activate_led_by_touch_latched():
     poll_for_touch_state_change(handle_latched_touch)
