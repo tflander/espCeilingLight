@@ -22,6 +22,9 @@ class WhiteModes(AbstractLightingMode):
     def activate(self):
         print("White brightness:", self.current_mode())
 
+    def deactivate(self):
+        print("White off")
+
 
 class RgbModes(AbstractLightingMode):
     RED = (1,0,0)
@@ -36,6 +39,9 @@ class RgbModes(AbstractLightingMode):
     def activate(self):
         print("RGB values:", self.current_mode())
 
+    def deactivate(self):
+        print("Color off")
+
 
 class UvModes(AbstractLightingMode):
     STEADY = 60
@@ -47,6 +53,9 @@ class UvModes(AbstractLightingMode):
     def activate(self):
         print("Black Light Frequency (Strobe)", self.current_mode())
 
+    def deactivate(self):
+        print("UV off")
+
 
 class Dark(AbstractLightingMode):
 
@@ -55,12 +64,7 @@ class Dark(AbstractLightingMode):
     def activate(self):
         print("OFF")
 
+    def deactivate(self):
+        print("still off")
 
-class LightingModes(AbstractLightingMode):
-    WHITE = WhiteModes()
-    RGB = RgbModes()
-    UV = UvModes()
-    OFF = Dark()
-
-    modes = (WHITE, RGB, UV, OFF)
 

@@ -14,17 +14,27 @@ led_touch_button = TouchButton(machine.Pin(4), touch_adjust_parameters)
 
 adjust_touch_button = TouchButton(machine.Pin(27), touch_adjust_parameters)
 
+class LightingModes(AbstractLightingMode):
+    WHITE = WhiteModes()
+    RGB = RgbModes()
+    UV = UvModes()
+    OFF = Dark()
+
+    modes = (WHITE, RGB, UV, OFF)
+
 
 def demo_modes():
     modes = LightingModes()
     modes.current_mode().activate()
+    previous_mode = modes.current_mode()
 
     while True:
         mode = modes.next()
-        if not type(mode) == int:
-            for i in range(len(mode.modes)):
-                mode.activate()
-                mode.next()
+        for i in range(len(mode.modes)):
+            previous_mode.deactivate()
+            mode.activate()
+            previous_mode = mode
+            mode.next()
         if modes.current_mode_index == 0:
             return
 
