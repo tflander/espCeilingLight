@@ -14,6 +14,7 @@ led_touch_button = TouchButton(machine.Pin(4), touch_adjust_parameters)
 
 adjust_touch_button = TouchButton(machine.Pin(27), touch_adjust_parameters)
 
+
 class LightingModes(AbstractLightingMode):
     WHITE = WhiteModes()
     RGB = RgbModes()
@@ -38,6 +39,30 @@ def demo_modes():
         if modes.current_mode_index == 0:
             return
 
+import uasyncio
+
+
+async def first_simple_animation():
+    print("starting animation")
+    while True:
+        led.duty(1023)
+        await uasyncio.sleep_ms(100)
+        led.duty(0)
+        await uasyncio.sleep_ms(100)
+
+def control_animation():
+    while True:
+        task = uasyncio.create_task(first_simple_animation())
+        await uasyncio.sleep(2)
+        task.cancel()
+        led.duty(0)
+        await uasyncio.sleep(2)
+
+def doit():
+    uasyncio.run(control_animation())
+
+# termination_event = uasyncio.Event()
+# uasyncio.run(first_simple_animation(termination_event))
 
 def two_buttons():
     while True:
@@ -91,7 +116,6 @@ def poll_for_touch_state_change(touch_handler):
         utime.sleep_ms(20)
 
 
-
 # async def led_on(event):
 #     await event.wait()
 #     led.duty(1023)
@@ -118,14 +142,13 @@ def poll_for_touch_state_change(touch_handler):
 #         await uasyncio.sleep(1)
 #         touch_release_event.set()
 #         await led_off_task
-
+#
 # uasyncio.run(toggle_led_with_uasyncio())
 
 # TODO: we want to eventually check last startup time to test if power was cycled twice as a reset signal.
 #  The reset would put the light in normal white light mode
-def timeSpike():
+def time_spike():
     print(utime.mktime(utime.localtime()) - utime.mktime((2021, 1, 4, 17, 40, 4, 0, 4)))
-
 
 # def test_thread():
 #     while True:
