@@ -1,6 +1,13 @@
+import machine
+
 class AbstractLightingMode:
 
     current_mode_index = 0
+
+    FULL = 1023
+    HALF = 512
+    QUARTER = 256
+    EIGHTH = 128
 
     def next(self):
         self.current_mode_index += 1
@@ -13,17 +20,17 @@ class AbstractLightingMode:
 
 
 class WhiteModes(AbstractLightingMode):
-    FULL = 1023
-    HALF = 512
-    QUARTER = 256
 
-    modes = (FULL, HALF, QUARTER)
+    modes = (AbstractLightingMode.FULL, AbstractLightingMode.HALF, AbstractLightingMode.QUARTER, AbstractLightingMode.EIGHTH)
+
+    def __init__(self, white_pwm: machine.Pin):
+        self.white_pwm = white_pwm
 
     def activate(self):
-        print("White brightness:", self.current_mode())
+        self.white_pwm.duty(self.current_mode())
 
     def deactivate(self):
-        print("White off")
+        self.white_pwm.duty(0)
 
 
 class RgbModes(AbstractLightingMode):
@@ -36,11 +43,20 @@ class RgbModes(AbstractLightingMode):
 
     modes = (RED, YELLOW, GREEN, BLUE, CYAN, MAGENTA)
 
+    def __init__(self, red_pwm: machine.Pin, green_pwm: machine.Pin, blue_pwm: machine.Pin):
+        self.red_pwm = red_pwm
+        self.green_pwm = green_pwm
+        self.blue_pwm = blue_pwm
+
     def activate(self):
-        print("RGB values:", self.current_mode())
+        self.red_pwm.duty(1023 * self.current_mode()[0])
+        self.green_pwm.duty(1023 * self.current_mode()[1])
+        self.blue_pwm.duty(1023 * self.current_mode()[2])
 
     def deactivate(self):
-        print("Color off")
+        self.red_pwm.duty(0)
+        self.green_pwm.duty(0)
+        self.blue_pwm.duty(0)
 
 
 class UvModes(AbstractLightingMode):
