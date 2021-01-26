@@ -1,5 +1,16 @@
 import machine
 
+
+class LedPwmChannels:
+
+    def __init__(self, red_pin, green_pin, blue_pin, white_pin, uv_pin):
+        self.red = machine.PWM(machine.Pin(red_pin), freq=60, duty=0)
+        self.green = machine.PWM(machine.Pin(green_pin), freq=60, duty=0)
+        self.blue = machine.PWM(machine.Pin(blue_pin), freq=60, duty=0)
+        self.white = machine.PWM(machine.Pin(white_pin), freq=60, duty=0)
+        self.ultra_violet = machine.PWM(machine.Pin(uv_pin), freq=60, duty=0)
+
+
 class AbstractLightingMode:
 
     current_mode_index = 0
@@ -23,17 +34,17 @@ class WhiteModes(AbstractLightingMode):
 
     modes = (AbstractLightingMode.FULL, AbstractLightingMode.HALF, AbstractLightingMode.QUARTER, AbstractLightingMode.EIGHTH)
 
-    def __init__(self, white_pwm: machine.Pin):
-        self.white_pwm = white_pwm
+    def __init__(self, pwm_channels: LedPwmChannels):
+        self.pwm_channels = pwm_channels
 
     def next_adjustment(self):
         pass
 
     def activate(self):
-        self.white_pwm.duty(self.current_mode())
+        self.pwm_channels.white.duty(self.current_mode())
 
     def deactivate(self):
-        self.white_pwm.duty(0)
+        self.pwm_channels.white.duty(0)
 
 
 class RgbModes(AbstractLightingMode):
@@ -47,10 +58,8 @@ class RgbModes(AbstractLightingMode):
     modes = (RED, YELLOW, GREEN, BLUE, CYAN, MAGENTA)
     intensities = (AbstractLightingMode.FULL, AbstractLightingMode.HALF, AbstractLightingMode.QUARTER, AbstractLightingMode.EIGHTH)
 
-    def __init__(self, red_pwm: machine.Pin, green_pwm: machine.Pin, blue_pwm: machine.Pin):
-        self.red_pwm = red_pwm
-        self.green_pwm = green_pwm
-        self.blue_pwm = blue_pwm
+    def __init__(self, pwm_channels: LedPwmChannels):
+        self.pwm_channels = pwm_channels
         self.current_intensity_index = 0
 
     def current_intensity(self):
@@ -63,14 +72,14 @@ class RgbModes(AbstractLightingMode):
         return self.current_intensity()
 
     def activate(self):
-        self.red_pwm.duty(self.current_intensity() * self.current_mode()[0])
-        self.green_pwm.duty(self.current_intensity() * self.current_mode()[1])
-        self.blue_pwm.duty(self.current_intensity() * self.current_mode()[2])
+        self.pwm_channels.red.duty(self.current_intensity() * self.current_mode()[0])
+        self.pwm_channels.green.duty(self.current_intensity() * self.current_mode()[1])
+        self.pwm_channels.blue.duty(self.current_intensity() * self.current_mode()[2])
 
     def deactivate(self):
-        self.red_pwm.duty(0)
-        self.green_pwm.duty(0)
-        self.blue_pwm.duty(0)
+        self.pwm_channels.red.duty(0)
+        self.pwm_channels.green.duty(0)
+        self.pwm_channels.blue.duty(0)
 
 
 class UvModes(AbstractLightingMode):
@@ -80,11 +89,17 @@ class UvModes(AbstractLightingMode):
 
     modes = (STEADY, SLOW_STROBE, FAST_STROBE)
 
+    def __init__(self, pwm_channels: LedPwmChannels):
+        self.pwm_channels = pwm_channels
+
     def activate(self):
-        print("Black Light Frequency (Strobe)", self.current_mode())
+        self.pwm_channels.ultra_violet.duty(1023)
 
     def deactivate(self):
-        print("UV off")
+        self.pwm_channels.ultra_violet.duty(0)
+
+    def next_adjustment(self):
+        pass
 
 
 class Dark(AbstractLightingMode):
