@@ -49,4 +49,9 @@ while True:
             lights.current_mode().next()
             lights.current_mode().activate()
 
+    if sub2_touch_button.is_state_changed():
+        if sub2_touch_button.state == TouchState.SELECTED:
+            lights.current_mode().deactivate()
+            lights.current_mode().next_adjustment()
+            lights.current_mode().activate()
 

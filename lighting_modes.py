@@ -26,6 +26,9 @@ class WhiteModes(AbstractLightingMode):
     def __init__(self, white_pwm: machine.Pin):
         self.white_pwm = white_pwm
 
+    def next_adjustment(self):
+        pass
+
     def activate(self):
         self.white_pwm.duty(self.current_mode())
 
@@ -42,16 +45,27 @@ class RgbModes(AbstractLightingMode):
     MAGENTA = (1,0,1)
 
     modes = (RED, YELLOW, GREEN, BLUE, CYAN, MAGENTA)
+    intensities = (AbstractLightingMode.FULL, AbstractLightingMode.HALF, AbstractLightingMode.QUARTER, AbstractLightingMode.EIGHTH)
 
     def __init__(self, red_pwm: machine.Pin, green_pwm: machine.Pin, blue_pwm: machine.Pin):
         self.red_pwm = red_pwm
         self.green_pwm = green_pwm
         self.blue_pwm = blue_pwm
+        self.current_intensity_index = 0
+
+    def current_intensity(self):
+        return RgbModes.intensities[self.current_intensity_index];
+
+    def next_adjustment(self):
+        self.current_intensity_index += 1
+        if self.current_intensity_index == len(self.intensities):
+            self.current_intensity_index = 0
+        return self.current_intensity()
 
     def activate(self):
-        self.red_pwm.duty(1023 * self.current_mode()[0])
-        self.green_pwm.duty(1023 * self.current_mode()[1])
-        self.blue_pwm.duty(1023 * self.current_mode()[2])
+        self.red_pwm.duty(self.current_intensity() * self.current_mode()[0])
+        self.green_pwm.duty(self.current_intensity() * self.current_mode()[1])
+        self.blue_pwm.duty(self.current_intensity() * self.current_mode()[2])
 
     def deactivate(self):
         self.red_pwm.duty(0)
