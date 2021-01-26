@@ -47,15 +47,18 @@ class WhiteModes(AbstractLightingMode):
         self.pwm_channels.white.duty(0)
 
 
-class RgbModes(AbstractLightingMode):
-    RED = (1,0,0)
-    YELLOW = (1,1,0)
-    GREEN = (0,1,0)
-    BLUE = (0,0,1)
-    CYAN = (0,1,1)
-    MAGENTA = (1,0,1)
+class RgbColors:
+    RED = (1, 0, 0)
+    YELLOW = (1, 1, 0)
+    GREEN = (0, 1, 0)
+    BLUE = (0, 0, 1)
+    CYAN = (0, 1, 1)
+    MAGENTA = (1, 0, 1)
 
-    modes = (RED, YELLOW, GREEN, BLUE, CYAN, MAGENTA)
+
+class RgbModes(AbstractLightingMode):
+
+    modes = (RgbColors.RED, RgbColors.YELLOW, RgbColors.GREEN, RgbColors.BLUE, RgbColors.CYAN, RgbColors.MAGENTA)
     intensities = (AbstractLightingMode.FULL, AbstractLightingMode.HALF, AbstractLightingMode.QUARTER, AbstractLightingMode.EIGHTH)
 
     def __init__(self, pwm_channels: LedPwmChannels):
