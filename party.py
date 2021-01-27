@@ -29,6 +29,8 @@ def doit():
 
 class PartyModes(AbstractLightingMode):
 
+    modes = (RgbColors.RED, RgbColors.BLUE, RgbColors.GREEN)
+
     def __init__(self, pwm_channels: LedPwmChannels):
         self.pwm_channels = pwm_channels
         self.current_intensity_index = 0
@@ -38,7 +40,10 @@ class PartyModes(AbstractLightingMode):
         # self.pwm_channels.red.duty(1023)  # stub for now
         print("party activate")
         # uasyncio.run(self.control_first_simple_animation())
-        self.pwm_channels.red.duty(64)
+
+        self.pwm_channels.red.duty(64 * self.current_mode()[0])
+        self.pwm_channels.green.duty(64 * self.current_mode()[1])
+        self.pwm_channels.blue.duty(64 * self.current_mode()[2])
         self.pwm_channels.red.freq(4)
         # this runs, but cannot be interrupted
         # uasyncio.run(control_animation())
@@ -53,7 +58,7 @@ class PartyModes(AbstractLightingMode):
         #    self.task.cancel()
         #    self.task = None
         self.pwm_channels.red.duty(0)
-        self.pwm_channels.red.freq(self.pwm_channels.green.freq())
+        self.pwm_channels.red.freq(60)
         self.pwm_channels.green.duty(0)
         self.pwm_channels.blue.duty(0)
 
