@@ -2,6 +2,7 @@ import machine
 import math, utime
 from touch_button import *
 from lighting_modes import *
+from party import *
 
 from ntptime import settime
 import uasyncio
@@ -21,10 +22,10 @@ class LightingModes(AbstractLightingMode):
     WHITE = WhiteModes(led_pwm_channels)
     RGB = RgbModes(led_pwm_channels)
     UV = UvModes(led_pwm_channels)
+    Party = PartyModes(led_pwm_channels)
     OFF = Dark()
 
-    # modes = (WHITE, RGB, UV, OFF)
-    modes = (WHITE, RGB, UV)  # for now, no OFF mode so I don't burn the house down.
+    modes = (WHITE, RGB, UV, Party)  # for now, no OFF mode so I don't burn the house down.
 
 
 lights = LightingModes()
