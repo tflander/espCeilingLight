@@ -31,6 +31,7 @@ class LightingModes(AbstractLightingMode):
 lights = LightingModes()
 lights.current_mode().activate()
 
+print("running lighting modes...")
 while True:
     if mode_touch_button.is_state_changed():
         if mode_touch_button.state == TouchState.SELECTED:
