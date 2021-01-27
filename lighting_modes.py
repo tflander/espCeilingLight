@@ -30,23 +30,6 @@ class AbstractLightingMode:
         return self.modes[self.current_mode_index]
 
 
-class WhiteModes(AbstractLightingMode):
-
-    modes = (AbstractLightingMode.FULL, AbstractLightingMode.HALF, AbstractLightingMode.QUARTER, AbstractLightingMode.EIGHTH)
-
-    def __init__(self, pwm_channels: LedPwmChannels):
-        self.pwm_channels = pwm_channels
-
-    def next_adjustment(self):
-        pass
-
-    def activate(self):
-        self.pwm_channels.white.duty(self.current_mode())
-
-    def deactivate(self):
-        self.pwm_channels.white.duty(0)
-
-
 class RgbColors:
     RED = (1, 0, 0)
     YELLOW = (1, 1, 0)
@@ -54,6 +37,38 @@ class RgbColors:
     BLUE = (0, 0, 1)
     CYAN = (0, 1, 1)
     MAGENTA = (1, 0, 1)
+    BLACK = (0, 0, 0)
+
+
+class WhiteModes(AbstractLightingMode):
+
+    modes = (AbstractLightingMode.FULL, AbstractLightingMode.HALF, AbstractLightingMode.QUARTER, AbstractLightingMode.EIGHTH)
+    hues = (RgbColors.BLACK, RgbColors.RED, RgbColors.BLUE)
+
+    def __init__(self, pwm_channels: LedPwmChannels):
+        self.pwm_channels = pwm_channels
+        self.current_hue_index = 0
+
+    def current_hue(self):
+        return WhiteModes.hues[self.current_hue_index]
+
+    def next_adjustment(self):
+        self.current_hue_index += 1
+        if self.current_hue_index == len(self.hues):
+            self.current_hue_index = 0
+        return self.current_hue()
+
+    def activate(self):
+        mode = self.current_mode()
+        hue = self.current_hue()
+        self.pwm_channels.white.duty(mode)
+        self.pwm_channels.red.duty(mode * hue[0])
+        self.pwm_channels.blue.duty(mode * hue[2])
+
+    def deactivate(self):
+        self.pwm_channels.white.duty(0)
+        self.pwm_channels.red.duty(0)
+        self.pwm_channels.blue.duty(0)
 
 
 class RgbModes(AbstractLightingMode):

@@ -10,10 +10,6 @@ settime()
 
 touch_adjust_parameters = AdjustParameters(limits=(50, 600), dead_band=(175, 250))
 
-led = machine.PWM(machine.Pin(2), freq=4, duty=512)
-led_touch_button = TouchButton(machine.Pin(4), touch_adjust_parameters)
-
-
 mode_touch_button = TouchButton(machine.Pin(4), touch_adjust_parameters)
 sub1_touch_button = TouchButton(machine.Pin(27), touch_adjust_parameters)
 sub2_touch_button = TouchButton(machine.Pin(14), touch_adjust_parameters)
@@ -28,7 +24,7 @@ class LightingModes(AbstractLightingMode):
     OFF = Dark()
 
     # modes = (WHITE, RGB, UV, OFF)
-    modes = (WHITE, RGB, UV)
+    modes = (WHITE, RGB, UV)  # for now, no OFF mode so I don't burn the house down.
 
 
 lights = LightingModes()
