@@ -43,6 +43,9 @@ class PartyModes(AbstractLightingMode):
         # this runs, but cannot be interrupted
         # uasyncio.run(control_animation())
 
+    def next_adjustment(self):
+        pass
+
     # TODO: generic deactivate in super-class
     def deactivate(self):
         print("party deactivate")

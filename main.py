@@ -31,23 +31,26 @@ class LightingModes(AbstractLightingMode):
 lights = LightingModes()
 lights.current_mode().activate()
 
-print("running lighting modes...")
-while True:
-    if mode_touch_button.is_state_changed():
-        if mode_touch_button.state == TouchState.SELECTED:
-            lights.current_mode().deactivate()
-            lights.next()
-            lights.current_mode().activate()
+def light_it_up():
+    print("running lighting modes...")
+    while True:
+        if mode_touch_button.is_state_changed():
+            if mode_touch_button.state == TouchState.SELECTED:
+                lights.current_mode().deactivate()
+                lights.next()
+                lights.current_mode().activate()
 
-    if sub1_touch_button.is_state_changed():
-        if sub1_touch_button.state == TouchState.SELECTED:
-            lights.current_mode().deactivate()
-            lights.current_mode().next()
-            lights.current_mode().activate()
+        if sub1_touch_button.is_state_changed():
+            if sub1_touch_button.state == TouchState.SELECTED:
+                lights.current_mode().deactivate()
+                lights.current_mode().next()
+                lights.current_mode().activate()
 
-    if sub2_touch_button.is_state_changed():
-        if sub2_touch_button.state == TouchState.SELECTED:
-            lights.current_mode().deactivate()
-            lights.current_mode().next_adjustment()
-            lights.current_mode().activate()
+        if sub2_touch_button.is_state_changed():
+            if sub2_touch_button.state == TouchState.SELECTED:
+                lights.current_mode().deactivate()
+                lights.current_mode().next_adjustment()
+                lights.current_mode().activate()
 
+
+light_it_up()
