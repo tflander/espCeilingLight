@@ -37,31 +37,20 @@ class PartyModes(AbstractLightingMode):
     def activate(self):
         # self.pwm_channels.red.duty(1023)  # stub for now
         print("party activate")
-        uasyncio.run(self.control_first_simple_animation())
-
+        # uasyncio.run(self.control_first_simple_animation())
+        self.pwm_channels.red.duty(64)
+        self.pwm_channels.red.freq(4)
         # this runs, but cannot be interrupted
         # uasyncio.run(control_animation())
 
     # TODO: generic deactivate in super-class
     def deactivate(self):
         print("party deactivate")
-        if self.task is not None:
-            self.task.cancel()
-            self.task = None
+        # if self.task is not None:
+        #    self.task.cancel()
+        #    self.task = None
         self.pwm_channels.red.duty(0)
+        self.pwm_channels.red.freq(self.pwm_channels.green.freq())
         self.pwm_channels.green.duty(0)
         self.pwm_channels.blue.duty(0)
 
-    async def control_first_simple_animation(self):
-        print("control first simple animation")
-        self.task = uasyncio.create_task(self.first_simple_animation())
-        # await uasyncio.sleep(10)  # this allows the animation to run...but can't be interrupted...
-        # TODO: can I wait here for the task to be canceled?
-
-    async def first_simple_animation(self):
-        print("starting animation")
-        while True:
-            self.pwm_channels.red.duty(1023)
-            await uasyncio.sleep_ms(100)
-            self.pwm_channels.red.duty(0)
-            await uasyncio.sleep_ms(100)
