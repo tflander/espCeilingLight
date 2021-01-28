@@ -69,4 +69,4 @@ def party_spike():
 
 
 # light_it_up()
-uasyncio.run(party_spike())
+# uasyncio.run(party_spike())
