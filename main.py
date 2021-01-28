@@ -53,4 +53,18 @@ def light_it_up():
                 lights.current_mode().activate()
 
 
-light_it_up()
+def party_spike():
+    lights.current_mode().deactivate()
+    party_modes = lights.modes[3]
+    party_modes.activate()
+
+    while True:
+        if mode_touch_button.is_state_changed():
+            if mode_touch_button.state == TouchState.SELECTED:
+                party_modes.deactivate()
+                party_modes.next()
+                party_modes.activate()
+
+
+# light_it_up()
+party_spike()
