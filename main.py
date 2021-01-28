@@ -31,6 +31,7 @@ class LightingModes(AbstractLightingMode):
 lights = LightingModes()
 lights.current_mode().activate()
 
+
 def light_it_up():
     print("running lighting modes...")
     while True:
@@ -55,6 +56,7 @@ def light_it_up():
 
 def party_spike():
     lights.current_mode().deactivate()
+
     party_modes = lights.modes[3]
     party_modes.activate()
 
@@ -67,4 +69,4 @@ def party_spike():
 
 
 # light_it_up()
-party_spike()
+uasyncio.run(party_spike())
