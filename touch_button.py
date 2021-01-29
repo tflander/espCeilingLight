@@ -1,4 +1,3 @@
-import utime
 from machine import Pin, TouchPad
 import uasyncio
 
@@ -51,15 +50,17 @@ class TouchButton:
             return True
         return False
 
-    def wait_for_state_change(self):
-        while not self.is_state_changed():
-            utime.sleep_ms(20)
-
-    async def wait_for_state_change_async(self):
+    async def wait_for_state_change(self):
         while not self.is_state_changed():
             await uasyncio.sleep_ms(20)
+
+    async def wait_for_select(self):
+        while True:
+            await self.wait_for_state_change()
+            if self.state == TouchState.SELECTED:
+                return
 
     def show_read_values(self):
         while True:
             print(self.touch.read())
-            utime.sleep_ms(20)
+            uasyncio.sleep_ms(20)
