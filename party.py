@@ -19,10 +19,10 @@ async def first_party_animation():
 async def second_party_animation():
     print("second animation")
     while True:
-        for i in range(0, 1023):
+        for i in range(0, 1023, 5):
             led_pwm_channels.green.duty(i)
             await uasyncio.sleep_ms(10)
-        for i in range(1023, 0, -1):
+        for i in range(1023, 0, -5):
             led_pwm_channels.green.duty(i)
             await uasyncio.sleep_ms(10)
 
@@ -30,11 +30,11 @@ async def second_party_animation():
 def control_animation():
     while True:
         task = uasyncio.create_task(first_party_animation())
-        await uasyncio.sleep(2)
+        await uasyncio.sleep(10)
         led_pwm_channels.zero_duty()
         task.cancel()
         task = uasyncio.create_task(second_party_animation())
-        await uasyncio.sleep(2)
+        await uasyncio.sleep(10)
         led_pwm_channels.zero_duty()
         task.cancel()
 
