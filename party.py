@@ -10,26 +10,6 @@ sub1_touch_button = TouchButton(machine.Pin(27), touch_adjust_parameters)
 sub2_touch_button = TouchButton(machine.Pin(14), touch_adjust_parameters)
 
 
-async def two_color_flash():
-    while True:
-        led_pwm_channels.red.duty(1023)
-        led_pwm_channels.blue.duty(0)
-        await uasyncio.sleep_ms(300)
-        led_pwm_channels.red.duty(0)
-        led_pwm_channels.blue.duty(1023)
-        await uasyncio.sleep_ms(300)
-
-
-async def color_glow():
-    while True:
-        for i in range(0, 1023, 5):
-            led_pwm_channels.green.duty(i)
-            await uasyncio.sleep_ms(10)
-        for i in range(1023, 0, -5):
-            led_pwm_channels.green.duty(i)
-            await uasyncio.sleep_ms(10)
-
-
 def control_animation():
     party_modes = PartyModes(led_pwm_channels)
     led_pwm_channels.zero_duty()
@@ -55,9 +35,40 @@ def doit():
     uasyncio.run(control_animation())
 
 
+class OneColorGlow:
+
+    def __init__(self):
+        self.color_channel = led_pwm_channels.green
+
+    async def activate(self):
+        while True:
+            for i in range(0, 1023, 5):
+                self.color_channel.duty(i)
+                await uasyncio.sleep_ms(10)
+            for i in range(1023, 0, -5):
+                self.color_channel.duty(i)
+                await uasyncio.sleep_ms(10)
+
+
+class TwoColorFlash:
+
+    def __init__(self):
+        self.color_channel1 = led_pwm_channels.red
+        self.color_channel2 = led_pwm_channels.blue
+
+    async def activate(self):
+        while True:
+            self.color_channel1.duty(1023)
+            self.color_channel2.duty(0)
+            await uasyncio.sleep_ms(300)
+            self.color_channel1.duty(0)
+            self.color_channel2.duty(1023)
+            await uasyncio.sleep_ms(300)
+
+
 class PartyModes:
 
-    modes = (0, 1)
+    modes = (TwoColorFlash(), OneColorGlow())
 
     def __init__(self, pwm_channels: LedPwmChannels):
         self.pwm_channels = pwm_channels
@@ -65,11 +76,11 @@ class PartyModes:
         self.task = None
         self.current_mode_index = 0
 
+    def current_mode(self):
+        return PartyModes.modes[self.current_mode_index]
+
     def activate(self):
-        if self.current_mode_index == 0:
-            self.task = uasyncio.create_task(two_color_flash())
-        else:
-            self.task = uasyncio.create_task(color_glow())
+        self.task = uasyncio.create_task(self.current_mode().activate())
 
     def next_mode(self):
         if self.current_mode_index == 0:
@@ -82,7 +93,6 @@ class PartyModes:
 
     # TODO: generic deactivate in super-class
     def deactivate(self):
-        print("party deactivate")
         if self.task is not None:
             self.task.cancel()
             self.task = None
