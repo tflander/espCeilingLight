@@ -39,24 +39,19 @@ async def second_party_animation():
 
 
 def control_animation():
-    animation_task = uasyncio.create_task(first_party_animation())
+    party_modes = PartyModes(led_pwm_channels)
+    led_pwm_channels.zero_duty()
     button_collection = TouchButtonCollection(mode_touch_button, sub1_touch_button, sub2_touch_button)
-    current_mode = 0
+    party_modes.activate()
+
     while True:
 
         selected_button = await button_collection.wait_for_button_select()
 
         if selected_button == 0:
-            print("mode change requested")
-            animation_task.cancel()
-            led_pwm_channels.zero_duty()
-            if current_mode == 0:
-                current_mode = 1
-                animation_task = uasyncio.create_task(second_party_animation())
-            else:
-                current_mode = 0
-                animation_task = uasyncio.create_task(first_party_animation())
-
+            party_modes.deactivate()
+            party_modes.next_mode()
+            party_modes.activate()
         elif selected_button == 1:
             print("hue adjust not supported")
         else:
@@ -70,24 +65,25 @@ def doit():
 
 class PartyModes:
 
-    modes = (RgbColors.RED, RgbColors.BLUE, RgbColors.GREEN)
+    modes = (0, 1)
 
     def __init__(self, pwm_channels: LedPwmChannels):
         self.pwm_channels = pwm_channels
         self.current_intensity_index = 0
         self.task = None
+        self.current_mode_index = 0
 
     def activate(self):
-        # self.pwm_channels.red.duty(1023)  # stub for now
-        print("party activate")
-        # uasyncio.run(self.control_first_simple_animation())
+        if self.current_mode_index == 0:
+            self.task = uasyncio.create_task(first_party_animation())
+        else:
+            self.task = uasyncio.create_task(second_party_animation())
 
-        self.pwm_channels.red.duty(64 * self.current_mode()[0])
-        self.pwm_channels.green.duty(64 * self.current_mode()[1])
-        self.pwm_channels.blue.duty(64 * self.current_mode()[2])
-        self.pwm_channels.red.freq(4)
-        # this runs, but cannot be interrupted
-        # uasyncio.run(control_animation())
+    def next_mode(self):
+        if self.current_mode_index == 0:
+            self.current_mode_index = 1
+        else:
+            self.current_mode_index = 0
 
     def next_adjustment(self):
         pass
@@ -95,47 +91,9 @@ class PartyModes:
     # TODO: generic deactivate in super-class
     def deactivate(self):
         print("party deactivate")
-        # if self.task is not None:
-        #    self.task.cancel()
-        #    self.task = None
-        self.pwm_channels.red.duty(0)
-        self.pwm_channels.red.freq(60)
-        self.pwm_channels.green.duty(0)
-        self.pwm_channels.blue.duty(0)
+        if self.task is not None:
+            self.task.cancel()
+            self.task = None
+        led_pwm_channels.zero_duty()
 
-
-class OldPartyModes(AbstractLightingMode):
-
-    modes = (RgbColors.RED, RgbColors.BLUE, RgbColors.GREEN)
-
-    def __init__(self, pwm_channels: LedPwmChannels):
-        self.pwm_channels = pwm_channels
-        self.current_intensity_index = 0
-        self.task = None
-
-    def activate(self):
-        # self.pwm_channels.red.duty(1023)  # stub for now
-        print("party activate")
-        # uasyncio.run(self.control_first_simple_animation())
-
-        self.pwm_channels.red.duty(64 * self.current_mode()[0])
-        self.pwm_channels.green.duty(64 * self.current_mode()[1])
-        self.pwm_channels.blue.duty(64 * self.current_mode()[2])
-        self.pwm_channels.red.freq(4)
-        # this runs, but cannot be interrupted
-        # uasyncio.run(control_animation())
-
-    def next_adjustment(self):
-        pass
-
-    # TODO: generic deactivate in super-class
-    def deactivate(self):
-        print("party deactivate")
-        # if self.task is not None:
-        #    self.task.cancel()
-        #    self.task = None
-        self.pwm_channels.red.duty(0)
-        self.pwm_channels.red.freq(60)
-        self.pwm_channels.green.duty(0)
-        self.pwm_channels.blue.duty(0)
 
