@@ -10,6 +10,12 @@ class LedPwmChannels:
         self.white = machine.PWM(machine.Pin(white_pin), freq=60, duty=0)
         self.ultra_violet = machine.PWM(machine.Pin(uv_pin), freq=60, duty=0)
 
+    def zero_duty(self):
+        self.red.duty(0)
+        self.green.duty(0)
+        self.blue.duty(0)
+        self.white.duty(0)
+        self.ultra_violet.duty(0)
 
 class AbstractLightingMode:
 
