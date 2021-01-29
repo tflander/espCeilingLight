@@ -1,6 +1,7 @@
 from machine import Pin, TouchPad
 import uasyncio
 
+
 class TouchState:
     UNKNOWN = 1
     RELEASED = 2
@@ -40,6 +41,7 @@ class TouchButtonCollection:
                 if touch_button.is_state_changed():
                     if touch_button.state == TouchState.SELECTED:
                         return index
+                await uasyncio.sleep_ms(10)
 
 
 class TouchButton:

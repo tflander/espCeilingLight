@@ -40,19 +40,28 @@ async def second_party_animation():
 
 def control_animation():
     animation_task = uasyncio.create_task(first_party_animation())
+    button_collection = TouchButtonCollection(mode_touch_button, sub1_touch_button, sub2_touch_button)
+    current_mode = 0
     while True:
-        print("waiting for mode change from first animation")
-        await mode_touch_button.wait_for_select()
-        print("cancelling first animation")
-        animation_task.cancel()
-        led_pwm_channels.zero_duty()
-        animation_task = uasyncio.create_task(second_party_animation())
-        print("waiting for mode change from second animation")
-        await mode_touch_button.wait_for_select()
-        print("cancelling second animation")
-        animation_task.cancel()
-        led_pwm_channels.zero_duty()
-        animation_task = uasyncio.create_task(first_party_animation())
+
+        selected_button = await button_collection.wait_for_button_select()
+
+        if selected_button == 0:
+            print("mode change requested")
+            animation_task.cancel()
+            led_pwm_channels.zero_duty()
+            if current_mode == 0:
+                current_mode = 1
+                animation_task = uasyncio.create_task(second_party_animation())
+            else:
+                current_mode = 0
+                animation_task = uasyncio.create_task(first_party_animation())
+
+        elif selected_button == 1:
+            print("hue adjust not supported")
+        else:
+            print("brightness / speed not supported")
+        uasyncio.sleep_ms(10)
 
 
 def doit():
