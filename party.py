@@ -1,8 +1,11 @@
 # TODO: move abstract stuff to a different library
 from lighting_modes import *
 import uasyncio
+from touch_button import *
 
 led_pwm_channels = LedPwmChannels(red_pin=21, green_pin=23, blue_pin=22, white_pin=19, uv_pin=18)
+touch_adjust_parameters = AdjustParameters(limits=(50, 600), dead_band=(175, 250))
+mode_touch_button = TouchButton(machine.Pin(4), touch_adjust_parameters)
 
 
 async def first_party_animation():
@@ -27,7 +30,35 @@ async def second_party_animation():
             await uasyncio.sleep_ms(10)
 
 
+async def wait_for_mode_change():
+    while True:
+        print("wait for touch")
+        await mode_touch_button.wait_for_state_change_async()
+        print("touch detected")
+        await uasyncio.sleep_ms(10)
+        if mode_touch_button.state == TouchState.SELECTED:
+            return
+
+
 def control_animation():
+    animation_task = uasyncio.create_task(first_party_animation())
+    while True:
+        print("waiting for mode change from first animation")
+        await wait_for_mode_change()
+        print("cancelling first animation")
+        animation_task.cancel()
+        led_pwm_channels.zero_duty()
+        animation_task = uasyncio.create_task(second_party_animation())
+        print("waiting for mode change from second animation")
+        await wait_for_mode_change()
+        print("cancelling second animation")
+        animation_task.cancel()
+        led_pwm_channels.zero_duty()
+        animation_task = uasyncio.create_task(first_party_animation())
+
+
+
+def automate_animation():
     while True:
         task = uasyncio.create_task(first_party_animation())
         await uasyncio.sleep(10)
