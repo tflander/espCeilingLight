@@ -10,14 +10,7 @@ sub1_touch_button = TouchButton(machine.Pin(27), touch_adjust_parameters)
 sub2_touch_button = TouchButton(machine.Pin(14), touch_adjust_parameters)
 
 
-def button_collection_spike():
-    button_collection = TouchButtonCollection(mode_touch_button, sub1_touch_button, sub2_touch_button)
-    while True:
-        print(await button_collection.wait_for_button_select())
-
-
-async def first_party_animation():
-    print("first animation")
+async def two_color_flash():
     while True:
         led_pwm_channels.red.duty(1023)
         led_pwm_channels.blue.duty(0)
@@ -27,8 +20,7 @@ async def first_party_animation():
         await uasyncio.sleep_ms(300)
 
 
-async def second_party_animation():
-    print("second animation")
+async def color_glow():
     while True:
         for i in range(0, 1023, 5):
             led_pwm_channels.green.duty(i)
@@ -48,14 +40,14 @@ def control_animation():
 
         selected_button = await button_collection.wait_for_button_select()
 
+        party_modes.deactivate()
         if selected_button == 0:
-            party_modes.deactivate()
             party_modes.next_mode()
-            party_modes.activate()
         elif selected_button == 1:
             print("hue adjust not supported")
         else:
             print("brightness / speed not supported")
+        party_modes.activate()
         uasyncio.sleep_ms(10)
 
 
@@ -75,9 +67,9 @@ class PartyModes:
 
     def activate(self):
         if self.current_mode_index == 0:
-            self.task = uasyncio.create_task(first_party_animation())
+            self.task = uasyncio.create_task(two_color_flash())
         else:
-            self.task = uasyncio.create_task(second_party_animation())
+            self.task = uasyncio.create_task(color_glow())
 
     def next_mode(self):
         if self.current_mode_index == 0:
