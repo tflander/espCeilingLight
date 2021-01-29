@@ -6,6 +6,14 @@ from touch_button import *
 led_pwm_channels = LedPwmChannels(red_pin=21, green_pin=23, blue_pin=22, white_pin=19, uv_pin=18)
 touch_adjust_parameters = AdjustParameters(limits=(50, 600), dead_band=(175, 250))
 mode_touch_button = TouchButton(machine.Pin(4), touch_adjust_parameters)
+sub1_touch_button = TouchButton(machine.Pin(27), touch_adjust_parameters)
+sub2_touch_button = TouchButton(machine.Pin(14), touch_adjust_parameters)
+
+
+def button_collection_spike():
+    button_collection = TouchButtonCollection(mode_touch_button, sub1_touch_button, sub2_touch_button)
+    while True:
+        print(await button_collection.wait_for_button_select())
 
 
 async def first_party_animation():
@@ -45,19 +53,6 @@ def control_animation():
         animation_task.cancel()
         led_pwm_channels.zero_duty()
         animation_task = uasyncio.create_task(first_party_animation())
-
-
-
-def automate_animation():
-    while True:
-        task = uasyncio.create_task(first_party_animation())
-        await uasyncio.sleep(10)
-        led_pwm_channels.zero_duty()
-        task.cancel()
-        task = uasyncio.create_task(second_party_animation())
-        await uasyncio.sleep(10)
-        led_pwm_channels.zero_duty()
-        task.cancel()
 
 
 def doit():

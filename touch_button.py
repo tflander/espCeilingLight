@@ -27,6 +27,21 @@ class AdjustParameters:
             self.max_selected = dead_band[1]
 
 
+class TouchButtonCollection:
+
+    def __init__(self, *tuple_of_touch_buttons):
+        for touch_button in tuple_of_touch_buttons:
+            print(touch_button)
+        self.button_tuple = tuple_of_touch_buttons
+
+    async def wait_for_button_select(self):
+        while True:
+            for index, touch_button in enumerate(self.button_tuple):
+                if touch_button.is_state_changed():
+                    if touch_button.state == TouchState.SELECTED:
+                        return index
+
+
 class TouchButton:
 
     def __init__(self, touch_pin: Pin, adjust_parameters: AdjustParameters):
