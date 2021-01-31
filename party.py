@@ -107,6 +107,7 @@ class LightModes:
         self.current_mode_index = 0
 
         self.modes = (
+            WhiteModes(self.pwm_channels),
             MultiColorFlash(self.pwm_channels, (
                 (RgbColors.RED, RgbColors.BLUE),
                 (RgbColors.BLUE, RgbColors.YELLOW),
@@ -122,9 +123,8 @@ class LightModes:
         self.task = uasyncio.create_task(self.current_mode().activate())
 
     def next_mode(self):
-        if self.current_mode_index == 0:
-            self.current_mode_index = 1
-        else:
+        self.current_mode_index += 1
+        if self.current_mode_index == len(self.modes):
             self.current_mode_index = 0
 
     def next_hue(self):
