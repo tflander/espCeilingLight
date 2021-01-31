@@ -58,10 +58,13 @@ class OneColorGlow:
 
 class MultiColorFlash:
 
+    delays = (100, 200, 300, 500, 800, 1300, 2100, 3400)
+
     def __init__(self, pmw_channels, hue_tuples):
         self.hue_tuples = hue_tuples
         self.current_hue_index = 0
         self.pmw_channels = pmw_channels
+        self.delay_index = 0
 
     async def activate(self):
         hues = self.current_hue()  # e.g. (RgbColors.RED, RgbColors.BLUE)
@@ -70,7 +73,7 @@ class MultiColorFlash:
                 self.pmw_channels.red.duty(1023 * hues[color_index_to_flash][0])
                 self.pmw_channels.green.duty(1023 * hues[color_index_to_flash][1])
                 self.pmw_channels.blue.duty(1023 * hues[color_index_to_flash][2])
-                await uasyncio.sleep_ms(300)
+                await uasyncio.sleep_ms(self.current_delay())
 
     def next_hue(self):
         self.current_hue_index += 1
@@ -78,11 +81,15 @@ class MultiColorFlash:
             self.current_hue_index = 0
 
     def next_brightness_or_speed(self):
-        pass
+        self.delay_index += 1
+        if self.delay_index == len(MultiColorFlash.delays):
+            self.delay_index = 0
 
     def current_hue(self):
         return self.hue_tuples[self.current_hue_index]
 
+    def current_delay(self):
+        return MultiColorFlash.delays[self.delay_index]
 
 class PartyModes:
 
@@ -95,7 +102,8 @@ class PartyModes:
         self.modes = (
             MultiColorFlash(self.pwm_channels, (
                 (RgbColors.RED, RgbColors.BLUE),
-                (RgbColors.BLUE, RgbColors.YELLOW)
+                (RgbColors.BLUE, RgbColors.YELLOW),
+                (RgbColors.RED, RgbColors.YELLOW, RgbColors.GREEN, RgbColors.CYAN, RgbColors.BLUE, RgbColors.MAGENTA)
             )),
             OneColorGlow()
         )
