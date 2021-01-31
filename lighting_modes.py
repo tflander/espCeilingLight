@@ -51,7 +51,7 @@ class WhiteModes:
 class RgbModes:
 
     colors = (RgbColors.RED, RgbColors.YELLOW, RgbColors.GREEN, RgbColors.BLUE, RgbColors.CYAN, RgbColors.MAGENTA)
-    modes = (
+    intensities = (
         AvailableIntensities.FULL,
         AvailableIntensities.HALF,
         AvailableIntensities.QUARTER,
@@ -61,20 +61,24 @@ class RgbModes:
     def __init__(self, pwm_channels: LedPwmChannels):
         self.pwm_channels = pwm_channels
         self.current_color_index = 0
+        self.current_intensity_index = 0
 
     def current_color(self):
-        return RgbModes.colors[self.current_color_index];
+        return RgbModes.colors[self.current_color_index]
 
-    def next_adjustment(self):
+    def next_hue(self):
         self.current_color_index += 1
         if self.current_color_index == len(self.colors):
             self.current_color_index = 0
         return self.current_color()
 
-    def activate(self):
-        self.pwm_channels.red.duty(self.current_mode() * self.current_color()[0])
-        self.pwm_channels.green.duty(self.current_mode() * self.current_color()[1])
-        self.pwm_channels.blue.duty(self.current_mode() * self.current_color()[2])
+    def next_brightness_or_speed(self):
+        self.current_intensity_index += 1
+        if self.current_intensity_index == len(self.intensities):
+            self.current_intensity_index = 0
+
+    async def activate(self):
+        self.pwm_channels.show_hue(self.current_color(), RgbModes.intensities[self.current_intensity_index])
 
     def deactivate(self):
         self.pwm_channels.red.duty(0)

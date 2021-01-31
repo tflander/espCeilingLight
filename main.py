@@ -49,6 +49,7 @@ class LightModes:
 
         self.modes = (
             WhiteModes(self.pwm_channels),
+            RgbModes(self.pwm_channels),
             MultiColorFlash(self.pwm_channels, (
                 (RgbColors.RED, RgbColors.BLUE),
                 (RgbColors.BLUE, RgbColors.YELLOW),
