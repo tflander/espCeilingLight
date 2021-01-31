@@ -17,6 +17,12 @@ class LedPwmChannels:
         self.white.duty(0)
         self.ultra_violet.duty(0)
 
+    def show_hue(self, hue, duty):
+        self.red.duty(duty * hue[0])
+        self.green.duty(duty * hue[1])
+        self.blue.duty(duty * hue[2])
+
+
 class AbstractLightingMode:
 
     current_mode_index = 0
