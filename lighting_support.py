@@ -4,11 +4,11 @@ import machine
 class LedPwmChannels:
 
     def __init__(self, red_pin, green_pin, blue_pin, white_pin, uv_pin):
-        self.red = machine.PWM(machine.Pin(red_pin), freq=60, duty=0)
-        self.green = machine.PWM(machine.Pin(green_pin), freq=60, duty=0)
-        self.blue = machine.PWM(machine.Pin(blue_pin), freq=60, duty=0)
-        self.white = machine.PWM(machine.Pin(white_pin), freq=60, duty=0)
-        self.ultra_violet = machine.PWM(machine.Pin(uv_pin), freq=60, duty=0)
+        self.red = machine.PWM(machine.Pin(red_pin), freq=70, duty=0)
+        self.green = machine.PWM(machine.Pin(green_pin), freq=70, duty=0)
+        self.blue = machine.PWM(machine.Pin(blue_pin), freq=70, duty=0)
+        self.white = machine.PWM(machine.Pin(white_pin), freq=70, duty=0)
+        self.ultra_violet = machine.PWM(machine.Pin(uv_pin), freq=70, duty=0)
 
     def zero_duty(self):
         self.red.duty(0)
