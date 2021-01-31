@@ -41,15 +41,17 @@ class OneColorGlow:
         self.pwm_channels = pwm_channels
         self.hue_index = 0
         self.hues = hues
+        self.fade_steps = (1, 2, 3, 5, 8, 13, 21)
+        self.fade_steps_index = 0
 
     async def activate(self):
         while True:
-            for i in range(0, 1023, 5):
+            for i in range(0, 1023, self.fade_steps[self.fade_steps_index]):
                 self.pwm_channels.red.duty(i * self.hues[self.hue_index][0])
                 self.pwm_channels.green.duty(i * self.hues[self.hue_index][1])
                 self.pwm_channels.blue.duty(i * self.hues[self.hue_index][2])
                 await uasyncio.sleep_ms(10)
-            for i in range(1023, 0, -5):
+            for i in range(1023, 0, -1 * self.fade_steps[self.fade_steps_index]):
                 self.pwm_channels.red.duty(i * self.hues[self.hue_index][0])
                 self.pwm_channels.green.duty(i * self.hues[self.hue_index][1])
                 self.pwm_channels.blue.duty(i * self.hues[self.hue_index][2])
@@ -61,7 +63,9 @@ class OneColorGlow:
             self.hue_index = 0
 
     def next_brightness_or_speed(self):
-        pass
+        self.fade_steps_index += 1
+        if self.fade_steps_index == len(self.fade_steps):
+            self.fade_steps_index = 0
 
 
 class MultiColorFlash:
