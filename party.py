@@ -24,9 +24,9 @@ def control_animation():
         if selected_button == 0:
             party_modes.next_mode()
         elif selected_button == 1:
-            print("hue adjust not supported")
+            party_modes.next_hue()
         else:
-            print("brightness / speed not supported")
+            party_modes.next_brightness_or_speed()
         party_modes.activate()
         uasyncio.sleep_ms(10)
 
@@ -49,26 +49,42 @@ class OneColorGlow:
                 self.color_channel.duty(i)
                 await uasyncio.sleep_ms(10)
 
+    def next_hue(self):
+        pass
 
-class TwoColorFlash:
+    def next_brightness_or_speed(self):
+        pass
 
-    def __init__(self):
-        self.color_channel1 = led_pwm_channels.red
-        self.color_channel2 = led_pwm_channels.blue
+
+class MultiColorFlash:
+
+    def __init__(self, pmw_channels, hue_tuples):
+        self.hue_tuples = hue_tuples
+        self.current_hue_index = 0
+        self.pmw_channels = pmw_channels
 
     async def activate(self):
+        hues = self.current_hue()  # e.g. (RgbColors.RED, RgbColors.BLUE)
         while True:
-            self.color_channel1.duty(1023)
-            self.color_channel2.duty(0)
-            await uasyncio.sleep_ms(300)
-            self.color_channel1.duty(0)
-            self.color_channel2.duty(1023)
-            await uasyncio.sleep_ms(300)
+            for color_index_to_flash in range(0, len(hues)):
+                self.pmw_channels.red.duty(1023 * hues[color_index_to_flash][0])
+                self.pmw_channels.green.duty(1023 * hues[color_index_to_flash][1])
+                self.pmw_channels.blue.duty(1023 * hues[color_index_to_flash][2])
+                await uasyncio.sleep_ms(300)
+
+    def next_hue(self):
+        self.current_hue_index += 1
+        if self.current_hue_index == len(self.hue_tuples):
+            self.current_hue_index = 0
+
+    def next_brightness_or_speed(self):
+        pass
+
+    def current_hue(self):
+        return self.hue_tuples[self.current_hue_index]
 
 
 class PartyModes:
-
-    modes = (TwoColorFlash(), OneColorGlow())
 
     def __init__(self, pwm_channels: LedPwmChannels):
         self.pwm_channels = pwm_channels
@@ -76,8 +92,16 @@ class PartyModes:
         self.task = None
         self.current_mode_index = 0
 
+        self.modes = (
+            MultiColorFlash(self.pwm_channels, (
+                (RgbColors.RED, RgbColors.BLUE),
+                (RgbColors.BLUE, RgbColors.YELLOW)
+            )),
+            OneColorGlow()
+        )
+
     def current_mode(self):
-        return PartyModes.modes[self.current_mode_index]
+        return self.modes[self.current_mode_index]
 
     def activate(self):
         self.task = uasyncio.create_task(self.current_mode().activate())
@@ -88,10 +112,12 @@ class PartyModes:
         else:
             self.current_mode_index = 0
 
-    def next_adjustment(self):
-        pass
+    def next_hue(self):
+        self.current_mode().next_hue()
 
-    # TODO: generic deactivate in super-class
+    def next_brightness_or_speed(self):
+        self.current_mode().next_brightness_or_speed()
+
     def deactivate(self):
         if self.task is not None:
             self.task.cancel()
