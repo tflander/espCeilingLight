@@ -11,7 +11,7 @@ sub2_touch_button = TouchButton(machine.Pin(14), touch_adjust_parameters)
 
 
 def control_animation():
-    party_modes = PartyModes(led_pwm_channels)
+    party_modes = LightModes(led_pwm_channels)
     led_pwm_channels.zero_duty()
     button_collection = TouchButtonCollection(mode_touch_button, sub1_touch_button, sub2_touch_button)
     party_modes.activate()
@@ -37,20 +37,28 @@ def doit():
 
 class OneColorGlow:
 
-    def __init__(self):
-        self.color_channel = led_pwm_channels.green
+    def __init__(self, pwm_channels, hues):
+        self.pwm_channels = pwm_channels
+        self.hue_index = 0
+        self.hues = hues
 
     async def activate(self):
         while True:
             for i in range(0, 1023, 5):
-                self.color_channel.duty(i)
+                self.pwm_channels.red.duty(i * self.hues[self.hue_index][0])
+                self.pwm_channels.green.duty(i * self.hues[self.hue_index][1])
+                self.pwm_channels.blue.duty(i * self.hues[self.hue_index][2])
                 await uasyncio.sleep_ms(10)
             for i in range(1023, 0, -5):
-                self.color_channel.duty(i)
+                self.pwm_channels.red.duty(i * self.hues[self.hue_index][0])
+                self.pwm_channels.green.duty(i * self.hues[self.hue_index][1])
+                self.pwm_channels.blue.duty(i * self.hues[self.hue_index][2])
                 await uasyncio.sleep_ms(10)
 
     def next_hue(self):
-        pass
+        self.hue_index += 1
+        if self.hue_index == len(self.hues):
+            self.hue_index = 0
 
     def next_brightness_or_speed(self):
         pass
@@ -60,19 +68,19 @@ class MultiColorFlash:
 
     delays = (100, 200, 300, 500, 800, 1300, 2100, 3400)
 
-    def __init__(self, pmw_channels, hue_tuples):
+    def __init__(self, pwm_channels, hue_tuples):
         self.hue_tuples = hue_tuples
         self.current_hue_index = 0
-        self.pmw_channels = pmw_channels
+        self.pwm_channels = pwm_channels
         self.delay_index = 0
 
     async def activate(self):
         hues = self.current_hue()  # e.g. (RgbColors.RED, RgbColors.BLUE)
         while True:
             for color_index_to_flash in range(0, len(hues)):
-                self.pmw_channels.red.duty(1023 * hues[color_index_to_flash][0])
-                self.pmw_channels.green.duty(1023 * hues[color_index_to_flash][1])
-                self.pmw_channels.blue.duty(1023 * hues[color_index_to_flash][2])
+                self.pwm_channels.red.duty(1023 * hues[color_index_to_flash][0])
+                self.pwm_channels.green.duty(1023 * hues[color_index_to_flash][1])
+                self.pwm_channels.blue.duty(1023 * hues[color_index_to_flash][2])
                 await uasyncio.sleep_ms(self.current_delay())
 
     def next_hue(self):
@@ -91,7 +99,8 @@ class MultiColorFlash:
     def current_delay(self):
         return MultiColorFlash.delays[self.delay_index]
 
-class PartyModes:
+
+class LightModes:
 
     def __init__(self, pwm_channels: LedPwmChannels):
         self.pwm_channels = pwm_channels
@@ -105,7 +114,7 @@ class PartyModes:
                 (RgbColors.BLUE, RgbColors.YELLOW),
                 (RgbColors.RED, RgbColors.YELLOW, RgbColors.GREEN, RgbColors.CYAN, RgbColors.BLUE, RgbColors.MAGENTA)
             )),
-            OneColorGlow()
+            OneColorGlow(self.pwm_channels, (RgbColors.RED, RgbColors.GREEN, RgbColors.BLUE, RgbColors.CYAN, RgbColors.YELLOW, RgbColors.MAGENTA))
         )
 
     def current_mode(self):

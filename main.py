@@ -22,7 +22,7 @@ class LightingModes(AbstractLightingMode):
     WHITE = WhiteModes(led_pwm_channels)
     RGB = RgbModes(led_pwm_channels)
     UV = UvModes(led_pwm_channels)
-    Party = PartyModes(led_pwm_channels)
+    Party = LightModes(led_pwm_channels)
     OFF = Dark()
 
     modes = (WHITE, RGB, UV, Party)  # for now, no OFF mode so I don't burn the house down.

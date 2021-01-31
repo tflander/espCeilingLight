@@ -31,8 +31,6 @@ class AdjustParameters:
 class TouchButtonCollection:
 
     def __init__(self, *tuple_of_touch_buttons):
-        for touch_button in tuple_of_touch_buttons:
-            print(touch_button)
         self.button_tuple = tuple_of_touch_buttons
 
     async def wait_for_button_select(self):
