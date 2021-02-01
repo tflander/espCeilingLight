@@ -36,19 +36,18 @@ class MultiColorFade:
         self.pwm_channels = pwm_channels
         self.hue_tuples = hue_tuples
         self.current_hue_index = 0
-        self.hue_index = 0
         self.fade_steps = (1, 2, 3, 5, 8, 13, 21)
         self.fade_steps_index = 0
 
     async def activate(self):
         hues = self.current_hue()
         while True:
-            for color_index_to_flash in range(0, len(hues)):
-                current_color = list(map(lambda c: c * 1023, hues[color_index_to_flash]))
+            for color_index_to_fade_from in range(0, len(hues)):
+                current_color = list(map(lambda c: c * 1023, hues[color_index_to_fade_from]))
                 self.pwm_channels.show_color(current_color)
                 await uasyncio.sleep_ms(10)
 
-                next_color_index = color_index_to_flash + 1
+                next_color_index = color_index_to_fade_from + 1
                 if next_color_index == len(hues):
                     next_color_index = 0
 
@@ -64,9 +63,9 @@ class MultiColorFade:
                     await uasyncio.sleep_ms(10)
 
     def next_hue(self):
-        self.hue_index += 1
-        if self.hue_index == len(self.hues):
-            self.hue_index = 0
+        self.current_hue_index += 1
+        if self.current_hue_index == len(self.hue_tuples):
+            self.current_hue_index = 0
 
     def current_hue(self):
         return self.hue_tuples[self.current_hue_index]
