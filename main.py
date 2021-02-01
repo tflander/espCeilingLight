@@ -66,6 +66,7 @@ class LightModes:
             MultiColorFade(self.pwm_channels, (
                 (RgbColors.RED, RgbColors.BLUE),
                 (RgbColors.BLUE, RgbColors.GREEN),
+                (RgbColors.RED, RgbColors.YELLOW, RgbColors.GREEN, RgbColors.CYAN, RgbColors.BLUE, RgbColors.MAGENTA)
             ))
         )
 
