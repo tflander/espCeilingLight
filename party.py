@@ -53,12 +53,17 @@ class MultiColorFade:
 
                 next_color = list(map(lambda c: c * 1023, hues[next_color_index]))
 
+                steps_for_fading = self.fade_steps[self.fade_steps_index]
                 while current_color != next_color:
                     for pixel in range(0, 3):
                         if current_color[pixel] < next_color[pixel]:
-                            current_color[pixel] += 1  # TODO: use fade steps with max
+                            current_color[pixel] += steps_for_fading
+                            if current_color[pixel] > next_color[pixel]:
+                                current_color[pixel] = next_color[pixel]
                         elif current_color[pixel] > next_color[pixel]:
-                            current_color[pixel] -= 1  # TODO: use fade steps with min
+                            current_color[pixel] -= steps_for_fading
+                            if current_color[pixel] < next_color[pixel]:
+                                current_color[pixel] = next_color[pixel]
                     self.pwm_channels.show_color(current_color)
                     await uasyncio.sleep_ms(10)
 
