@@ -22,6 +22,11 @@ class LedPwmChannels:
         self.green.duty(duty * hue[1])
         self.blue.duty(duty * hue[2])
 
+    def show_color(self, color):
+        self.red.duty(color[0])
+        self.green.duty(color[1])
+        self.blue.duty(color[2])
+
 
 class AvailableIntensities:
 

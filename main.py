@@ -62,7 +62,11 @@ class LightModes:
                 RgbColors.CYAN,
                 RgbColors.YELLOW,
                 RgbColors.MAGENTA)
-            )
+            ),
+            MultiColorFade(self.pwm_channels, (
+                (RgbColors.RED, RgbColors.BLUE),
+                (RgbColors.BLUE, RgbColors.GREEN),
+            ))
         )
 
     def current_mode(self):
