@@ -35,11 +35,17 @@ class TouchButtonCollection:
 
     async def wait_for_button_select(self):
         while True:
-            for index, touch_button in enumerate(self.button_tuple):
-                if touch_button.is_state_changed():
-                    if touch_button.state == TouchState.SELECTED:
-                        return index
-                await uasyncio.sleep_ms(10)
+            selected = self.get_selected_button()
+            if selected >= 0:
+                return selected
+            await uasyncio.sleep_ms(10)
+
+    def get_selected_button(self):
+        for index, touch_button in enumerate(self.button_tuple):
+            if touch_button.is_state_changed():
+                if touch_button.state == TouchState.SELECTED:
+                    return index
+        return -1
 
 
 class TouchButton:

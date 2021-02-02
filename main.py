@@ -13,14 +13,14 @@ settime()
 import usocket
 
 # Web server spike
-print("opening listener on port 80")
-s = usocket.socket(usocket.AF_INET, usocket.SOCK_STREAM)
-s.bind(('', 80))
-s.listen(5)
-print("listener opened")
+# print("opening listener on port 80")
+# s = usocket.socket(usocket.AF_INET, usocket.SOCK_STREAM)
+# s.bind(('', 80))
+# s.listen(5)
+# print("listener opened")
 
 # TODO: put in co-routine
-while True:
+while False:
     gc.collect()
     conn, addr = s.accept()
     print('Got a connection from %s' % str(addr))
@@ -60,6 +60,7 @@ def control_lighting():
 
     while True:
 
+        # TODO: wait for either web request or button select
         selected_button = await button_collection.wait_for_button_select()
 
         party_modes.deactivate()
