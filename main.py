@@ -9,6 +9,40 @@ import uasyncio
 
 settime()
 
+
+import usocket
+
+# Web server spike
+print("opening listener on port 80")
+s = usocket.socket(usocket.AF_INET, usocket.SOCK_STREAM)
+s.bind(('', 80))
+s.listen(5)
+print("listener opened")
+
+# TODO: put in co-routine
+while True:
+    gc.collect()
+    conn, addr = s.accept()
+    print('Got a connection from %s' % str(addr))
+    request = conn.recv(1024)
+    request = str(request).split("\\r\\n")
+    request_protocol_and_path = request[0].split()
+    print('Content = %s' % request)
+    print('First Line = %s' % request[0].split())
+
+    response = ""
+    if request_protocol_and_path[0].endswith("GET"):
+        response += "GET protocol<br />"
+    else:
+        response += "Unsupported protocol " + request_protocol_and_path[0]
+    response += "Path = " + request_protocol_and_path[1]
+
+    conn.send('HTTP/1.1 200 OK\n')
+    conn.send('Content-Type: text/html\n')
+    conn.send('Connection: close\n\n')
+    conn.sendall(response)
+    conn.close()
+
 touch_adjust_parameters = AdjustParameters(limits=(50, 600), dead_band=(175, 250))
 
 mode_touch_button = TouchButton(machine.Pin(4), touch_adjust_parameters)
