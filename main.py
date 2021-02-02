@@ -1,5 +1,6 @@
 import machine
 import math, utime
+
 from touch_button import *
 from lighting_modes import *
 from party import *
@@ -22,7 +23,7 @@ print("listener opened")
 # TODO: put in co-routine
 while True:
     gc.collect()
-    conn, addr = s.accept()
+    conn, addr = s.accept()  # blocking call
     print('Got a connection from %s' % str(addr))
     request = conn.recv(1024)
     request = str(request).split("\\r\\n")
@@ -61,17 +62,17 @@ def control_lighting():
     while True:
 
         # TODO: wait for either web request or button select
-        selected_button = await button_collection.wait_for_button_select()
-
-        party_modes.deactivate()
-        if selected_button == 0:
-            party_modes.next_mode()
-        elif selected_button == 1:
-            party_modes.next_hue()
-        else:
-            party_modes.next_brightness_or_speed()
-        party_modes.activate()
-        uasyncio.sleep_ms(10)
+        selected_button = button_collection.get_selected_button()
+        if selected_button >= 0:
+            party_modes.deactivate()
+            if selected_button == 0:
+                party_modes.next_mode()
+            elif selected_button == 1:
+                party_modes.next_hue()
+            else:
+                party_modes.next_brightness_or_speed()
+            party_modes.activate()
+        await uasyncio.sleep_ms(10)
 
 
 class LightModes:
