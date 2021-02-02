@@ -13,14 +13,14 @@ settime()
 import usocket
 
 # Web server spike
-# print("opening listener on port 80")
-# s = usocket.socket(usocket.AF_INET, usocket.SOCK_STREAM)
-# s.bind(('', 80))
-# s.listen(5)
-# print("listener opened")
+print("opening listener on port 80")
+s = usocket.socket(usocket.AF_INET, usocket.SOCK_STREAM)
+s.bind(('', 80))
+s.listen(5)
+print("listener opened")
 
 # TODO: put in co-routine
-while False:
+while True:
     gc.collect()
     conn, addr = s.accept()
     print('Got a connection from %s' % str(addr))
