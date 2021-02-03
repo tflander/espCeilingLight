@@ -18,31 +18,50 @@ print("opening listener on port 80")
 s = usocket.socket(usocket.AF_INET, usocket.SOCK_STREAM)
 s.bind(('', 80))
 s.listen(5)
+s.setblocking(False)
 print("listener opened")
 
-# TODO: put in co-routine
-while False:
-    gc.collect()
-    conn, addr = s.accept()  # blocking call
-    print('Got a connection from %s' % str(addr))
-    request = conn.recv(1024)
-    request = str(request).split("\\r\\n")
-    request_protocol_and_path = request[0].split()
-    print('Content = %s' % request)
-    print('First Line = %s' % request[0].split())
+last_web_command = ""
 
-    response = ""
-    if request_protocol_and_path[0].endswith("GET"):
-        response += "GET protocol<br />"
-    else:
-        response += "Unsupported protocol " + request_protocol_and_path[0]
-    response += "Path = " + request_protocol_and_path[1]
 
-    conn.send('HTTP/1.1 200 OK\n')
-    conn.send('Content-Type: text/html\n')
-    conn.send('Connection: close\n\n')
-    conn.sendall(response)
-    conn.close()
+async def web_command_listener(event: uasyncio.Event):
+
+    global last_web_command
+
+    while True:
+        gc.collect()
+
+        conn = None
+
+        while conn is None:
+            try:
+                conn, addr = s.accept()
+            except OSError as e:
+                if e.args[0] == 11:
+                    await uasyncio.sleep_ms(10)
+
+        print('Got a connection from %s' % str(addr))
+        request = conn.recv(1024)
+        request = str(request).split("\\r\\n")
+        request_protocol_and_path = request[0].split()
+        print('Content = %s' % request)
+        print('First Line = %s' % request[0].split())
+
+        response = ""
+        if request_protocol_and_path[0].endswith("GET"):
+            response += "GET protocol<br />"
+        else:
+            response += "Unsupported protocol " + request_protocol_and_path[0]
+        response += "Path = " + request_protocol_and_path[1]
+
+        last_web_command = request_protocol_and_path[1]
+        event.set()
+
+        conn.send('HTTP/1.1 200 OK\n')
+        conn.send('Content-Type: text/html\n')
+        conn.send('Connection: close\n\n')
+        conn.sendall(response)
+        conn.close()
 
 touch_adjust_parameters = AdjustParameters(limits=(50, 600), dead_band=(175, 250))
 
@@ -65,12 +84,16 @@ async def activate_button_listener(event: uasyncio.Event):
 
 def event_spike():
     event = uasyncio.Event()
-    global last_selected_button
+    global last_selected_button, last_web_command
     uasyncio.create_task(activate_button_listener(event))
+    uasyncio.create_task(web_command_listener(event))
+
     while True:
         if event.is_set():
-            print("triggered", last_selected_button)
+            print("triggered", last_selected_button, last_web_command)
             event.clear()
+            last_selected_button = -1
+            last_web_command = ""
         await uasyncio.sleep_ms(20)
 
 
