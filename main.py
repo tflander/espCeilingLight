@@ -21,7 +21,7 @@ s.listen(5)
 print("listener opened")
 
 # TODO: put in co-routine
-while True:
+while False:
     gc.collect()
     conn, addr = s.accept()  # blocking call
     print('Got a connection from %s' % str(addr))
@@ -51,6 +51,27 @@ sub1_touch_button = TouchButton(machine.Pin(27), touch_adjust_parameters)
 sub2_touch_button = TouchButton(machine.Pin(14), touch_adjust_parameters)
 
 led_pwm_channels = LedPwmChannels(red_pin=21, green_pin=23, blue_pin=22, white_pin=19, uv_pin=18)
+
+last_selected_button = -1
+
+
+async def activate_button_listener(event: uasyncio.Event):
+    button_collection = TouchButtonCollection(mode_touch_button, sub1_touch_button, sub2_touch_button)
+    global last_selected_button
+    while True:
+        last_selected_button = await button_collection.wait_for_button_select()
+        event.set()
+
+
+def event_spike():
+    event = uasyncio.Event()
+    global last_selected_button
+    uasyncio.create_task(activate_button_listener(event))
+    while True:
+        if event.is_set():
+            print("triggered", last_selected_button)
+            event.clear()
+        await uasyncio.sleep_ms(20)
 
 
 def control_lighting():
@@ -130,5 +151,7 @@ class LightModes:
         led_pwm_channels.zero_duty()
 
 
-print("running lights")
-uasyncio.run(control_lighting())
+# print("running lights")
+# uasyncio.run(control_lighting())
+print("event spike")
+uasyncio.run(event_spike())
