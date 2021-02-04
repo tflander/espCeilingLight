@@ -174,7 +174,7 @@ class LightModes:
         led_pwm_channels.zero_duty()
 
 
-# print("running lights")
-# uasyncio.run(control_lighting())
-print("event spike")
-uasyncio.run(event_spike())
+print("running lights")
+uasyncio.run(control_lighting())
+# print("event spike")
+# uasyncio.run(event_spike())
