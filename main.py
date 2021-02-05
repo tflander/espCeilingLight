@@ -1,5 +1,6 @@
 import machine
 import math, utime
+import ujson
 
 from touch_button import *
 from lighting_modes import *
@@ -46,10 +47,18 @@ async def web_command_listener(event: uasyncio.Event):
         request_protocol_and_path = request[0].split()
         print('Content = %s' % request)
         print('First Line = %s' % request[0].split())
+        print('Last Line = %s' % request[len(request) - 1])
 
         response = ""
         if request_protocol_and_path[0].endswith("GET"):
             response += "GET protocol<br />"
+        elif request_protocol_and_path[0].endswith("PUT"):
+            response += "PUT protocol<br />"
+            rawJson = request[len(request) - 1]
+            stripped = rawJson.replace("\\n", " ").replace("\\t", " ").replace("'", "")
+            response += "Body: " + stripped + "<br />"
+            colors = ujson.loads(stripped)
+            response += "White value = %s<br />" % colors["White"]
         else:
             response += "Unsupported protocol " + request_protocol_and_path[0]
         response += "Path = " + request_protocol_and_path[1]
@@ -174,7 +183,7 @@ class LightModes:
         led_pwm_channels.zero_duty()
 
 
-print("running lights")
-uasyncio.run(control_lighting())
-# print("event spike")
-# uasyncio.run(event_spike())
+# print("running lights")
+# uasyncio.run(control_lighting())
+print("event spike")
+uasyncio.run(event_spike())
