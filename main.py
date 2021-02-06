@@ -5,16 +5,14 @@ import ujson
 from touch_button import *
 from lighting_modes import *
 from party import *
+from web_route_controllers import *
 
 from ntptime import settime
 import uasyncio
+import usocket
 
 settime()
 
-
-import usocket
-
-# Web server spike
 print("opening listener on port 80")
 s = usocket.socket(usocket.AF_INET, usocket.SOCK_STREAM)
 s.bind(('', 80))
@@ -22,12 +20,14 @@ s.listen(5)
 s.setblocking(False)
 print("listener opened")
 
-last_web_command = ""
+last_web_command = None
 
 
 async def web_command_listener(event: uasyncio.Event):
 
     global last_web_command
+
+    request_handler = LightingRequestHandler()
 
     while True:
         gc.collect()
@@ -42,34 +42,19 @@ async def web_command_listener(event: uasyncio.Event):
                     await uasyncio.sleep_ms(10)
 
         print('Got a connection from %s' % str(addr))
-        request = conn.recv(1024)
-        request = str(request).split("\\r\\n")
-        request_protocol_and_path = request[0].split()
-        print('Content = %s' % request)
-        print('First Line = %s' % request[0].split())
-        print('Last Line = %s' % request[len(request) - 1])
+        raw_request = conn.recv(1024)
+        print('Content = %s' % raw_request)
 
-        response = ""
-        if request_protocol_and_path[0].endswith("GET"):
-            response += "GET protocol<br />"
-        elif request_protocol_and_path[0].endswith("PUT"):
-            response += "PUT protocol<br />"
-            rawJson = request[len(request) - 1]
-            stripped = rawJson.replace("\\n", " ").replace("\\t", " ").replace("'", "")
-            response += "Body: " + stripped + "<br />"
-            colors = ujson.loads(stripped)
-            response += "White value = %s<br />" % colors["White"]
-        else:
-            response += "Unsupported protocol " + request_protocol_and_path[0]
-        response += "Path = " + request_protocol_and_path[1]
+        lighting_request = LightingRequest(raw_request)
+        code, lighting_response = request_handler.handle(lighting_request)
 
-        last_web_command = request_protocol_and_path[1]
+        last_web_command = lighting_request
         event.set()
 
-        conn.send('HTTP/1.1 200 OK\n')
+        conn.send('HTTP/1.1 %s OK\n' % code)
         conn.send('Content-Type: text/html\n')
         conn.send('Connection: close\n\n')
-        conn.sendall(response)
+        conn.sendall(lighting_response)
         conn.close()
 
 touch_adjust_parameters = AdjustParameters(limits=(50, 600), dead_band=(175, 250))
@@ -183,7 +168,7 @@ class LightModes:
         led_pwm_channels.zero_duty()
 
 
-# print("running lights")
-# uasyncio.run(control_lighting())
-print("event spike")
-uasyncio.run(event_spike())
+print("running lights")
+uasyncio.run(control_lighting())
+# print("event spike")
+# uasyncio.run(event_spike())
