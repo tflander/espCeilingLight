@@ -64,12 +64,13 @@ sub1_touch_button = TouchButton(machine.Pin(27), touch_adjust_parameters)
 sub2_touch_button = TouchButton(machine.Pin(14), touch_adjust_parameters)
 
 # Rev 1
-# led_pwm_channels = LedPwmChannels(red_pin=21, green_pin=23, blue_pin=22, white_pin=19, uv_pin=18)
+led_pwm_channels = LedPwmChannels(red_pin=21, green_pin=23, blue_pin=22, white_pin=19, uv_pin=18)
 
 # Rev 2
-led_pwm_channels = LedPwmChannels(red_pin=21, green_pin=5, blue_pin=22, white_pin=23, uv_pin=19)
+# led_pwm_channels = LedPwmChannels(red_pin=21, green_pin=5, blue_pin=22, white_pin=23, uv_pin=19)
 
 last_selected_button = -1
+
 
 async def activate_button_listener(event: uasyncio.Event):
     button_collection = TouchButtonCollection(mode_touch_button, sub1_touch_button, sub2_touch_button)
@@ -95,24 +96,36 @@ def event_spike():
 
 
 def control_lighting():
-    party_modes = LightModes(led_pwm_channels)
+    lighting_modes = LightModes(led_pwm_channels)
     led_pwm_channels.zero_duty()
-    button_collection = TouchButtonCollection(mode_touch_button, sub1_touch_button, sub2_touch_button)
-    party_modes.activate()
+    # button_collection = TouchButtonCollection(mode_touch_button, sub1_touch_button, sub2_touch_button)
+    lighting_modes.activate()
+    global last_selected_button, last_web_command
+    event = uasyncio.Event()
+    uasyncio.create_task(activate_button_listener(event))
+    uasyncio.create_task(web_command_listener(event))
 
     while True:
 
         # TODO: wait for either web request or button select
-        selected_button = button_collection.get_selected_button()
-        if selected_button >= 0:
-            party_modes.deactivate()
-            if selected_button == 0:
-                party_modes.next_mode()
-            elif selected_button == 1:
-                party_modes.next_hue()
-            else:
-                party_modes.next_brightness_or_speed()
-            party_modes.activate()
+        if event.is_set():
+            # selected_button = button_collection.get_selected_button()
+            print("triggered", last_selected_button, last_web_command)
+
+            if last_selected_button >= 0:
+                lighting_modes.deactivate()
+            if last_selected_button == 0:
+                lighting_modes.next_mode()
+            elif last_selected_button == 1:
+                lighting_modes.next_hue()
+            elif last_selected_button == 2:
+                lighting_modes.next_brightness_or_speed()
+            elif last_web_command is not None:
+                print("triggered", last_selected_button, last_web_command)
+            lighting_modes.activate()
+            event.clear()
+            last_selected_button = -1
+            last_web_command = None
         await uasyncio.sleep_ms(10)
 
 
