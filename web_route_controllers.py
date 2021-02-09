@@ -18,11 +18,20 @@ class LightingRequest:
         self.body = ujson.loads(stripped)
 
 
+class LightingResponse:
+    def __init__(self, code, path, body):
+        self.code = code
+        self.path = path
+        self.body = body
+
+
 class LightingRequestHandler:
 
-    def handle(self, request: LightingRequest):
+    @staticmethod
+    def handle(request: LightingRequest):
         if request.path == '/colors':
-            pass
+            pass  # TODO: Validation, mapping, and all that sort of thing
 
-        return "200", "path = %s, body = %s" % (request.path, request.body)
+        # TODO: instead of request.body, map to a new json
+        return LightingResponse("200 OK", request.path, request.body)
 
