@@ -1,6 +1,8 @@
 import ujson
 
 
+valid_colors = ["White", "Red", "Green", "Blue", "UltraViolet"]
+
 class LightingRequest:
 
     def __init__(self, raw_request: str):
@@ -54,4 +56,8 @@ class LightingRequestHandler:
             msg = ujson.loads('{"Error": "Expecting PUT action", "Action": "%s"}' % request.protocol)
             return False, LightingResponse("405 Method Not Allowed", request.path, msg)
 
+        for key in request.body.keys():
+            if key not in valid_colors:
+                msg = ujson.loads('{"Error": "Invalid Color", "Color": "%s"}' % key)
+                return False, LightingResponse("400 Bad Request", request.path, msg)
         return True, None
