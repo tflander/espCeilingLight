@@ -30,8 +30,9 @@ class LightingRequestHandler:
     @staticmethod
     def handle(request: LightingRequest):
         if request.path == '/colors':
-            pass  # TODO: Validation, mapping, and all that sort of thing
-
-        # TODO: instead of request.body, map to a new json
-        return LightingResponse("200 OK", request.path, request.body)
+            # TODO: Validation, mapping, and all that sort of thing
+            # TODO: instead of request.body, map to a new json
+            return LightingResponse("200 OK", request.path, request.body)
+        else:
+            return LightingResponse("404 Not Found", request.path, ujson.loads('{"Error": "Whoops"}'))
 
