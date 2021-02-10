@@ -104,9 +104,9 @@ def control_lighting():
 
         if event.is_set():
 
+            lighting_modes.deactivate()
             if last_selected_button >= 0:
                 print("last_selected_button", last_selected_button)
-                lighting_modes.deactivate()
                 if last_selected_button == 0:
                     lighting_modes.next_mode()
                 elif last_selected_button == 1:
@@ -117,7 +117,7 @@ def control_lighting():
             elif last_web_command is not None:
                 print("web command:", last_web_command)
                 handle_web_command(last_web_command)
-            event.clear()  # TODO: too late to cancel party mode
+            event.clear()
             last_selected_button = -1
             last_web_command = None
         await uasyncio.sleep_ms(10)
