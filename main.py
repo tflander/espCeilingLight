@@ -80,8 +80,13 @@ async def activate_button_listener(event: uasyncio.Event):
 
 
 def handle_web_command(web_command):
-    print(web_command)
-    print(type(web_command))
+    if web_command.path == '/colors':
+        led_pwm_channels.zero_duty()
+        led_pwm_channels.white.duty(web_command.body["White"])
+        led_pwm_channels.red.duty(web_command.body["Red"])
+        led_pwm_channels.green.duty(web_command.body["Green"])
+        led_pwm_channels.blue.duty(web_command.body["Blue"])
+        led_pwm_channels.ultra_violet.duty(web_command.body["UltraViolet"])
 
 
 def control_lighting():
@@ -100,17 +105,19 @@ def control_lighting():
         if event.is_set():
 
             if last_selected_button >= 0:
+                print("last_selected_button", last_selected_button)
                 lighting_modes.deactivate()
-            if last_selected_button == 0:
-                lighting_modes.next_mode()
-            elif last_selected_button == 1:
-                lighting_modes.next_hue()
-            elif last_selected_button == 2:
-                lighting_modes.next_brightness_or_speed()
+                if last_selected_button == 0:
+                    lighting_modes.next_mode()
+                elif last_selected_button == 1:
+                    lighting_modes.next_hue()
+                elif last_selected_button == 2:
+                    lighting_modes.next_brightness_or_speed()
+                lighting_modes.activate()
             elif last_web_command is not None:
+                print("web command:", last_web_command)
                 handle_web_command(last_web_command)
-            lighting_modes.activate()
-            event.clear()
+            event.clear()  # TODO: too late to cancel party mode
             last_selected_button = -1
             last_web_command = None
         await uasyncio.sleep_ms(10)
