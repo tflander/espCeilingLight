@@ -92,11 +92,14 @@ class MultiColorFlash:
         self.delay_index = 0
 
     async def activate(self):
-        hues = self.current_hue()
+        await MultiColorFlash.flash(self.pwm_channels, self.current_hue(), self.current_delay())
+
+    @staticmethod
+    async def flash(led_pwm_channels, hues, delay):
         while True:
             for color_index_to_flash in range(0, len(hues)):
-                self.pwm_channels.show_hue(hues[color_index_to_flash], 1023)
-                await uasyncio.sleep_ms(self.current_delay())
+                led_pwm_channels.show_hue(hues[color_index_to_flash], 1023)
+                await uasyncio.sleep_ms(delay)
 
     def next_hue(self):
         self.current_hue_index += 1
