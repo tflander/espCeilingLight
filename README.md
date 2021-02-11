@@ -25,7 +25,8 @@ TODO
 ## Parts Breakdown
 ### Lighting Module
 #### (1) ESP32 mini
-![ESP32 Mini](docs/bom/ESP_32mini.jpg)
+
+<img src="docs/bom/ESP_32mini.jpg" alt="ESP32 Mini" width="50%" height="50%">
 
 This is the brains of the project.  We will be using this controller to generate PWM signals for switching the lights, and also to get user input from either capacitive touch or web commands.
 
