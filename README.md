@@ -25,6 +25,8 @@ TODO
 ## Parts Breakdown
 ### Lighting Module
 #### (1) ESP32 mini
+![ESP32 Mini](docs/bom/ESP_32mini.jpg)
+
 This is the brains of the project.  We will be using this controller to generate PWM signals for switching the lights, and also to get user input from either capacitive touch or web commands.
 
 #### (1) LM2596 LM2596S DC-DC Step Down Variable Volt Regulator
