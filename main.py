@@ -5,7 +5,7 @@ import ujson
 from touch_button import *
 from lighting_modes import *
 from party import *
-from web_route_controllers import *
+from web_control.web_route_controllers import *
 
 from ntptime import settime
 import uasyncio
