@@ -5,7 +5,7 @@ import ujson
 from touch_button import *
 from lighting_modes import *
 from party import *
-from web_control.web_route_controllers import *
+from web_control.web_router import *
 
 from ntptime import settime
 import uasyncio
@@ -21,40 +21,6 @@ s.listen(5)
 s.setblocking(False)
 print("listener opened")
 
-last_web_command = None
-
-
-async def web_command_listener(event: uasyncio.Event):
-
-    global last_web_command
-
-    while True:
-        gc.collect()
-
-        conn = None
-
-        while conn is None:
-            try:
-                conn, addr = s.accept()
-            except OSError as e:
-                if e.args[0] == 11:
-                    await uasyncio.sleep_ms(10)
-
-        print('Got a connection from %s' % str(addr))
-        raw_request = conn.recv(1024)
-        print('Content = %s' % raw_request)
-
-        lighting_request = LightingRequest(raw_request)
-        lighting_response = LightingRequestHandler.handle(lighting_request)
-
-        last_web_command = lighting_response
-        event.set()
-
-        conn.send('HTTP/1.1 %s\n' % lighting_response.code)
-        conn.send('Content-Type: text/html\n')
-        conn.send('Connection: close\n\n')
-        conn.sendall(json.dumps(lighting_response.body))
-        conn.close()
 
 touch_adjust_parameters = AdjustParameters(limits=(50, 600), dead_band=(175, 250))
 
