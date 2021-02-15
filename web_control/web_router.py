@@ -1,6 +1,8 @@
-import uasyncio, ujson
+import gc
+import uasyncio, ujson, usocket
+
 from web_control.color_controller import *
-from flash_controller import *
+from web_control.flash_controller import *
 
 last_web_command = None
 
@@ -39,6 +41,13 @@ def handle(request: LightingRequest):
 
 
 async def web_command_listener(event: uasyncio.Event):
+
+    print("opening listener on port 80")
+    s = usocket.socket(usocket.AF_INET, usocket.SOCK_STREAM)
+    s.bind(('', 80))
+    s.listen(5)
+    s.setblocking(False)
+    print("listener opened")
 
     global last_web_command
 

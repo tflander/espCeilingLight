@@ -22,11 +22,14 @@ ampy put wifiConnector.py
 echo "creating web_control folder"
 ampy mkdir web_control --exists-okay
 
+echo "updating web_control/web_router.py"
+ampy put web_control/web_router.py web_control/web_router.py
+
 echo "updating web_control/color_controller.py"
 ampy put web_control/color_controller.py web_control/color_controller.py
 
-echo "updating web_control/color_controller.py"
-ampy put web_control/web_router.py web_control/web_router.py
+echo "updating web_control/flash_controller.py"
+ampy put web_control/flash_controller.py web_control/flash_controller.py
 
 echo "resetting..."
 ampy reset
