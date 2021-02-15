@@ -1,5 +1,5 @@
 import uasyncio, ujson
-from color_controller import *
+from web_control.color_controller import *
 from flash_controller import *
 
 last_web_command = None

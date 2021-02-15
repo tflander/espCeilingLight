@@ -1,4 +1,4 @@
-from web_router import *
+from web_control.web_router import *
 
 
 class ColorController:

@@ -15,8 +15,18 @@ echo "updating touch_button.py..."
 ampy put touch_button.py
 echo "updating wifiConnector.py..."
 ampy put wifiConnector.py
-echo "updating web_route_controllers.py..."
-ampy put web_route_controllers.py
+
+# echo "updating web_route_controllers.py..."
+# ampy put web_route_controllers.py
+
+echo "creating web_control folder"
+ampy mkdir web_control --exists-okay
+
+echo "updating web_control/color_controller.py"
+ampy put web_control/color_controller.py web_control/color_controller.py
+
+echo "updating web_control/color_controller.py"
+ampy put web_control/web_router.py web_control/web_router.py
 
 echo "resetting..."
 ampy reset
