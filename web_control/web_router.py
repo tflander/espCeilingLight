@@ -40,14 +40,7 @@ def handle(request: LightingRequest):
         return LightingResponse("404 Not Found", request.path, ujson.loads('{"Error": "Unexpected path"}'))
 
 
-async def web_command_listener(event: uasyncio.Event):
-
-    print("opening listener on port 80")
-    s = usocket.socket(usocket.AF_INET, usocket.SOCK_STREAM)
-    s.bind(('', 80))
-    s.listen(5)
-    s.setblocking(False)
-    print("listener opened")
+async def web_command_listener(event: uasyncio.Event, s: usocket):
 
     global last_web_command
 
@@ -60,6 +53,7 @@ async def web_command_listener(event: uasyncio.Event):
             try:
                 conn, addr = s.accept()
             except OSError as e:
+                print("listener error", e)
                 if e.args[0] == 11:
                     await uasyncio.sleep_ms(10)
 

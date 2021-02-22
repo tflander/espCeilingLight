@@ -1,5 +1,5 @@
 import machine
-import math, utime
+import math, utime, usocket
 import ujson
 
 from touch_button import *
@@ -12,6 +12,13 @@ import uasyncio
 import json
 
 settime()
+
+print("opening listener on port 80")
+web_listener_socket = usocket.socket(usocket.AF_INET, usocket.SOCK_STREAM)
+web_listener_socket.bind(('', 80))
+web_listener_socket.listen(5)
+web_listener_socket.setblocking(False)
+print("listener opened")
 
 touch_adjust_parameters = AdjustParameters(limits=(50, 700), dead_band=(175, 250))
 
@@ -61,7 +68,7 @@ def control_lighting():
 
     event = uasyncio.Event()
     uasyncio.create_task(activate_button_listener(event))
-    uasyncio.create_task(web_command_listener(event))
+    uasyncio.create_task(web_command_listener(event, web_listener_socket))
 
     while True:
 
