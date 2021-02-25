@@ -63,10 +63,10 @@ sub1_touch_button = TouchButton(machine.Pin(27), touch_adjust_parameters)
 sub2_touch_button = TouchButton(machine.Pin(14), touch_adjust_parameters)
 
 # Rev 1
-led_pwm_channels = LedPwmChannels(red_pin=21, green_pin=23, blue_pin=22, white_pin=19, uv_pin=18)
+# led_pwm_channels = LedPwmChannels(red_pin=21, green_pin=23, blue_pin=22, white_pin=19, uv_pin=18)
 
 # Rev 2
-# led_pwm_channels = LedPwmChannels(red_pin=21, green_pin=5, blue_pin=22, white_pin=23, uv_pin=19)
+led_pwm_channels = LedPwmChannels(red_pin=21, green_pin=5, blue_pin=22, white_pin=23, uv_pin=19)
 
 last_selected_button = -1
 

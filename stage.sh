@@ -16,7 +16,7 @@ ampy put touch_button.py
 echo "updating wifiConnector.py..."
 ampy put wifiConnector.py
 echo "updating web_route_controllers.py..."
-ampy put web_route_controllers.py
+ampy put web_control/web_route_controllers.py web_control/web_route_controllers.py
 
 echo "resetting..."
 ampy reset
