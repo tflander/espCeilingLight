@@ -57,9 +57,6 @@ async def web_command_listener(event: uasyncio.Event):
         conn.sendall(json.dumps(lighting_response.body))
         conn.close()
 
-        if lighting_response.path != '/info':
-            lighting_modes.deactivate()
-
 
 mode_touch_button = TouchButton(machine.Pin(4), touch_adjust_parameters)
 sub1_touch_button = TouchButton(machine.Pin(27), touch_adjust_parameters)
@@ -106,8 +103,8 @@ def control_lighting():
 
         if event.is_set():
 
-            lighting_modes.deactivate()
             if last_selected_button >= 0:
+                lighting_modes.deactivate()
                 print("last_selected_button", last_selected_button)
                 if last_selected_button == 0:
                     lighting_modes.next_mode()
@@ -117,6 +114,8 @@ def control_lighting():
                     lighting_modes.next_brightness_or_speed()
                 lighting_modes.activate()
             elif last_web_command is not None:
+                if last_web_command.path != '/info':
+                    lighting_modes.deactivate()
                 print("web command:", last_web_command.path, last_web_command.body)
                 handle_web_command(last_web_command)
             event.clear()
