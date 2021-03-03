@@ -1,4 +1,6 @@
 import ujson
+import ubinascii
+import network
 
 valid_colors = ["White", "Red", "Green", "Blue", "UltraViolet"]
 valid_flash_parameters = ["Delay"]
@@ -36,8 +38,19 @@ class LightingRequestHandler:
             return LightingRequestHandler.handle_colors(request)
         elif request.path == '/flash':
             return LightingRequestHandler.handle_flash(request)
+        elif request.path == '/info':
+            return LightingRequestHandler.handle_info(request)
         else:
             return LightingResponse("404 Not Found", request.path, ujson.loads('{"Error": "Unexpected path"}'))
+
+    @staticmethod
+    def handle_info(request: LightingRequest):
+        response = ujson.loads("{}")
+        response["MacAddress"] = ubinascii.hexlify(network.WLAN().config('mac'),':').decode()
+        response["IP"] = network.WLAN().ifconfig()[0]
+        response["Program"] = "program_and_version[0]"
+        response["ProgramVersion"] = "program_and_version[1]"
+        return LightingResponse("200 OK", request.path, response)
 
     @staticmethod
     def handle_flash(request: LightingRequest):

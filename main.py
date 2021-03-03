@@ -14,6 +14,8 @@ import json
 
 settime()
 
+program_and_version = ("12v RGBW Lighting", "0.0.0")
+
 print("opening listener on port 80")
 s = usocket.socket(usocket.AF_INET, usocket.SOCK_STREAM)
 s.bind(('', 80))
@@ -92,7 +94,6 @@ def handle_web_command(web_command):
         print("Executing flash web command")
         # TODO: get hues from web command body
         MultiColorFlash.flash(led_pwm_channels, (RgbColors.BLUE, RgbColors.MAGENTA), web_command.body["Delay"])
-
 
 
 def control_lighting():
