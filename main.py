@@ -1,6 +1,7 @@
 import machine
 import math, utime
 import ujson
+from config import *
 
 from touch_button import *
 from lighting_modes import *
@@ -13,8 +14,6 @@ import usocket
 import json
 
 settime()
-
-program_and_version = ("12v RGBW Lighting", "0.0.0")
 
 print("opening listener on port 80")
 s = usocket.socket(usocket.AF_INET, usocket.SOCK_STREAM)
@@ -58,17 +57,13 @@ async def web_command_listener(event: uasyncio.Event):
         conn.sendall(json.dumps(lighting_response.body))
         conn.close()
 
-touch_adjust_parameters = AdjustParameters(limits=(50, 600), dead_band=(175, 250))
+        if lighting_response.path != '/info':
+            lighting_modes.deactivate()
+
 
 mode_touch_button = TouchButton(machine.Pin(4), touch_adjust_parameters)
 sub1_touch_button = TouchButton(machine.Pin(27), touch_adjust_parameters)
 sub2_touch_button = TouchButton(machine.Pin(14), touch_adjust_parameters)
-
-# Rev 1
-# led_pwm_channels = LedPwmChannels(red_pin=21, green_pin=23, blue_pin=22, white_pin=19, uv_pin=18)
-
-# Rev 2
-led_pwm_channels = LedPwmChannels(red_pin=21, green_pin=5, blue_pin=22, white_pin=23, uv_pin=19)
 
 last_selected_button = -1
 
@@ -122,7 +117,7 @@ def control_lighting():
                     lighting_modes.next_brightness_or_speed()
                 lighting_modes.activate()
             elif last_web_command is not None:
-                print("web command:", last_web_command)
+                print("web command:", last_web_command.path, last_web_command.body)
                 handle_web_command(last_web_command)
             event.clear()
             last_selected_button = -1

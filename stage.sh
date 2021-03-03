@@ -13,6 +13,8 @@ echo "updating party.py..."
 ampy put party.py
 echo "updating touch_button.py..."
 ampy put touch_button.py
+echo "updating config.py..."
+ampy put config.py
 echo "updating wifiConnector.py..."
 ampy put wifiConnector.py
 echo "updating web_route_controllers.py..."

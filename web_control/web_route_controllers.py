@@ -1,6 +1,7 @@
 import ujson
 import ubinascii
 import network
+from config import *
 
 valid_colors = ["White", "Red", "Green", "Blue", "UltraViolet"]
 valid_flash_parameters = ["Delay"]
@@ -48,8 +49,8 @@ class LightingRequestHandler:
         response = ujson.loads("{}")
         response["MacAddress"] = ubinascii.hexlify(network.WLAN().config('mac'),':').decode()
         response["IP"] = network.WLAN().ifconfig()[0]
-        response["Program"] = "program_and_version[0]"
-        response["ProgramVersion"] = "program_and_version[1]"
+        response["Program"] = program_and_version[0]
+        response["ProgramVersion"] = program_and_version[1]
         return LightingResponse("200 OK", request.path, response)
 
     @staticmethod
