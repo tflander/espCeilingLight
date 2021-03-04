@@ -36,21 +36,6 @@ class AvailableIntensities:
     EIGHTH = 128
 
 
-# class AbstractLightingMode:
-#
-#     current_mode_index = 0
-#
-#
-#     def next(self):
-#         self.current_mode_index += 1
-#         if self.current_mode_index == len(self.modes):
-#             self.current_mode_index = 0
-#         return self.current_mode()
-#
-#     def current_mode(self):
-#         return self.modes[self.current_mode_index]
-
-
 class RgbColors:
     RED = (1, 0, 0)
     YELLOW = (1, 1, 0)
