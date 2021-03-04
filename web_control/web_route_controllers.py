@@ -1,4 +1,4 @@
-import ujson
+import ujson, usocket
 import ubinascii
 import network
 from config import *
@@ -6,6 +6,14 @@ from config import *
 valid_colors = ["White", "Red", "Green", "Blue", "UltraViolet"]
 valid_flash_parameters = ["Delay"]
 
+def start_listener():
+    print("opening listener on port 80")
+    s = usocket.socket(usocket.AF_INET, usocket.SOCK_STREAM)
+    s.bind(('', 80))
+    s.listen(5)
+    s.setblocking(False)
+    print("listener opened")
+    return s
 
 class LightingRequest:
 

@@ -10,19 +10,12 @@ from web_control.web_route_controllers import *
 
 from ntptime import settime
 import uasyncio
-import usocket
 import json
 
 settime()
 
-print("opening listener on port 80")
-s = usocket.socket(usocket.AF_INET, usocket.SOCK_STREAM)
-s.bind(('', 80))
-s.listen(5)
-s.setblocking(False)
-print("listener opened")
-
 last_web_command = None
+web_listener_socket = start_listener()
 
 
 async def web_command_listener(event: uasyncio.Event):
@@ -36,7 +29,7 @@ async def web_command_listener(event: uasyncio.Event):
 
         while conn is None:
             try:
-                conn, addr = s.accept()
+                conn, addr = web_listener_socket.accept()
             except OSError as e:
                 if e.args[0] == 11:
                     await uasyncio.sleep_ms(10)
