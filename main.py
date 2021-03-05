@@ -107,7 +107,7 @@ def control_lighting():
                     lighting_modes.next_brightness_or_speed()
                 lighting_modes.activate()
             elif last_web_command is not None:
-                if last_web_command.path != '/info':
+                if last_web_command.path != '/info' and last_web_command.code == "200 OK":
                     lighting_modes.deactivate()
                 print("web command:", last_web_command.path, last_web_command.body)
                 handle_web_command(last_web_command)

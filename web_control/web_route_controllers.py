@@ -50,7 +50,7 @@ class LightingRequestHandler:
         elif request.path == '/info':
             return LightingRequestHandler.handle_info(request)
         else:
-            return LightingResponse("404 Not Found", request.path, ujson.loads('{"Error": "Unexpected path"}'))
+            return LightingResponse("404 Not Found", request.path, ujson.loads('{"Error": "Unexpected path [%s]"}' % request.path))
 
     @staticmethod
     def handle_info(request: LightingRequest):
