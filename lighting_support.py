@@ -1,4 +1,4 @@
-import machine
+import machine, ujson
 
 
 class LedPwmChannels:
@@ -26,6 +26,16 @@ class LedPwmChannels:
         self.red.duty(color[0])
         self.green.duty(color[1])
         self.blue.duty(color[2])
+
+    def as_json(self):
+        values = ujson.loads("{}")
+        values["Red"] = self.red.duty()
+        values["Green"] = self.green.duty()
+        values["Blue"] = self.blue.duty()
+        values["White"] = self.white.duty()
+        values["UltraViolet"] = self.ultra_violet.duty()
+        return values
+
 
 
 class AvailableIntensities:
