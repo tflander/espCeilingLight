@@ -18,6 +18,7 @@ ampy put config.py
 echo "updating wifiConnector.py..."
 ampy put wifiConnector.py
 echo "updating web_route_controllers.py..."
+ampy mkdir web_control
 ampy put web_control/web_route_controllers.py web_control/web_route_controllers.py
 
 echo "resetting..."
