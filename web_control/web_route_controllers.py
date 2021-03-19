@@ -15,6 +15,7 @@ def start_listener():
     print("listener opened")
     return s
 
+
 class LightingRequest:
 
     def __init__(self, raw_request: str):
@@ -24,8 +25,8 @@ class LightingRequest:
             self.body = None
         self.path = request_protocol_and_path[1]
         self.protocol = request_protocol_and_path[0][2:]
-        raw_json = request[len(request) - 1]
-        stripped = raw_json.replace("\\n", " ").replace("\\t", " ").replace("'", "")
+        self.raw_json = request[len(request) - 1]
+        stripped = self.raw_json.replace("\\n", " ").replace("\\t", " ").replace("'", "")
         try:
             self.body = ujson.loads(stripped)
         except ValueError:
@@ -105,6 +106,9 @@ class LightingRequestHandler:
         if request.protocol != "PUT":
             msg = ujson.loads('{"Error": "Expecting PUT action", "Action": "%s"}' % request.protocol)
             return False, LightingResponse("405 Method Not Allowed", request.path, msg)
+
+        if request.body is None:
+            return False, LightingResponse("400 Bad Request", request.path, "invalid request body [%s]" % request.raw_json)
 
         for key in request.body.keys():
             if key not in valid_colors:
