@@ -1,7 +1,6 @@
 from machine import Pin, TouchPad
 import uasyncio
 
-
 class TouchState:
     UNKNOWN = 1
     RELEASED = 2
