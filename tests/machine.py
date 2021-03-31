@@ -3,10 +3,14 @@ class Pin:
     def __init__(self, pin):
         pass
 
+
 class TouchPad:
 
     def __init__(self, pin):
-        pass
+        self.nextReadValue = 0;
+
+    def expect_next_read_value(self, readValue):
+        self.nextReadValue = readValue
 
     def read(self):
-        return 0
+        return self.nextReadValue
