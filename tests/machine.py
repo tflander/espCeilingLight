@@ -1,5 +1,9 @@
 class Pin:
-    pass
+
+    def __init__(self, pin):
+        pass
 
 class TouchPad:
-    pass
+
+    def __init__(self, pin):
+        pass
