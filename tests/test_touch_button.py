@@ -1,6 +1,6 @@
 import pytest
 from touch_button import AdjustParameters, TouchButton
-# import machine
+import machine
 
 
 def test_is_state_changed():
