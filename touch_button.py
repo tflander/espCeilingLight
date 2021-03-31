@@ -59,9 +59,9 @@ class TouchButton:
         s = self.touch.read()
         if self.adjust_parameters.min_released < s < self.adjust_parameters.max_released:
             new_state = TouchState.RELEASED
-        elif self.adjust_parameters.min_selected < s < self.adjust_parameters.max_selected:
+        elif self.adjust_parameters.min_selected <= s < self.adjust_parameters.max_selected:
             new_state = TouchState.SELECTED
-        elif s < self.adjust_parameters.min_selected or s > self.adjust_parameters.max_released:
+        elif s < self.adjust_parameters.min_selected or s >= self.adjust_parameters.max_released:
             new_state = TouchState.OUT_OF_RANGE
         else:
             new_state = TouchState.DEAD_BAND
