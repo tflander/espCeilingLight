@@ -1,3 +1,5 @@
+import asyncio
+
 import pytest
 from touch_button import AdjustParameters, TouchButton, TouchState
 import machine
@@ -30,3 +32,19 @@ def test_state_change_from_unknown(touch_button, touch_value, is_state_changed, 
 
     assert touch_button.is_state_changed() == is_state_changed
     assert touch_button.state == expected_button_state
+
+
+@pytest.mark.asyncio
+async def test_wait_for_button_release(touch_button):
+    touch_button.touch.expect_next_read_value(400)
+    await touch_button.wait_for_state_change()
+    assert touch_button.state == TouchState.RELEASED
+
+
+@pytest.mark.asyncio
+async def test_wait_for_button_select(touch_button):
+    touch_button.touch.expect_next_read_value(125)
+    await touch_button.wait_for_state_change()
+    assert touch_button.state == TouchState.SELECTED
+
+
