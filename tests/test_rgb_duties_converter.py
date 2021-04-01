@@ -1,15 +1,20 @@
 from rgb_duties_converter import RgbDutiesConverter, Duties
+import pytest
 
 
-def test_white_to_duties():
-    duties = RgbDutiesConverter.to_duties("#ffffff")
-    expected_duties = Duties()
-    expected_duties.white = 1020
-    assert duties == expected_duties
-
-
-def test_red_to_duties():
-    duties = RgbDutiesConverter.to_duties("#ff0000")
-    expected_duties = Duties()
-    expected_duties.red = 1020
+@pytest.mark.parametrize("test_name, rgb_string, expected_duties", [
+    ("pure red", "#ff0000", Duties(red=1020)),
+    ("pure green", "#00ff00", Duties(green=1020)),
+    ("pure blue", "#0000ff", Duties(blue=1020)),
+    ("pure white", "#ffffff", Duties(white=1020)),
+    ("dim red", "#660000", Duties(red=408)),
+    ("dim green", "#006600", Duties(green=408)),
+    ("dim blue", "#000066", Duties(blue=408)),
+    ("dim white", "#666666", Duties(white=408)),
+    ("bright red", "#ff6666", Duties(red=612, white=408)),
+    ("bright green", "#66ff66", Duties(green=612, white=408)),
+    ("bright blue", "#6666ff", Duties(blue=612, white=408)),
+])
+def test_to_duties(test_name, rgb_string, expected_duties):
+    duties = RgbDutiesConverter.to_duties(rgb_string)
     assert duties == expected_duties
