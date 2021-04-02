@@ -1,7 +1,6 @@
 import pytest
 
-# TODO: need testing framwork to handle these imports
-# from web_control.lighting_commands_request_handler import LightingCommandsRequestHandler
+from web_control.lighting_commands_request_handler import LightingCommandsRequestHandler
 # from web_control.web_route_controllers import LightingRequest
 
 

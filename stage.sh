@@ -19,9 +19,17 @@ echo "updating wifiConnector.py..."
 ampy put wifiConnector.py
 echo "updating rgb_duties_converter.py..."
 ampy put rgb_duties_converter.py
+
 echo "updating web_route_controllers.py..."
+ampy rmdir web_control
 ampy mkdir web_control
 ampy put web_control/web_route_controllers.py web_control/web_route_controllers.py
+echo "updating lighting_request.py..."
+ampy put web_control/lighting_request.py web_control/lighting_request.py
+echo "updating lighting_response.py..."
+ampy put web_control/lighting_response.py web_control/lighting_response.py
+echo "updating lighting_commands_request_handler.py..."
+ampy put web_control/lighting_commands_request_handler.py web_control/lighting_commands_request_handler.py
 
 echo "resetting..."
 ampy reset

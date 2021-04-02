@@ -2,6 +2,7 @@ import pytest
 from lighting_support import LedPwmChannels
 import ujson
 
+
 @pytest.fixture
 def pwm_channels():
     pwm_channels = LedPwmChannels(red_pin=1, green_pin=2, blue_pin=3, white_pin=4, uv_pin=5)
