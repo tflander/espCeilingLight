@@ -14,3 +14,15 @@ class TouchPad:
 
     def read(self):
         return self.nextReadValue
+
+
+class PWM:
+    def __init__(self, pin, freq, duty):
+        self.current_duty = duty
+
+    def duty(self, value=None):
+        if value is None:
+            return self.current_duty
+        else:
+            self.current_duty = value
+

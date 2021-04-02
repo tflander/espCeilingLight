@@ -37,7 +37,6 @@ class LedPwmChannels:
         return values
 
 
-
 class AvailableIntensities:
 
     FULL = 1023
