@@ -17,6 +17,8 @@ echo "updating config.py..."
 ampy put config.py
 echo "updating wifiConnector.py..."
 ampy put wifiConnector.py
+echo "updating rgb_duties_converter.py..."
+ampy put rgb_duties_converter.py
 echo "updating web_route_controllers.py..."
 ampy mkdir web_control
 ampy put web_control/web_route_controllers.py web_control/web_route_controllers.py
