@@ -2,6 +2,7 @@ import ujson, usocket
 import ubinascii
 import network
 from config import *
+from web_control.lighting_commands_request_handler import LightingCommandsRequestHandler
 
 valid_colors = ["White", "Red", "Green", "Blue", "UltraViolet"]
 valid_flash_parameters = ["Delay"]
@@ -46,6 +47,8 @@ class LightingRequestHandler:
     def handle(request: LightingRequest):
         if request.path == '/colors':
             return LightingRequestHandler.handle_colors(request)
+        elif request.path == '/lighting':
+            return LightingCommandsRequestHandler.handle_lighting(request)
         elif request.path == '/flash':
             return LightingRequestHandler.handle_flash(request)
         elif request.path == '/info':
