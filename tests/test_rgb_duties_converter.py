@@ -17,6 +17,9 @@ import pytest
     ("bright red", "#ff6666", Duties(red=612, white=408)),
     ("bright green", "#66ff66", Duties(green=612, white=408)),
     ("bright blue", "#6666ff", Duties(blue=612, white=408)),
+    ("bright cyan", "#66ffff", Duties(green=612, blue=612, white=408)),
+    ("bright magenta", "#ff66ff", Duties(red=612, blue=612, white=408)),
+    ("bright yellow", "#ffff66", Duties(red=612, green=612, white=408)),
 ])
 def test_to_duties(test_name, rgb_string, expected_duties):
     duties = RgbDutiesConverter.to_duties(rgb_string)
