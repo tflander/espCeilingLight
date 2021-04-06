@@ -2,6 +2,7 @@ import machine
 import math, utime
 import ujson
 from config import *
+from lighting_script_runner import LightingScriptRunner
 
 from touch_button import *
 from lighting_modes import *
@@ -79,6 +80,9 @@ def handle_web_command(web_command):
         print("Executing flash web command")
         # TODO: get hues from web command body
         MultiColorFlash.flash(led_pwm_channels, (RgbColors.BLUE, RgbColors.MAGENTA), web_command.body["Delay"])
+    elif web_command.path == '/lighting':
+        print("executing lighting script")
+        LightingScriptRunner.run(web_command.body)
 
 
 def control_lighting():

@@ -19,6 +19,8 @@ echo "updating wifiConnector.py..."
 ampy put wifiConnector.py
 echo "updating rgb_duties_converter.py..."
 ampy put rgb_duties_converter.py
+echo "updating lighting_script_runner.py..."
+ampy put lighting_script_runner.py
 
 echo "updating web_route_controllers.py..."
 ampy rmdir web_control
