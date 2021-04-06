@@ -20,10 +20,6 @@ class LightingCommandsRequestHandler:
 
         if len(errors) > 0:
             return LightingResponse("400 Bad Request", request.path, ujson.dumps(errors))
-        # TODO: validate commands
-        # is_valid, error_response = LightingRequestHandler.validate_colors_request(request)
-        # if not is_valid:
-        #     return error_response
 
         return LightingResponse("200 OK", request.path, request.body)
 
@@ -31,4 +27,11 @@ class LightingCommandsRequestHandler:
     def validate_command(i, command):
         if 'color' not in command:
             return {'error': 'The setColor command requires a color parameter', 'line': i}
+
+        if not LightingCommandsRequestHandler.is_valid_color(command['color']):
+            return {'error': 'Invalid color parameter. Found [%s]' % command['color'], 'line': i}
         return None
+
+    @staticmethod
+    def is_valid_color(color: str):
+        return color.startswith('#')
