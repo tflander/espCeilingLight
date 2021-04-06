@@ -1,4 +1,5 @@
 import ujson
+from rgb_duties_converter import RgbDutiesConverter
 from web_control.lighting_request import LightingRequest
 from web_control.lighting_response import LightingResponse
 
@@ -28,10 +29,7 @@ class LightingCommandsRequestHandler:
         if 'color' not in command:
             return {'error': 'The setColor command requires a color parameter', 'line': i}
 
-        if not LightingCommandsRequestHandler.is_valid_color(command['color']):
+        if not RgbDutiesConverter.is_valid_color(command['color']):
             return {'error': 'Invalid color parameter. Found [%s]' % command['color'], 'line': i}
         return None
 
-    @staticmethod
-    def is_valid_color(color: str):
-        return color.startswith('#')

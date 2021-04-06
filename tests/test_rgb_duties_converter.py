@@ -24,3 +24,24 @@ import pytest
 def test_to_duties(test_name, rgb_string, expected_duties):
     duties = RgbDutiesConverter.to_duties(rgb_string)
     assert duties == expected_duties
+
+
+def test_to_duties_requires_a_valid_color():
+    with pytest.raises(ValueError):
+        RgbDutiesConverter.to_duties("this is not a color")
+
+
+def test_valid_color():
+    assert RgbDutiesConverter.is_valid_color("#aabbcc")
+
+
+def test_valid_color_starts_with_hash():
+    assert not RgbDutiesConverter.is_valid_color("aabbcc")
+
+
+def test_valid_colors_are_three_bytes():
+    assert not RgbDutiesConverter.is_valid_color("#aabbccdd")
+
+
+def test_valid_colors_are_hex():
+    assert not RgbDutiesConverter.is_valid_color("#xxyyzz")
