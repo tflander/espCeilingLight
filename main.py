@@ -82,7 +82,7 @@ def handle_web_command(web_command):
         MultiColorFlash.flash(led_pwm_channels, (RgbColors.BLUE, RgbColors.MAGENTA), web_command.body["Delay"])
     elif web_command.path == '/lighting':
         print("executing lighting script")
-        LightingScriptRunner.run(web_command.body)
+        LightingScriptRunner.run(web_command.body, led_pwm_channels)
 
 
 def control_lighting():
