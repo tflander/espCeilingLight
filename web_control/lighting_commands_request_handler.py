@@ -26,6 +26,11 @@ class LightingCommandsRequestHandler:
 
     @staticmethod
     def validate_command(i, command):
+        if(command['command']) == 'setColor':
+            return LightingCommandsRequestHandler.validate_color_command(i, command)
+
+    @staticmethod
+    def validate_color_command(i, command):
         if 'color' not in command:
             return {'error': 'The setColor command requires a color parameter', 'line': i}
 
