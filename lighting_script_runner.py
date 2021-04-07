@@ -2,11 +2,16 @@ from lighting_support import LedPwmChannels
 from rgb_duties_converter import RgbDutiesConverter
 import uasyncio
 
+
 class LightingScriptRunner:
 
     @staticmethod
     async def run(commands, led_pwm_channels: LedPwmChannels):
         command = commands[0]
+        await LightingScriptRunner.run_command(command, led_pwm_channels)
+
+    @staticmethod
+    async def run_command(command, led_pwm_channels: LedPwmChannels):
         if command['command'] == 'setColor':
             duties = RgbDutiesConverter.to_duties(command['color'])
             led_pwm_channels.red.duty(duties.red)
