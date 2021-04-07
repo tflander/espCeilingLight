@@ -10,7 +10,7 @@ def test_sleep_request_is_accepted():
 
     assert response.path == "/lighting"
     assert response.code == "200 OK"
-    assert response.body == json.loads("""[{"command": "sleep", "time": 1, "unit": "s"}]""")
+    assert response.body == commands
 
 
 def test_sleep_requires_a_time_parameter():

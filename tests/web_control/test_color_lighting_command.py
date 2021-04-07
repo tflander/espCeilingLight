@@ -9,7 +9,7 @@ def test_set_color_request_is_accepted():
 
     assert response.path == "/lighting"
     assert response.code == "200 OK"
-    assert response.body == json.loads("""[{"color": "#ff0000", "command": "setColor"}]""")
+    assert response.body == commands
 
 
 def test_set_color_request_requires_a_color():
