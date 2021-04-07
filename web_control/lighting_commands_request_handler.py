@@ -28,6 +28,8 @@ class LightingCommandsRequestHandler:
     def validate_command(i, command):
         if(command['command']) == 'setColor':
             return LightingCommandsRequestHandler.validate_color_command(i, command)
+        elif (command['command']) == 'sleep':
+            return LightingCommandsRequestHandler.validate_sleep_command(i, command)
 
     @staticmethod
     def validate_color_command(i, command):
@@ -38,3 +40,21 @@ class LightingCommandsRequestHandler:
             return {'error': 'Invalid color parameter. Found [%s]' % command['color'], 'line': i}
         return None
 
+    @staticmethod
+    def validate_sleep_command(i, command):
+        if 'time' not in command:
+            return {'error': 'The sleep command requires a time parameter', 'line': i}
+
+        if type(command['time']) != int and type(command['time']) != float:
+            return {'error': 'Invalid time parameter. Found [%s]' % command['time'], 'line': i}
+
+        if command['time'] <= 0:
+            return {'error': 'Invalid time parameter. Found [%s]' % command['time'], 'line': i}
+
+        if 'unit' not in command:
+            return {'error': 'The sleep command requires a unit parameter', 'line': i}
+
+        if command['unit'] not in ["ms", "s", "m"]:
+            return {'error': 'Invalid unit parameter. Found [%s]' % command['unit'], 'line': i}
+
+        return None
