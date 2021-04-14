@@ -67,7 +67,7 @@ async def activate_button_listener(event: uasyncio.Event):
         event.set()
 
 
-def handle_web_command(web_command):
+async def handle_web_command(web_command):
     if web_command.path == '/colors':
         led_pwm_channels.zero_duty()
         led_pwm_channels.white.duty(web_command.body["White"])
@@ -76,13 +76,17 @@ def handle_web_command(web_command):
         led_pwm_channels.blue.duty(web_command.body["Blue"])
         led_pwm_channels.ultra_violet.duty(web_command.body["UltraViolet"])
     elif web_command.path == '/flash':
+        # TODO: broken -- delete...
         led_pwm_channels.zero_duty()
         print("Executing flash web command")
         # TODO: get hues from web command body
         MultiColorFlash.flash(led_pwm_channels, (RgbColors.BLUE, RgbColors.MAGENTA), web_command.body["Delay"])
     elif web_command.path == '/lighting':
         print("executing lighting script")
-        LightingScriptRunner.run(web_command.body, led_pwm_channels)
+        # Note -- If I await the following, the previous print doesn't work (await LightingScriptRunner.run(web_command.body, led_pwm_channels))
+        await LightingScriptRunner.run(web_command.body, led_pwm_channels)
+    else:
+        print("unknown web command [%s]" % web_command.path)
 
 
 def control_lighting():
@@ -115,7 +119,7 @@ def control_lighting():
                     if last_web_command.path != '/info':
                         lighting_modes.deactivate()
                     print("web command:", last_web_command.path, last_web_command.body)
-                    handle_web_command(last_web_command)
+                    await handle_web_command(last_web_command)
             event.clear()
             last_selected_button = -1
             last_web_command = None
