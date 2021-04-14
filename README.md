@@ -82,4 +82,9 @@ We secure DCDC to the PCB board using non-conductive nylon standoffs.
 
 <img src="docs/bom/NylonStandoffs.jpg" alt="Nylon Standoffs" width="50%" height="50%">
 
+#### 5A 12v Power Supply
+To provide 12v
+
+<img src="docs/bom/5APS.jpg" alt="5A 12v Power Supply" width="50%" height="50%">
+
 
