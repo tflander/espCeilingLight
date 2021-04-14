@@ -7,8 +7,12 @@ class LightingScriptRunner:
 
     @staticmethod
     async def run(commands, led_pwm_channels: LedPwmChannels):
-        command = commands[0]
-        await LightingScriptRunner.run_command(command, led_pwm_channels)
+        run_in_loop = LightingScriptRunner.should_run_in_loop(commands)
+        while True:
+            for command in commands:
+                await LightingScriptRunner.run_command(command, led_pwm_channels)
+                if not run_in_loop:
+                    break
 
     @staticmethod
     async def run_command(command, led_pwm_channels: LedPwmChannels):
@@ -27,3 +31,7 @@ class LightingScriptRunner:
             elif delay_unit == 'm':
                 delay_time *= 60000
             await uasyncio.sleep_ms(delay_time)  # returns singleton generator
+
+    @staticmethod
+    def should_run_in_loop(commands):
+        return 'sleep' in list(map(lambda command: command["command"], commands))

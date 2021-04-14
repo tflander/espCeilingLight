@@ -5,6 +5,7 @@ import pytest
 import time, asyncio
 
 
+# noinspection DuplicatedCode
 @pytest.mark.parametrize("test_name, rgb_string, expected_duties", [
     ("pure red", "#ff0000", Duties(red=1020)),
     ("pure green", "#00ff00", Duties(green=1020)),
@@ -48,3 +49,18 @@ def test_sleep(test_name, delay_time, delay_units, expected_delay):
     asyncio.run(LightingScriptRunner.run_command(command, pwm_channels))
     elapsed = time.time() - start
     assert elapsed == pytest.approx(expected_delay, 0.1)
+
+
+def test_should_run_in_loop_for_commands_with_no_sleep():
+    commands = [{"command": "setColor", "color": "#ff0000"}]
+    assert not LightingScriptRunner.should_run_in_loop(commands)
+
+
+def test_should_run_in_loop_for_commands_containing_sleep():
+    commands = [
+        {"command": "setColor", "color": "#ff0000"},
+        {"command": "sleep", "time": 1, "unit": "s"},
+        {"command": "setColor", "color": "#ff0000"},
+        {"command": "sleep", "time": 1, "unit": "s"}
+    ]
+    assert LightingScriptRunner.should_run_in_loop(commands)
