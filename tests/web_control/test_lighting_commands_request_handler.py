@@ -16,6 +16,18 @@ def test_request_may_have_multiple_commands():
     assert response.body == commands
 
 
+def test_invalid_command_is_rejected():
+
+    commands = [{"command": "invalid command"}]
+    response = LightingCommandsRequestHandler.handle_lighting(create_request(commands))
+
+    assert response.path == "/lighting"
+    assert response.code == "400 Bad Request"
+    assert json.loads(response.body) == [
+        {"error": 'Invalid command [invalid command]', 'line': 1}
+    ]
+
+
 def test_request_reports_lines_with_errors():
 
     commands = [

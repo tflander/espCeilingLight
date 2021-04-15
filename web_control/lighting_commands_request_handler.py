@@ -26,10 +26,14 @@ class LightingCommandsRequestHandler:
 
     @staticmethod
     def validate_command(i, command):
-        if(command['command']) == 'setColor':
+        if command['command'] == 'setColor':
             return LightingCommandsRequestHandler.validate_color_command(i, command)
-        elif (command['command']) == 'sleep':
+        elif command['command'] == 'sleep':
             return LightingCommandsRequestHandler.validate_sleep_command(i, command)
+        elif command['command'] == 'fade':
+            return LightingCommandsRequestHandler.validate_fade_command(i, command)
+        else:
+            return {'error': 'Invalid command [%s]' % command['command'], 'line': i}
 
     @staticmethod
     def validate_color_command(i, command):
@@ -57,4 +61,8 @@ class LightingCommandsRequestHandler:
         if command['unit'] not in ["ms", "s", "m"]:
             return {'error': 'Invalid unit parameter. Found [%s]' % command['unit'], 'line': i}
 
+        return None
+
+    @staticmethod
+    def validate_fade_command(i, command):
         return None
