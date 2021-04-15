@@ -17,6 +17,7 @@ settime()
 
 last_web_command = None
 web_listener_socket = start_listener()
+current_task = None
 
 
 async def web_command_listener(event: uasyncio.Event):
@@ -68,6 +69,9 @@ async def activate_button_listener(event: uasyncio.Event):
 
 
 async def handle_web_command(web_command):
+
+    global current_task
+
     if web_command.path == '/colors':
         led_pwm_channels.zero_duty()
         led_pwm_channels.white.duty(web_command.body["White"])
@@ -82,9 +86,9 @@ async def handle_web_command(web_command):
         # TODO: get hues from web command body
         MultiColorFlash.flash(led_pwm_channels, (RgbColors.BLUE, RgbColors.MAGENTA), web_command.body["Delay"])
     elif web_command.path == '/lighting':
-        print("executing lighting script")
-        # Note -- If I await the following, the previous print doesn't work (await LightingScriptRunner.run(web_command.body, led_pwm_channels))
-        await LightingScriptRunner.run(web_command.body, led_pwm_channels)
+        if current_task is not None:
+            current_task.cancel()
+        current_task = uasyncio.create_task(LightingScriptRunner.run(web_command.body, led_pwm_channels))
     else:
         print("unknown web command [%s]" % web_command.path)
 
