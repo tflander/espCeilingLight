@@ -30,7 +30,15 @@ class LightingScriptRunner:
                 delay_time *= 1000
             elif delay_unit == 'm':
                 delay_time *= 60000
-            await uasyncio.sleep_ms(delay_time)  # returns singleton generator
+            await uasyncio.sleep_ms(delay_time)
+        elif command['command'] == 'fade':
+            pass
+            # 1) calculate difference between current value and desired value for each color
+            # 2) calculate the number of fade steps based on the time/unit parameters and some constant (10ms?)
+            # 3) calculate the value to add or subtract for each color for every fade step
+            # 4) while not at desired color:
+            #   adjust the current color based on step #3
+            #   sleep for some constant (10ms?)
 
     @staticmethod
     def should_run_in_loop(commands):

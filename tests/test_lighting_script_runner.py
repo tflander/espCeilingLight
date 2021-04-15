@@ -51,6 +51,20 @@ def test_sleep(test_name, delay_time, delay_units, expected_delay):
     assert elapsed == pytest.approx(expected_delay, 0.1)
 
 
+def test_fade():
+    command = {"command": "fade", "time": 1, "unit": "s", "color": "#ffff00"}
+    pwm_channels = LedPwmChannels(red_pin=2, green_pin=3, blue_pin=4, white_pin=5, uv_pin=6)
+    start = time.time()
+    asyncio.run(LightingScriptRunner.run_command(command, pwm_channels))
+    elapsed = time.time() - start
+    assert elapsed == pytest.approx(1, 0.1)
+    assert pwm_channels.red.duty() == 1020
+    assert pwm_channels.green.duty() == 1020
+    assert pwm_channels.blue.duty() == 0
+    assert pwm_channels.white.duty() == 0
+    assert pwm_channels.ultra_violet.duty() == 0
+
+
 def test_should_run_in_loop_for_commands_with_no_sleep():
     commands = [{"command": "setColor", "color": "#ff0000"}]
     assert not LightingScriptRunner.should_run_in_loop(commands)
