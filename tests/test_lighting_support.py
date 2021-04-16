@@ -1,6 +1,7 @@
 import pytest
 from lighting_support import LedPwmChannels
 import ujson
+from rgb_duties_converter import Duties
 
 
 @pytest.fixture
@@ -26,3 +27,9 @@ def test_zero_duty(pwm_channels):
 def test_as_json(pwm_channels):
     expected_json = ujson.loads("""{"Red": 10, "Green": 20, "Blue": 30, "White": 40, "UltraViolet": 50}""")
     assert pwm_channels.as_json() == expected_json
+
+
+def test_delta_to_color(pwm_channels):
+    target_color = Duties(red=100, green=200, blue=300, white=0, ultra_violet=0)
+    assert pwm_channels.delta_to_color(target_color) == Duties(red=90, green=180, blue=270, white=-40, ultra_violet=-50)
+

@@ -51,9 +51,15 @@ def test_sleep(test_name, delay_time, delay_units, expected_delay):
     assert elapsed == pytest.approx(expected_delay, 0.1)
 
 
+# TODO: test is too big.  Finish after developing the animation calculator
 def test_fade():
     command = {"command": "fade", "time": 1, "unit": "s", "color": "#ffff00"}
     pwm_channels = LedPwmChannels(red_pin=2, green_pin=3, blue_pin=4, white_pin=5, uv_pin=6)
+    pwm_channels.red.duty(10)
+    pwm_channels.green.duty(20)
+    pwm_channels.blue.duty(30)
+    pwm_channels.white.duty(40)
+    pwm_channels.ultra_violet.duty(50)
     start = time.time()
     asyncio.run(LightingScriptRunner.run_command(command, pwm_channels))
     elapsed = time.time() - start

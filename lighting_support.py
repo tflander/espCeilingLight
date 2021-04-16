@@ -1,4 +1,5 @@
 import machine, ujson
+from rgb_duties_converter import Duties
 
 
 class LedPwmChannels:
@@ -35,6 +36,14 @@ class LedPwmChannels:
         values["White"] = self.white.duty()
         values["UltraViolet"] = self.ultra_violet.duty()
         return values
+
+    def delta_to_color(self, target_color: Duties):
+        red = target_color.red - self.red.duty()
+        green = target_color.green - self.green.duty()
+        blue = target_color.blue - self.blue.duty()
+        white = target_color.white - self.white.duty()
+        ultra_violet = target_color.ultra_violet - self.ultra_violet.duty()
+        return Duties(red, green, blue, white, ultra_violet)
 
 
 class AvailableIntensities:
