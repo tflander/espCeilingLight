@@ -1,3 +1,4 @@
+import uasyncio
 from lighting_script_runner import LightingScriptRunner
 from lighting_support import LedPwmChannels
 from rgb_duties_converter import Duties
@@ -36,19 +37,19 @@ def test_set_color(test_name, rgb_string, expected_duties):
     assert pwm_channels.ultra_violet.duty() == expected_duties.ultra_violet
 
 
-@pytest.mark.parametrize("test_name, delay_time, delay_units, expected_delay", [
-    ("one second", 1, "s", 1.0),
-    ("two seconds", 2, "s", 2.0),
-    ("100 ms", 100, "ms", 0.1),
-    ("2 seconds as a fraction of a minute", 0.03, "m", 2.0),
+@pytest.mark.parametrize("test_name, delay_time, delay_units, expected_delay_ms", [
+    ("one second", 1, "s", 1000),
+    ("two seconds", 2, "s", 2000),
+    ("100 ms", 100, "ms", 100),
+    ("2 minutes", 2, "m", 120000),
 ])
-def test_sleep(test_name, delay_time, delay_units, expected_delay):
+def test_sleep(test_name, delay_time, delay_units, expected_delay_ms):
     command = {"command": "sleep", "time": delay_time, "unit": delay_units}
     pwm_channels = LedPwmChannels(red_pin=2, green_pin=3, blue_pin=4, white_pin=5, uv_pin=6)
-    start = time.time()
+    uasyncio.total_sleep_time_ms = 0
+
     asyncio.run(LightingScriptRunner.run_command(command, pwm_channels))
-    elapsed = time.time() - start
-    assert elapsed == pytest.approx(expected_delay, 0.1)
+    assert uasyncio.total_sleep_time_ms == expected_delay_ms
 
 
 # TODO: test is too big.  Finish after developing the animation calculator
