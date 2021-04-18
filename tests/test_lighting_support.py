@@ -29,6 +29,10 @@ def test_as_json(pwm_channels):
     assert pwm_channels.as_json() == expected_json
 
 
+def test_as_duties(pwm_channels):
+    expected_duties = Duties(red=10, green=20, blue=30, white=40, ultra_violet=50)
+    assert pwm_channels.as_duties() == expected_duties
+
 def test_delta_to_color(pwm_channels):
     target_color = Duties(red=100, green=200, blue=300, white=0, ultra_violet=0)
     assert pwm_channels.delta_to_color(target_color) == Duties(red=90, green=180, blue=270, white=-40, ultra_violet=-50)

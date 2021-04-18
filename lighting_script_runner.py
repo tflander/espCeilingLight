@@ -28,7 +28,11 @@ class LightingScriptRunner:
         elif command['command'] == 'sleep':
             await uasyncio.sleep_ms(AnimationCalculator.delay_time_ms(command))
         elif command['command'] == 'fade':
-            pass
+            fade_params = AnimationCalculator.for_fade_command(command, led_pwm_channels)
+            current_duties = led_pwm_channels.as_duties()
+            # while current_duties != fade_params.target_color:
+            #    await uasyncio.sleep_ms(fade_params.slice_duration_ms)
+
             # 4) while not at desired color:
             #   adjust the current color based on step #3
             #   sleep for some constant (10ms?)

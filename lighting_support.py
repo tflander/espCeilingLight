@@ -37,6 +37,9 @@ class LedPwmChannels:
         values["UltraViolet"] = self.ultra_violet.duty()
         return values
 
+    def as_duties(self):
+        return Duties(self.red.duty(), self.green.duty(), self.blue.duty(), self.white.duty(), self.ultra_violet.duty())
+
     def delta_to_color(self, target_color: Duties):
         red = target_color.red - self.red.duty()
         green = target_color.green - self.green.duty()
