@@ -1,7 +1,7 @@
 import pytest
 from lighting_support import LedPwmChannels
 import ujson
-from rgb_duties_converter import Duties
+from duties import Duties
 
 
 @pytest.fixture

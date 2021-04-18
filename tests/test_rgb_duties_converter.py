@@ -1,4 +1,5 @@
-from rgb_duties_converter import RgbDutiesConverter, Duties
+from rgb_duties_converter import RgbDutiesConverter
+from duties import Duties
 import pytest
 
 

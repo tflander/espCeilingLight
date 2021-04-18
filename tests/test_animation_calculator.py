@@ -1,8 +1,7 @@
 from lighting_support import LedPwmChannels
 from animation_calculator import AnimationCalculator
+from duties import Duties
 import pytest
-
-from rgb_duties_converter import Duties
 
 
 @pytest.fixture

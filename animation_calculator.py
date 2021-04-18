@@ -1,5 +1,6 @@
 from lighting_support import LedPwmChannels
-from rgb_duties_converter import RgbDutiesConverter, Duties
+from rgb_duties_converter import RgbDutiesConverter
+from duties import Duties
 import math
 
 

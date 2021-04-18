@@ -1,5 +1,5 @@
 import machine, ujson
-from rgb_duties_converter import Duties
+from duties import Duties
 
 
 class LedPwmChannels:
