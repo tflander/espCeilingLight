@@ -52,7 +52,7 @@ def test_sleep(test_name, delay_time, delay_units, expected_delay_ms):
     assert uasyncio.total_sleep_time_ms == expected_delay_ms
 
 
-# TODO: test is too big.  Finish after developing the animation calculator
+# TODO: test is too big.
 def test_fade():
     command = {"command": "fade", "time": 1, "unit": "s", "color": "#ffff00"}
     pwm_channels = LedPwmChannels(red_pin=2, green_pin=3, blue_pin=4, white_pin=5, uv_pin=6)
@@ -61,10 +61,10 @@ def test_fade():
     pwm_channels.blue.duty(30)
     pwm_channels.white.duty(40)
     pwm_channels.ultra_violet.duty(50)
-    start = time.time()
+    uasyncio.total_sleep_time_ms = 0
+
     asyncio.run(LightingScriptRunner.run_command(command, pwm_channels))
-    elapsed = time.time() - start
-    assert elapsed == pytest.approx(1, 0.1)
+    assert uasyncio.total_sleep_time_ms == 1000
     assert pwm_channels.red.duty() == 1020
     assert pwm_channels.green.duty() == 1020
     assert pwm_channels.blue.duty() == 0

@@ -32,8 +32,17 @@ class LightingScriptRunner:
             current_duties = led_pwm_channels.as_duties()
 
             # TODO: finish
-            # while current_duties != fade_params.target_color:
-            #    await uasyncio.sleep_ms(fade_params.slice_duration_ms)
+            while current_duties != fade_params.target_color:
+                current_duties.red += fade_params.color_slice_deltas.red
+                current_duties.green += fade_params.color_slice_deltas.green
+                current_duties.blue += fade_params.color_slice_deltas.blue
+                current_duties.white += fade_params.color_slice_deltas.white
+                current_duties.ultra_violet += fade_params.color_slice_deltas.ultra_violet
+
+                await uasyncio.sleep_ms(fade_params.slice_duration_ms)
+
+                # TODO: for now avoid endless loop
+                break
 
             # 4) while not at desired color:
             #   adjust the current color based on step #3
@@ -42,4 +51,3 @@ class LightingScriptRunner:
     @staticmethod
     def should_run_in_loop(commands):
         return 'sleep' in list(map(lambda command: command["command"], commands))
-
