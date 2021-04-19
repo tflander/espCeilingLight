@@ -52,7 +52,6 @@ def test_sleep(test_name, delay_time, delay_units, expected_delay_ms):
     assert uasyncio.total_sleep_time_ms == expected_delay_ms
 
 
-# TODO: test is too big.
 def test_fade():
     command = {"command": "fade", "time": 1, "unit": "s", "color": "#ffff00"}
     pwm_channels = LedPwmChannels(red_pin=2, green_pin=3, blue_pin=4, white_pin=5, uv_pin=6)
@@ -72,7 +71,7 @@ def test_fade():
     assert pwm_channels.ultra_violet.duty() == 0
 
 
-def test_should_run_in_loop_for_commands_with_no_sleep():
+def test_should_run_in_loop_for_commands_with_no_sleep_or_fade():
     commands = [{"command": "setColor", "color": "#ff0000"}]
     assert not LightingScriptRunner.should_run_in_loop(commands)
 
@@ -83,5 +82,13 @@ def test_should_run_in_loop_for_commands_containing_sleep():
         {"command": "sleep", "time": 1, "unit": "s"},
         {"command": "setColor", "color": "#ff0000"},
         {"command": "sleep", "time": 1, "unit": "s"}
+    ]
+    assert LightingScriptRunner.should_run_in_loop(commands)
+
+
+def test_should_run_in_loop_for_commands_containing_fade():
+    commands = [
+        {"command": "fade", "color": "#ff0000", "time": 1, "unit": "s"},
+        {"command": "fade", "color": "#00ff00", "time": 1, "unit": "s"},
     ]
     assert LightingScriptRunner.should_run_in_loop(commands)

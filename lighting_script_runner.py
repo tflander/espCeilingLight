@@ -9,12 +9,13 @@ class LightingScriptRunner:
 
     @staticmethod
     async def run(commands, led_pwm_channels: LedPwmChannels):
+        print("LightingScriptRunner.run called")
         run_in_loop = LightingScriptRunner.should_run_in_loop(commands)
         while True:
             for command in commands:
                 await LightingScriptRunner.run_command(command, led_pwm_channels)
-                if not run_in_loop:
-                    break
+            if not run_in_loop:
+                break
 
     @staticmethod
     async def run_command(command, led_pwm_channels: LedPwmChannels):
@@ -41,4 +42,5 @@ class LightingScriptRunner:
 
     @staticmethod
     def should_run_in_loop(commands):
-        return 'sleep' in list(map(lambda command: command["command"], commands))
+        command_verbs = list(map(lambda command: command["command"], commands))
+        return 'sleep' in command_verbs or 'fade' in command_verbs
