@@ -48,6 +48,13 @@ class LedPwmChannels:
         ultra_violet = target_color.ultra_violet - self.ultra_violet.duty()
         return Duties(red, green, blue, white, ultra_violet)
 
+    def set_from_duties(self, color: Duties):
+        self.red.duty(color.red)
+        self.green.duty(color.green)
+        self.blue.duty(color.blue)
+        self.white.duty(color.white)
+        self.ultra_violet.duty(color.ultra_violet)
+
 
 class AvailableIntensities:
 

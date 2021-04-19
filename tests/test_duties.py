@@ -41,9 +41,11 @@ def test_apply_deltas(pwm_channels, test_name, target_color, current_duties, exp
     fade_command = {"command": "fade", "time": 1, "unit": "s", "color": target_color}
     fade_params = AnimationCalculator.for_fade_command(fade_command, pwm_channels)
     target_color_duties = RgbDutiesConverter.to_duties(target_color)
-    duties_as_float = current_duties.apply_deltas(fade_params.color_slice_deltas, target_color_duties)
+    current_duties.apply_deltas(fade_params.color_slice_deltas, target_color_duties)
 
-    assert duties_as_float == expected_as_float
-    assert current_duties == expected_updated_values
+    assert current_duties == expected_as_float
 
 
+def test_to_rounded_int():
+    duties = Duties(red=1019.999, green=1019.999, blue=0.001, white=0.001, ultra_violet=0.001)
+    assert duties.to_rounded_int() == Duties(red=1020, green=1020)

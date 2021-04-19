@@ -30,23 +30,15 @@ class LightingScriptRunner:
         elif command['command'] == 'fade':
             fade_params = AnimationCalculator.for_fade_command(command, led_pwm_channels)
             current_duties = led_pwm_channels.as_duties()
+            target_color_duties = RgbDutiesConverter.to_duties(command['color'])
 
-            # TODO: finish
+            # TODO: finish -- update pwm_channels
+            duties_as_float = current_duties.to_rounded_int()  # TODO: use clone
             while current_duties != fade_params.target_color:
-                current_duties.red += fade_params.color_slice_deltas.red
-                current_duties.green += fade_params.color_slice_deltas.green
-                current_duties.blue += fade_params.color_slice_deltas.blue
-                current_duties.white += fade_params.color_slice_deltas.white
-                current_duties.ultra_violet += fade_params.color_slice_deltas.ultra_violet
-
+                duties_as_float.apply_deltas(fade_params.color_slice_deltas, target_color_duties)
+                current_duties = duties_as_float.to_rounded_int()
+                led_pwm_channels.set_from_duties(current_duties)
                 await uasyncio.sleep_ms(fade_params.slice_duration_ms)
-
-                # TODO: for now avoid endless loop
-                break
-
-            # 4) while not at desired color:
-            #   adjust the current color based on step #3
-            #   sleep for some constant (10ms?)
 
     @staticmethod
     def should_run_in_loop(commands):
