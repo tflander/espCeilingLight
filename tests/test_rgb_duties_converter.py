@@ -3,6 +3,7 @@ from duties import Duties
 import pytest
 
 
+# noinspection DuplicatedCode
 @pytest.mark.parametrize("test_name, rgb_string, expected_duties", [
     ("pure red", "#ff0000", Duties(red=1020)),
     ("pure green", "#00ff00", Duties(green=1020)),

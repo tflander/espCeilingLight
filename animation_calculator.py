@@ -4,11 +4,10 @@ from duties import Duties
 import math
 
 
-class FadeParams():
+class FadeParams:
 
-    def __init__(self, slice_duration_ms, target_color, color_total_deltas, color_slice_deltas):
+    def __init__(self, slice_duration_ms, target_color, color_slice_deltas):
         self.color_slice_deltas = color_slice_deltas
-        self.color_total_deltas = color_total_deltas
         self.target_color = target_color
         self.slice_duration_ms = slice_duration_ms
 
@@ -28,7 +27,7 @@ class AnimationCalculator:
         u = color_total_deltas.ultra_violet / slice_count
         color_slice_deltas = Duties(r, g, b, w, u)
 
-        return FadeParams(slice_duration_ms, target_color, color_total_deltas, color_slice_deltas)
+        return FadeParams(slice_duration_ms, target_color, color_slice_deltas)
 
     @staticmethod
     def delay_time_ms(command):

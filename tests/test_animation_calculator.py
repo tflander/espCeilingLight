@@ -36,13 +36,6 @@ def test_fade_target_color(pwm_channels):
     assert fade_params.target_color == Duties(red=1020, green=816)
 
 
-def test_fade_color_total_deltas(pwm_channels):
-    fade_command = {"command": "fade", "time": 1, "unit": "s", "color": "#ffcc00"}
-
-    fade_params = AnimationCalculator.for_fade_command(fade_command, pwm_channels)
-    assert fade_params.color_total_deltas == Duties(red=1010, green=796, blue=-30, white=-40, ultra_violet=-50)
-
-
 def test_fade_color_slice_deltas(pwm_channels):
     fade_command = {"command": "fade", "time": 1, "unit": "s", "color": "#ffcc00"}
 
