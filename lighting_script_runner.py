@@ -32,8 +32,7 @@ class LightingScriptRunner:
             current_duties = led_pwm_channels.as_duties()
             target_color_duties = RgbDutiesConverter.to_duties(command['color'])
 
-            # TODO: finish -- update pwm_channels
-            duties_as_float = current_duties.to_rounded_int()  # TODO: use clone
+            duties_as_float = current_duties
             while current_duties != fade_params.target_color:
                 duties_as_float.apply_deltas(fade_params.color_slice_deltas, target_color_duties)
                 current_duties = duties_as_float.to_rounded_int()
