@@ -37,7 +37,7 @@ async def web_command_listener(event: uasyncio.Event):
                     await uasyncio.sleep_ms(10)
 
         print('Got a connection from %s' % str(addr))
-        raw_request = conn.recv(1024)
+        raw_request = conn.recv(4096)
         print('Content = %s' % raw_request)
 
         lighting_request = LightingRequest(raw_request)
