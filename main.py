@@ -3,6 +3,7 @@ import math, utime
 import ujson
 from config import *
 from lighting_script_runner import LightingScriptRunner
+from presets import Presets
 
 from touch_button import *
 from lighting_modes import *
@@ -117,8 +118,8 @@ def control_lighting():
         if event.is_set():
 
             if last_selected_button >= 0:
-                # TODO: replace this command with cycling preset scripts
-                perform_legacy_button_handling(lighting_modes)
+                # perform_legacy_button_handling(lighting_modes)
+                Presets.select_next_preset()
             elif last_web_command is not None:
                 if last_web_command.code == "200 OK":
                     if last_web_command.path != '/info':

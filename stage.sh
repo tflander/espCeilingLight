@@ -25,6 +25,8 @@ echo "updating animation_calculator.py..."
 ampy put animation_calculator.py
 echo "updating duties.py..."
 ampy put duties.py
+echo "updating presets.py..."
+ampy put presets.py
 
 echo "updating web_route_controllers.py..."
 ampy rmdir web_control || echo "ignoring that folder web_control does not exist"
