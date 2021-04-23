@@ -87,6 +87,20 @@ async def handle_web_command(web_command):
         print("unknown web command [%s]" % web_command.path)
 
 
+def perform_legacy_button_handling(lighting_modes):
+    global last_selected_button
+    lighting_modes.deactivate()
+
+    print("last_selected_button", last_selected_button)
+    if last_selected_button == 0:
+        lighting_modes.next_mode()
+    elif last_selected_button == 1:
+        lighting_modes.next_hue()
+    elif last_selected_button == 2:
+        lighting_modes.next_brightness_or_speed()
+    lighting_modes.activate()
+
+
 def control_lighting():
     global last_selected_button, last_web_command
 
@@ -103,15 +117,8 @@ def control_lighting():
         if event.is_set():
 
             if last_selected_button >= 0:
-                lighting_modes.deactivate()
-                print("last_selected_button", last_selected_button)
-                if last_selected_button == 0:
-                    lighting_modes.next_mode()
-                elif last_selected_button == 1:
-                    lighting_modes.next_hue()
-                elif last_selected_button == 2:
-                    lighting_modes.next_brightness_or_speed()
-                lighting_modes.activate()
+                # TODO: replace this command with cycling preset scripts
+                perform_legacy_button_handling(lighting_modes)
             elif last_web_command is not None:
                 if last_web_command.code == "200 OK":
                     if last_web_command.path != '/info':
