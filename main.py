@@ -88,6 +88,7 @@ async def handle_web_command(web_command):
         print("unknown web command [%s]" % web_command.path)
 
 
+# TODO: dead code cleanup.
 def perform_legacy_button_handling(lighting_modes):
     global last_selected_button
     lighting_modes.deactivate()
@@ -117,9 +118,21 @@ def control_lighting():
 
         if event.is_set():
 
+            global current_task
+
             if last_selected_button >= 0:
+                # TODO: finish this
+                # TODO: dead code cleanup.
                 # perform_legacy_button_handling(lighting_modes)
-                Presets.select_next_preset()
+                if current_task is not None:
+                    current_task.cancel()
+                    current_task = None
+                presets = Presets(led_pwm_channels)
+                preset = [{"command": "setColor", "color": "#ff0000"}]
+                presets.add(preset)
+
+                await presets.next()
+
             elif last_web_command is not None:
                 if last_web_command.code == "200 OK":
                     if last_web_command.path != '/info':
