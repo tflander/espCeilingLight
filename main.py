@@ -79,12 +79,6 @@ async def handle_web_command(web_command):
         led_pwm_channels.green.duty(web_command.body["Green"])
         led_pwm_channels.blue.duty(web_command.body["Blue"])
         led_pwm_channels.ultra_violet.duty(web_command.body["UltraViolet"])
-    elif web_command.path == '/flash':
-        # TODO: broken -- delete...
-        led_pwm_channels.zero_duty()
-        print("Executing flash web command")
-        # TODO: get hues from web command body
-        MultiColorFlash.flash(led_pwm_channels, (RgbColors.BLUE, RgbColors.MAGENTA), web_command.body["Delay"])
     elif web_command.path == '/lighting':
         if current_task is not None:
             current_task.cancel()
