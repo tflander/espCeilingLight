@@ -127,6 +127,7 @@ def control_lighting():
                 if current_task is not None:
                     current_task.cancel()
                     current_task = None
+                # TODO: make this real
                 presets = Presets(led_pwm_channels)
                 preset = [{"command": "setColor", "color": "#ff0000"}]
                 presets.add(preset)

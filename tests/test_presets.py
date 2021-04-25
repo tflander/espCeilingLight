@@ -1,30 +1,45 @@
 import asyncio
+import pytest
 
+from duties import Duties
 from lighting_support import LedPwmChannels
 from presets import Presets
 
 
-def test_add_preset():
+@pytest.fixture()
+def presets():
     pwm_channels = LedPwmChannels(red_pin=2, green_pin=3, blue_pin=4, white_pin=5, uv_pin=6)
     presets = Presets(pwm_channels)
 
-    preset = [{"command": "setColor", "color": "#ff0000"}]
-    presets.add(preset)
+    preset1 = [{"command": "setColor", "color": "#ff0000"}]
+    presets.add(preset1)
+    preset2 = [{"command": "setColor", "color": "#00ff00"}]
+    presets.add(preset2)
+    preset3 = [{"command": "setColor", "color": "#0000ff"}]
+    presets.add(preset3)
+    return presets
 
-    assert presets.presets[0] == preset
+
+def test_add_preset(presets):
+    expected_presets = [
+        [{"command": "setColor", "color": "#ff0000"}],
+        [{"command": "setColor", "color": "#00ff00"}],
+        [{"command": "setColor", "color": "#0000ff"}]
+    ]
+    assert presets.presets == expected_presets
 
 
-def test_next_preset():
-    pwm_channels = LedPwmChannels(red_pin=2, green_pin=3, blue_pin=4, white_pin=5, uv_pin=6)
-    presets = Presets(pwm_channels)
-    preset = [{"command": "setColor", "color": "#ff0000"}]
-    presets.add(preset)
+def test_next_preset_cycles(presets):
 
     asyncio.run(presets.next())
-
-    # asyncio.run(LightingScriptRunner.run_command(command, pwm_channels))
-    assert pwm_channels.red.duty() == 1020
-    assert pwm_channels.green.duty() == 0
-    assert pwm_channels.blue.duty() == 0
-    assert pwm_channels.white.duty() == 0
-    assert pwm_channels.ultra_violet.duty() == 0
+    assert presets.pwm_channels.as_duties() == Duties(red=1020)
+    asyncio.run(presets.next())
+    assert presets.pwm_channels.as_duties() == Duties(green=1020)
+    asyncio.run(presets.next())
+    assert presets.pwm_channels.as_duties() == Duties(blue=1020)
+    asyncio.run(presets.next())
+    assert presets.pwm_channels.as_duties() == Duties(red=1020)
+    asyncio.run(presets.next())
+    assert presets.pwm_channels.as_duties() == Duties(green=1020)
+    asyncio.run(presets.next())
+    assert presets.pwm_channels.as_duties() == Duties(blue=1020)
