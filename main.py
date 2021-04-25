@@ -103,8 +103,14 @@ def perform_legacy_button_handling(lighting_modes):
     lighting_modes.activate()
 
 
+presets = Presets(led_pwm_channels)
+presets.add([{"command": "setColor", "color": "#ff0000"}])
+presets.add([{"command": "setColor", "color": "#00ff00"}])
+presets.add([{"command": "setColor", "color": "#0000ff"}])
+
+
 def control_lighting():
-    global last_selected_button, last_web_command
+    global last_selected_button, last_web_command, current_task, presets
 
     lighting_modes = LightModes(led_pwm_channels)
     led_pwm_channels.zero_duty()
@@ -118,8 +124,6 @@ def control_lighting():
 
         if event.is_set():
 
-            global current_task
-
             if last_selected_button >= 0:
                 # TODO: finish this
                 # TODO: dead code cleanup.
@@ -127,11 +131,6 @@ def control_lighting():
                 if current_task is not None:
                     current_task.cancel()
                     current_task = None
-                # TODO: make this real
-                presets = Presets(led_pwm_channels)
-                preset = [{"command": "setColor", "color": "#ff0000"}]
-                presets.add(preset)
-
                 await presets.next()
 
             elif last_web_command is not None:
