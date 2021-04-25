@@ -7,12 +7,6 @@ from presets import Presets
 
 from touch_button import *
 
-# TODO: dead code cleanup
-from lighting_modes import *
-
-# TODO: dead code cleanup
-from party import *
-
 from web_control.web_route_controllers import *
 
 import uasyncio
@@ -119,69 +113,12 @@ def control_lighting():
 
             elif last_web_command is not None:
                 if last_web_command.code == "200 OK":
-                    # if last_web_command.path != '/info':
-                    #    lighting_modes.deactivate()
                     print("web command:", last_web_command.path, last_web_command.body)
                     await handle_web_command(last_web_command)
             event.clear()
             last_selected_button = -1
             last_web_command = None
         await uasyncio.sleep_ms(10)
-
-
-# class LightModes:
-#
-#     def __init__(self, pwm_channels: LedPwmChannels):
-#         self.pwm_channels = pwm_channels
-#         self.current_intensity_index = 0
-#         self.task = None
-#         self.current_mode_index = 0
-#
-#         self.modes = (
-#             WhiteModes(self.pwm_channels),
-#             RgbModes(self.pwm_channels),
-#             MultiColorFlash(self.pwm_channels, (
-#                 (RgbColors.RED, RgbColors.BLUE),
-#                 (RgbColors.BLUE, RgbColors.YELLOW),
-#                 (RgbColors.RED, RgbColors.YELLOW, RgbColors.GREEN, RgbColors.CYAN, RgbColors.BLUE, RgbColors.MAGENTA)
-#             )),
-#             OneColorGlow(self.pwm_channels, (
-#                 RgbColors.RED,
-#                 RgbColors.GREEN,
-#                 RgbColors.BLUE,
-#                 RgbColors.CYAN,
-#                 RgbColors.YELLOW,
-#                 RgbColors.MAGENTA)
-#             ),
-#             MultiColorFade(self.pwm_channels, (
-#                 (RgbColors.RED, RgbColors.BLUE),
-#                 (RgbColors.BLUE, RgbColors.GREEN),
-#                 (RgbColors.RED, RgbColors.YELLOW, RgbColors.GREEN, RgbColors.CYAN, RgbColors.BLUE, RgbColors.MAGENTA)
-#             ))
-#         )
-#
-#     def current_mode(self):
-#         return self.modes[self.current_mode_index]
-#
-#     def activate(self):
-#         self.task = uasyncio.create_task(self.current_mode().activate())
-#
-#     def next_mode(self):
-#         self.current_mode_index += 1
-#         if self.current_mode_index == len(self.modes):
-#             self.current_mode_index = 0
-#
-#     def next_hue(self):
-#         self.current_mode().next_hue()
-#
-#     def next_brightness_or_speed(self):
-#         self.current_mode().next_brightness_or_speed()
-#
-#     def deactivate(self):
-#         if self.task is not None:
-#             self.task.cancel()
-#             self.task = None
-#         led_pwm_channels.zero_duty()
 
 
 print("running lights")
