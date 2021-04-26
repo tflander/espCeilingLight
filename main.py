@@ -15,6 +15,7 @@ import json
 last_web_command = None
 web_listener_socket = start_listener()
 current_task = None
+current_script = None
 
 
 async def web_command_listener(event: uasyncio.Event):
@@ -66,12 +67,13 @@ async def activate_button_listener(event: uasyncio.Event):
 
 async def handle_web_command(web_command):
 
-    global current_task
+    global current_task, current_script
 
     if web_command.path == '/lighting':
         if current_task is not None:
             current_task.cancel()
-        current_task = uasyncio.create_task(LightingScriptRunner.run(web_command.body, led_pwm_channels))
+        current_script = web_command.body
+        current_task = uasyncio.create_task(LightingScriptRunner.run(current_script, led_pwm_channels))
     else:
         print("unknown web command [%s]" % web_command.path)
 
@@ -89,12 +91,13 @@ presets.add([
 
 
 def control_lighting():
-    global last_selected_button, last_web_command, current_task, presets
+    global last_selected_button, last_web_command, current_task, presets, current_script
 
     event = uasyncio.Event()
     uasyncio.create_task(activate_button_listener(event))
     uasyncio.create_task(web_command_listener(event))
-    current_task = uasyncio.create_task(LightingScriptRunner.run(presets.next(), led_pwm_channels))
+    current_script = presets.next()
+    current_task = uasyncio.create_task(LightingScriptRunner.run(current_script, led_pwm_channels))
 
     while True:
 
@@ -104,7 +107,8 @@ def control_lighting():
                 if current_task is not None:
                     current_task.cancel()
                     current_task = None
-                current_task = uasyncio.create_task(LightingScriptRunner.run(presets.next(), led_pwm_channels))
+                current_script = presets.next()
+                current_task = uasyncio.create_task(LightingScriptRunner.run(current_script, led_pwm_channels))
 
             elif last_web_command is not None:
                 if last_web_command.code == "200 OK":
