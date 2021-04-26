@@ -99,10 +99,6 @@ presets.add([
 def control_lighting():
     global last_selected_button, last_web_command, current_task, presets
 
-    # lighting_modes = LightModes(led_pwm_channels)
-    led_pwm_channels.zero_duty()
-    # lighting_modes.activate()
-
     event = uasyncio.Event()
     uasyncio.create_task(activate_button_listener(event))
     uasyncio.create_task(web_command_listener(event))
@@ -116,7 +112,6 @@ def control_lighting():
                 if current_task is not None:
                     current_task.cancel()
                     current_task = None
-                # await presets.next()
                 current_task = uasyncio.create_task(presets.next())
 
             elif last_web_command is not None:
