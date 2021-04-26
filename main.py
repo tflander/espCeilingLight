@@ -20,7 +20,7 @@ current_script = None
 
 async def web_command_listener(event: uasyncio.Event):
 
-    global last_web_command
+    global last_web_command, current_script
 
     while True:
         gc.collect()
@@ -40,8 +40,7 @@ async def web_command_listener(event: uasyncio.Event):
 
         lighting_request = LightingRequest(raw_request)
 
-        # TODO: the info path needs the current running script and maybe presets...
-        lighting_response = LightingRequestHandler.handle(lighting_request)
+        lighting_response = LightingRequestHandler.handle(lighting_request, current_script)
 
         last_web_command = lighting_response
         event.set()

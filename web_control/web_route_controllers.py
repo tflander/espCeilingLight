@@ -20,22 +20,21 @@ def start_listener():
 class LightingRequestHandler:
 
     @staticmethod
-    def handle(request: LightingRequest):
+    def handle(request: LightingRequest, script):
         if request.path == '/lighting':
             return LightingCommandsRequestHandler.handle_lighting(request)
         elif request.path == '/info':
-            return LightingRequestHandler.handle_info(request)
+            return LightingRequestHandler.handle_info(request, script)
         else:
             return LightingResponse("404 Not Found", request.path, ujson.loads('{"Error": "Unexpected path [%s]"}' % request.path))
 
     @staticmethod
-    def handle_info(request: LightingRequest):
+    def handle_info(request: LightingRequest, script):
         response = ujson.loads("{}")
         response["MacAddress"] = ubinascii.hexlify(network.WLAN().config('mac'),':').decode()
         response["IP"] = network.WLAN().ifconfig()[0]
         response["Program"] = program_and_version[0]
         response["ProgramVersion"] = program_and_version[1]
         response["duties"] = led_pwm_channels.as_json()
-
-        # TODO: add current command script
+        response["script"] = script
         return LightingResponse("200 OK", request.path, response)
