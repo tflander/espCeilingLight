@@ -51,16 +51,13 @@ async def web_command_listener(event: uasyncio.Event):
         conn.sendall(json.dumps(lighting_response.body))
         conn.close()
 
-# TODO: dead code cleanup (after hardware refresh)
 mode_touch_button = TouchButton(machine.Pin(4), touch_adjust_parameters)
-sub1_touch_button = TouchButton(machine.Pin(27), touch_adjust_parameters)
-sub2_touch_button = TouchButton(machine.Pin(14), touch_adjust_parameters)
 
 last_selected_button = -1
 
 
 async def activate_button_listener(event: uasyncio.Event):
-    button_collection = TouchButtonCollection(mode_touch_button, sub1_touch_button, sub2_touch_button)
+    button_collection = TouchButtonCollection(mode_touch_button)
     global last_selected_button
     while True:
         last_selected_button = await button_collection.wait_for_button_select()
