@@ -106,6 +106,7 @@ def control_lighting():
     event = uasyncio.Event()
     uasyncio.create_task(activate_button_listener(event))
     uasyncio.create_task(web_command_listener(event))
+    current_task = uasyncio.create_task(presets.next())
 
     while True:
 
