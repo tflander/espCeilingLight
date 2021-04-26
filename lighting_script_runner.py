@@ -1,5 +1,5 @@
 from animation_calculator import AnimationCalculator
-from lighting_support import LedPwmChannels
+from led_pwm_channels import LedPwmChannels
 from rgb_duties_converter import RgbDutiesConverter
 import uasyncio
 import math

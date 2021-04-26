@@ -1,5 +1,5 @@
 from touch_button import *
-from lighting_support import *
+from led_pwm_channels import *
 
 program_and_version = ("12v RGBW Lighting", "0.0.0")
 touch_adjust_parameters = AdjustParameters(limits=(50, 600), dead_band=(175, 250))

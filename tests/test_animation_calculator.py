@@ -1,4 +1,4 @@
-from lighting_support import LedPwmChannels
+from led_pwm_channels import LedPwmChannels
 from animation_calculator import AnimationCalculator
 from duties import Duties
 import pytest

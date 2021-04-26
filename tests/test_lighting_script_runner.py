@@ -1,6 +1,6 @@
 import uasyncio
 from lighting_script_runner import LightingScriptRunner
-from lighting_support import LedPwmChannels
+from led_pwm_channels import LedPwmChannels
 from duties import Duties
 import pytest
 import time, asyncio

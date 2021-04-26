@@ -3,8 +3,8 @@ ampy ls
 
 echo "updating boot.py..."
 ampy put boot.py
-echo "updating lighting_support.py..."
-ampy put lighting_support.py
+echo "updating led_pwm_channels.py..."
+ampy put led_pwm_channels.py
 echo "updating main.py..."
 ampy put main.py
 echo "updating touch_button.py..."

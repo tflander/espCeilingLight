@@ -1,5 +1,5 @@
 import pytest
-from lighting_support import LedPwmChannels
+from led_pwm_channels import LedPwmChannels
 import ujson
 from duties import Duties
 

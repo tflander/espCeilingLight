@@ -1,6 +1,6 @@
 from animation_calculator import AnimationCalculator
 from duties import Duties
-from lighting_support import LedPwmChannels
+from led_pwm_channels import LedPwmChannels
 import pytest
 
 from rgb_duties_converter import RgbDutiesConverter

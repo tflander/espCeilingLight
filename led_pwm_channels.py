@@ -55,20 +55,3 @@ class LedPwmChannels:
         self.white.duty(color.white)
         self.ultra_violet.duty(color.ultra_violet)
 
-
-class AvailableIntensities:
-
-    FULL = 1023
-    HALF = 512
-    QUARTER = 256
-    EIGHTH = 128
-
-
-class RgbColors:
-    RED = (1, 0, 0)
-    YELLOW = (1, 1, 0)
-    GREEN = (0, 1, 0)
-    BLUE = (0, 0, 1)
-    CYAN = (0, 1, 1)
-    MAGENTA = (1, 0, 1)
-    BLACK = (0, 0, 0)

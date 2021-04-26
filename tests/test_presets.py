@@ -2,7 +2,7 @@ import asyncio
 import pytest
 
 from duties import Duties
-from lighting_support import LedPwmChannels
+from led_pwm_channels import LedPwmChannels
 from presets import Presets
 
 
