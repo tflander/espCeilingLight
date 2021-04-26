@@ -88,6 +88,12 @@ presets = Presets(led_pwm_channels)
 presets.add([{"command": "setColor", "color": "#ff0000"}])
 presets.add([{"command": "setColor", "color": "#00ff00"}])
 presets.add([{"command": "setColor", "color": "#0000ff"}])
+presets.add([
+    {"command": "setColor", "color": "#0000ff"},
+    {"command": "fade", "color": "#ff0000", "time": 2, "unit": "s"},
+    {"command": "fade", "color": "#00ff00", "time": 2, "unit": "s"},
+    {"command": "fade", "color": "#0000ff", "time": 2, "unit": "s"}
+])
 
 
 def control_lighting():
@@ -109,7 +115,8 @@ def control_lighting():
                 if current_task is not None:
                     current_task.cancel()
                     current_task = None
-                await presets.next()
+                # await presets.next()
+                current_task = uasyncio.create_task(presets.next())
 
             elif last_web_command is not None:
                 if last_web_command.code == "200 OK":
