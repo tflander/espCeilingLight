@@ -36,4 +36,6 @@ class LightingRequestHandler:
         response["Program"] = program_and_version[0]
         response["ProgramVersion"] = program_and_version[1]
         response["duties"] = led_pwm_channels.as_json()
+
+        # TODO: add current command script
         return LightingResponse("200 OK", request.path, response)

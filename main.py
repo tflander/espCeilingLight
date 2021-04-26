@@ -38,6 +38,8 @@ async def web_command_listener(event: uasyncio.Event):
         print('Content = %s' % raw_request)
 
         lighting_request = LightingRequest(raw_request)
+
+        # TODO: the info path needs the current running script and maybe presets...
         lighting_response = LightingRequestHandler.handle(lighting_request)
 
         last_web_command = lighting_response
@@ -77,7 +79,7 @@ async def handle_web_command(web_command):
         print("unknown web command [%s]" % web_command.path)
 
 
-presets = Presets(led_pwm_channels)
+presets = Presets()
 presets.add([{"command": "setColor", "color": "#ff0000"}])
 presets.add([{"command": "setColor", "color": "#00ff00"}])
 presets.add([{"command": "setColor", "color": "#0000ff"}])
@@ -95,7 +97,7 @@ def control_lighting():
     event = uasyncio.Event()
     uasyncio.create_task(activate_button_listener(event))
     uasyncio.create_task(web_command_listener(event))
-    current_task = uasyncio.create_task(presets.next())
+    current_task = uasyncio.create_task(LightingScriptRunner.run(presets.next(), led_pwm_channels))
 
     while True:
 
@@ -105,7 +107,7 @@ def control_lighting():
                 if current_task is not None:
                     current_task.cancel()
                     current_task = None
-                current_task = uasyncio.create_task(presets.next())
+                current_task = uasyncio.create_task(LightingScriptRunner.run(presets.next(), led_pwm_channels))
 
             elif last_web_command is not None:
                 if last_web_command.code == "200 OK":

@@ -1,11 +1,6 @@
-from lighting_script_runner import LightingScriptRunner
-from led_pwm_channels import LedPwmChannels
-
-
 class Presets:
 
-    def __init__(self, pwm_channels: LedPwmChannels):
-        self.pwm_channels = pwm_channels
+    def __init__(self):
         self.presets = []
         self.current_preset = -1
 
@@ -16,8 +11,8 @@ class Presets:
     def add(self, commands):
         self.presets.append(commands)
 
-    async def next(self):
+    def next(self):
         self.current_preset += 1
         if self.current_preset >= len(self.presets):
             self.current_preset = 0
-        await LightingScriptRunner.run(self.presets[self.current_preset], self.pwm_channels)
+        return self.presets[self.current_preset]
