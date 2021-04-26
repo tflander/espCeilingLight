@@ -6,8 +6,6 @@ from web_control.lighting_commands_request_handler import LightingCommandsReques
 from web_control.lighting_request import LightingRequest
 from web_control.lighting_response import LightingResponse
 
-valid_colors = ["White", "Red", "Green", "Blue", "UltraViolet"]
-
 
 def start_listener():
     print("opening listener on port 80")
@@ -23,9 +21,7 @@ class LightingRequestHandler:
 
     @staticmethod
     def handle(request: LightingRequest):
-        if request.path == '/colors':
-            return LightingRequestHandler.handle_colors(request)
-        elif request.path == '/lighting':
+        if request.path == '/lighting':
             return LightingCommandsRequestHandler.handle_lighting(request)
         elif request.path == '/info':
             return LightingRequestHandler.handle_info(request)
@@ -41,33 +37,3 @@ class LightingRequestHandler:
         response["ProgramVersion"] = program_and_version[1]
         response["duties"] = led_pwm_channels.as_json()
         return LightingResponse("200 OK", request.path, response)
-
-    @staticmethod
-    def handle_colors(request: LightingRequest):
-
-        is_valid, error_response = LightingRequestHandler.validate_colors_request(request)
-        if not is_valid:
-            return error_response
-
-        response = ujson.loads("{}")
-        response["White"] = request.body.get("White", 0)
-        response["Red"] = request.body.get("Red", 0)
-        response["Green"] = request.body.get("Green", 0)
-        response["Blue"] = request.body.get("Blue", 0)
-        response["UltraViolet"] = request.body.get("UltraViolet", 0)
-        return LightingResponse("200 OK", request.path, response)
-
-    @staticmethod
-    def validate_colors_request(request: LightingRequest):
-        if request.protocol != "PUT":
-            msg = ujson.loads('{"Error": "Expecting PUT action", "Action": "%s"}' % request.protocol)
-            return False, LightingResponse("405 Method Not Allowed", request.path, msg)
-
-        if request.body is None:
-            return False, LightingResponse("400 Bad Request", request.path, "invalid request body [%s]" % request.raw_json)
-
-        for key in request.body.keys():
-            if key not in valid_colors:
-                msg = ujson.loads('{"Error": "Invalid Color", "Color": "%s"}' % key)
-                return False, LightingResponse("400 Bad Request", request.path, msg)
-        return True, None

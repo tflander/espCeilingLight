@@ -69,14 +69,7 @@ async def handle_web_command(web_command):
 
     global current_task
 
-    if web_command.path == '/colors':
-        led_pwm_channels.zero_duty()
-        led_pwm_channels.white.duty(web_command.body["White"])
-        led_pwm_channels.red.duty(web_command.body["Red"])
-        led_pwm_channels.green.duty(web_command.body["Green"])
-        led_pwm_channels.blue.duty(web_command.body["Blue"])
-        led_pwm_channels.ultra_violet.duty(web_command.body["UltraViolet"])
-    elif web_command.path == '/lighting':
+    if web_command.path == '/lighting':
         if current_task is not None:
             current_task.cancel()
         current_task = uasyncio.create_task(LightingScriptRunner.run(web_command.body, led_pwm_channels))
