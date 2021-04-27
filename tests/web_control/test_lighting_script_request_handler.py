@@ -6,12 +6,12 @@ def test_valid_request():
     commands = {
         "id": "foo",
         "description": "does cool stuff",
-        "script": """
-            #ff0000
-            fade 2s to #0000ff
-            sleep 2s
-            fade 2s to #ff0000
-        """
+        "script": [
+            "#ff0000",
+            "fade 2s to #0000ff",
+            "sleep 2s",
+            "fade 2s to #ff0000"
+        ]
     }
     request = create_request(commands)
     response = LightingScriptRequestHandler.handle_lighting(request)

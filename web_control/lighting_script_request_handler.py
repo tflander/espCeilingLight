@@ -8,12 +8,13 @@ class LightingScriptRequestHandler:
     @staticmethod
     def handle_lighting(request: LightingRequest):
 
-        request_body = LightingScriptRequestHandler.create_response_body(request)
-        if request_body is None or len(request_body) == 0:
+        if request.body is None or len(request.body) == 0:
             msg = "invalid request body [%s]" % request.raw_json
             return LightingResponse("400 Bad Request", request.path, """{"error": "%s"}""" % msg)
 
         errors = []
+
+        # TODO: validate (sanitize?) every line in the script
         # for i, command in enumerate(request.body, start=1):
         #
         #     error = LightingCommandsRequestHandler.validate_command(i, command)
@@ -23,17 +24,8 @@ class LightingScriptRequestHandler:
         if len(errors) > 0:
             return LightingResponse("400 Bad Request", request.path, ujson.dumps(errors))
 
-        return LightingResponse("200 OK", request.path, request_body)
+        return LightingResponse("200 OK", request.path, request.body)
 
-    @staticmethod
-    def create_response_body(request):
-
-        # TODO: regex magic on ws in script (script element type from json string to json string array)
-        regex = re.compile(r"^.*interfaceOpDataFile.*$", re.IGNORECASE)
-        response_body = regex.sub("][", request.raw_json)
-
-        response_body = request.raw_json
-        return response_body
     # @staticmethod
     # def validate_command(i, command):
     #     if command['command'] == 'setColor':
