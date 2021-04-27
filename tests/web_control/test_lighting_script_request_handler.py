@@ -21,24 +21,78 @@ def test_valid_request():
     assert response.body == commands
 
 
-# def test_request_must_have_an_id():
-#     commands = {
-#         "description": "does cool stuff",
-#         "script": """
-#             #ff0000
-#             fade 2s to #0000ff
-#             sleep 2s
-#             fade 2s to #ff0000
-#         """
-#     }
-#     response = LightingScriptRequestHandler.handle_lighting(create_request(commands))
-#
-#     assert response.path == "/lighting"
-#     assert response.code == "400 Bad Request"
-#     assert json.loads(response.body) == [
-#         {"error": 'request must have an id'}
-#     ]
+def test_request_must_have_an_id():
+    commands = {
+        "description": "does cool stuff",
+        "script": [
+            "#ff0000",
+            "fade 2s to #0000ff",
+            "sleep 2s",
+            "fade 2s to #ff0000"
+        ]
+    }
+    response = LightingScriptRequestHandler.handle_lighting(create_request(commands))
 
+    assert response.path == "/lighting"
+    assert response.code == "400 Bad Request"
+    assert json.loads(response.body) == {"error": 'request must have an id'}
+
+
+def test_request_must_have_a_description():
+    commands = {
+        "id": "foo",
+        "script": [
+            "#ff0000",
+            "fade 2s to #0000ff",
+            "sleep 2s",
+            "fade 2s to #ff0000"
+        ]
+    }
+    response = LightingScriptRequestHandler.handle_lighting(create_request(commands))
+
+    assert response.path == "/lighting"
+    assert response.code == "400 Bad Request"
+    assert json.loads(response.body) == {"error": 'request must have a description'}
+
+
+# TODO: think about id uniqueness
+
+def test_request_must_have_a_script():
+    commands = {
+        "id": "foo",
+        "description": "does cool stuff"
+    }
+    response = LightingScriptRequestHandler.handle_lighting(create_request(commands))
+
+    assert response.path == "/lighting"
+    assert response.code == "400 Bad Request"
+    assert json.loads(response.body) == {"error": 'request must have a script'}
+
+
+def test_request_script_must_not_be_empty():
+    commands = {
+        "id": "foo",
+        "description": "does cool stuff",
+        "script": []
+    }
+    response = LightingScriptRequestHandler.handle_lighting(create_request(commands))
+
+    assert response.path == "/lighting"
+    assert response.code == "400 Bad Request"
+    assert json.loads(response.body) == {"error": 'script must not be empty'}
+
+
+def test_request_script_must_be_an_array():
+    commands = {
+        "id": "foo",
+        "description": "does cool stuff",
+        "script": "this is not a string array"
+    }
+    response = LightingScriptRequestHandler.handle_lighting(create_request(commands))
+
+    assert response.path == "/lighting"
+    assert response.code == "400 Bad Request"
+    assert json.loads(response.body) == {"error": 'script must be a string array'}
 
 # def test_invalid_command_is_rejected():
 #

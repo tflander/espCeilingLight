@@ -12,40 +12,54 @@ class LightingScriptRequestHandler:
             msg = "invalid request body [%s]" % request.raw_json
             return LightingResponse("400 Bad Request", request.path, """{"error": "%s"}""" % msg)
 
+        if 'id' not in request.body:
+            return LightingResponse("400 Bad Request", request.path, """{"error": "request must have an id"}""")
+
+        if 'description' not in request.body:
+            return LightingResponse("400 Bad Request", request.path, """{"error": "request must have a description"}""")
+
+        if 'script' not in request.body:
+            return LightingResponse("400 Bad Request", request.path, """{"error": "request must have a script"}""")
+
+        script = request.body['script']
+
+        if type(script) != list:
+            return LightingResponse("400 Bad Request", request.path, """{"error": "script must be a string array"}""")
+
+        if len(script) == 0:
+            return LightingResponse("400 Bad Request", request.path, """{"error": "script must not be empty"}""")
+
         errors = []
 
         # TODO: validate (sanitize?) every line in the script
-        # for i, command in enumerate(request.body, start=1):
-        #
-        #     error = LightingCommandsRequestHandler.validate_command(i, command)
-        #     if error is not None:
-        #         errors.append(error)
-        #
+        for i, command in enumerate(script, start=1):
+            error = LightingScriptRequestHandler.validate_command(i, command)
+            if error is not None:
+                errors.append(error)
+
         if len(errors) > 0:
             return LightingResponse("400 Bad Request", request.path, ujson.dumps(errors))
 
         return LightingResponse("200 OK", request.path, request.body)
 
-    # @staticmethod
-    # def validate_command(i, command):
-    #     if command['command'] == 'setColor':
-    #         return LightingCommandsRequestHandler.validate_color_command(i, command)
+    @staticmethod
+    def validate_command(i, command):
+        pass
+        if command.startswith("#"):
+            return LightingScriptRequestHandler.validate_color_command(i, command)
     #     elif command['command'] == 'sleep':
     #         return LightingCommandsRequestHandler.validate_sleep_command(i, command)
     #     elif command['command'] == 'fade':
     #         return LightingCommandsRequestHandler.validate_fade_command(i, command)
     #     else:
     #         return {'error': 'Invalid command [%s]' % command['command'], 'line': i}
-    #
-    # @staticmethod
-    # def validate_color_command(i, command):
-    #     if 'color' not in command:
-    #         return {'error': 'The %s command requires a color parameter' % command['command'], 'line': i}
-    #
-    #     if not RgbDutiesConverter.is_valid_color(command['color']):
-    #         return {'error': 'Invalid color parameter. Found [%s]' % command['color'], 'line': i}
-    #     return None
-    #
+
+    @staticmethod
+    def validate_color_command(i, command):
+        if not RgbDutiesConverter.is_valid_color(command):
+            return {'error': 'Invalid color parameter. Found [%s]' % command, 'line': i}
+        return None
+
     # @staticmethod
     # def validate_sleep_command(i, command):
     #     if 'time' not in command:
