@@ -5,6 +5,9 @@ from web_control.lighting_response import LightingResponse
 
 
 class LightingScriptRequestHandler:
+
+    time_pattern = re.compile(r"([0-9]+)([a-z]+)")
+
     @staticmethod
     def handle_lighting(request: LightingRequest):
 
@@ -69,8 +72,7 @@ class LightingScriptRequestHandler:
 
     @staticmethod
     def validate_time_parameter(time_param, i):
-        time_pattern = re.compile(r"([0-9]+)([a-z]+)")  # TODO: compile once
-        result = time_pattern.match(time_param)
+        result = LightingScriptRequestHandler.time_pattern.match(time_param)
 
         if result is None:
             return {'error': 'Invalid time parameter. Found [%s]' % time_param, 'line': i}
