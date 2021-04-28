@@ -65,9 +65,11 @@ class LightingScriptRequestHandler:
         if len(parts) != 2:
             return {'error': "Invalid syntax. Requires 'sleep [time]'", 'line': i}
 
-        time_param = parts[1]
+        return LightingScriptRequestHandler.validate_time_parameter(parts[1], i)
 
-        time_pattern = re.compile(r"([0-9]+)([a-z]+)")
+    @staticmethod
+    def validate_time_parameter(time_param, i):
+        time_pattern = re.compile(r"([0-9]+)([a-z]+)")  # TODO: compile once
         result = time_pattern.match(time_param)
 
         if result is None:
@@ -87,7 +89,6 @@ class LightingScriptRequestHandler:
             return {'error': "Invalid syntax. Requires 'fade [time] to [color]'", 'line': i}
 
         validation = LightingScriptRequestHandler.validate_color_command(i, parts[3])
+        if validation is None:
+            validation = LightingScriptRequestHandler.validate_time_parameter(parts[1], i)
         return validation
-        # if validation is None:
-        #     validation = LightingCommandsRequestHandler.validate_sleep_command(i, command)
-        # return validation
