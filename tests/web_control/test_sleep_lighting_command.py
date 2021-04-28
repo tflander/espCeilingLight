@@ -1,9 +1,10 @@
 from web_control.lighting_commands_request_handler import LightingCommandsRequestHandler
+from web_control.lighting_script_request_handler import LightingScriptRequestHandler
 from web_control.testing_support import *
 import pytest
 
 
-def test_sleep_request_is_accepted():
+def test_legacy_sleep_request_is_accepted():
 
     commands = [{"command": "sleep", "time": 1, "unit": "s"}]
     response = LightingCommandsRequestHandler.handle_lighting(create_request(commands))
@@ -13,7 +14,20 @@ def test_sleep_request_is_accepted():
     assert response.body == commands
 
 
-def test_sleep_requires_a_time_parameter():
+def test_sleep_request_is_accepted():
+    commands = {
+        "id": "foo",
+        "description": "night-night",
+        "script": ["sleep 2s"]
+    }
+    response = LightingScriptRequestHandler.handle_lighting(create_request(commands))
+
+    assert response.path == "/lighting"
+    assert response.code == "200 OK"
+    assert response.body == commands
+
+
+def test_legacy_sleep_requires_a_time_parameter():
 
     commands = [{"command": "sleep", "unit": "s"}]
     response = LightingCommandsRequestHandler.handle_lighting(create_request(commands))
@@ -22,6 +36,23 @@ def test_sleep_requires_a_time_parameter():
     assert response.code == "400 Bad Request"
     expected_body = json.loads("""[{"error": "The sleep command requires a time parameter", "line": 1}]""")
     assert json.loads(response.body) == expected_body
+
+
+def test_sleep_requires_a_time_parameter():
+
+    commands = {
+        "id": "foo",
+        "description": "night-night",
+        "script": ["sleep"]
+    }
+    response = LightingScriptRequestHandler.handle_lighting(create_request(commands))
+
+    assert response.path == "/lighting"
+    assert response.code == "400 Bad Request"
+    expected_body = json.loads("""[{"error": "Invalid syntax. Requires 'sleep [time]'", "line": 1}]""")
+    assert json.loads(response.body) == expected_body
+
+# TODO: marker
 
 
 def test_time_parameter_must_be_a_number():

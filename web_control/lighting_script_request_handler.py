@@ -31,7 +31,6 @@ class LightingScriptRequestHandler:
 
         errors = []
 
-        # TODO: validate (sanitize?) every line in the script
         for i, command in enumerate(script, start=1):
             error = LightingScriptRequestHandler.validate_command(i, command)
             if error is not None:
@@ -47,10 +46,10 @@ class LightingScriptRequestHandler:
         pass
         if command.startswith("#"):
             return LightingScriptRequestHandler.validate_color_command(i, command)
-    #     elif command['command'] == 'sleep':
-    #         return LightingCommandsRequestHandler.validate_sleep_command(i, command)
-    #     elif command['command'] == 'fade':
-    #         return LightingCommandsRequestHandler.validate_fade_command(i, command)
+        elif command.startswith('sleep'):
+            return LightingScriptRequestHandler.validate_sleep_command(i, command)
+        elif command.startswith('fade'):
+            return LightingScriptRequestHandler.validate_fade_command(i, command)
     #     else:
     #         return {'error': 'Invalid command [%s]' % command['command'], 'line': i}
 
@@ -60,8 +59,11 @@ class LightingScriptRequestHandler:
             return {'error': 'Invalid color parameter. Found [%s]' % command, 'line': i}
         return None
 
-    # @staticmethod
-    # def validate_sleep_command(i, command):
+    @staticmethod
+    def validate_sleep_command(i, command):
+        parts = command.split()
+        if len(parts) != 2:
+            return {'error': "Invalid syntax. Requires 'sleep [time]'", 'line': i}
     #     if 'time' not in command:
     #         return {'error': 'The %s command requires a time parameter' % command['command'], 'line': i}
     #
@@ -79,9 +81,14 @@ class LightingScriptRequestHandler:
     #
     #     return None
     #
-    # @staticmethod
-    # def validate_fade_command(i, command):
-    #     validation = LightingCommandsRequestHandler.validate_color_command(i, command)
-    #     if validation is None:
-    #         validation = LightingCommandsRequestHandler.validate_sleep_command(i, command)
-    #     return validation
+    @staticmethod
+    def validate_fade_command(i, command):
+        parts = command.split()
+        if len(parts) != 4:
+            return {'error': "Invalid syntax. Requires 'fade [time] to [color]'", 'line': i}
+
+        validation = LightingScriptRequestHandler.validate_color_command(i, parts[3])
+        return validation
+        # if validation is None:
+        #     validation = LightingCommandsRequestHandler.validate_sleep_command(i, command)
+        # return validation
