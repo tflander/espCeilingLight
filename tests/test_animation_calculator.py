@@ -15,11 +15,11 @@ def pwm_channels():
     return pwm_channels
 
 
-def test_fade_time_slice_defaults_to_10ms(pwm_channels):
+def test_fade_time_slice_defaults_to_50ms(pwm_channels):
     fade_command = {"command": "fade", "time": 1, "unit": "s", "color": "#ffff00"}
 
     fade_params = AnimationCalculator.for_fade_command(fade_command, pwm_channels)
-    assert fade_params.slice_duration_ms == 10
+    assert fade_params.slice_duration_ms == 50
 
 
 def test_can_override_default_fade_time_slice(pwm_channels):

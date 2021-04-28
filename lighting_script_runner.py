@@ -19,6 +19,20 @@ class LightingScriptRunner:
 
     @staticmethod
     async def run_command(command, led_pwm_channels: LedPwmChannels):
+        if command.startswith('#'):
+            duties = RgbDutiesConverter.to_duties(command)
+            led_pwm_channels.red.duty(duties.red)
+            led_pwm_channels.green.duty(duties.green)
+            led_pwm_channels.blue.duty(duties.blue)
+            led_pwm_channels.white.duty(duties.white)
+            led_pwm_channels.ultra_violet.duty(duties.ultra_violet)
+        elif command.startswith('sleep'):
+            # await uasyncio.sleep_ms(24)
+            parts = command.split()
+            await uasyncio.sleep_ms(AnimationCalculator.delay_time_ms(parts[1]))
+
+    @staticmethod
+    async def run_legacy_command(command, led_pwm_channels: LedPwmChannels):
         if command['command'] == 'setColor':
             duties = RgbDutiesConverter.to_duties(command['color'])
             led_pwm_channels.red.duty(duties.red)
@@ -27,7 +41,7 @@ class LightingScriptRunner:
             led_pwm_channels.white.duty(duties.white)
             led_pwm_channels.ultra_violet.duty(duties.ultra_violet)
         elif command['command'] == 'sleep':
-            await uasyncio.sleep_ms(AnimationCalculator.delay_time_ms(command))
+            await uasyncio.sleep_ms(AnimationCalculator.legacy_delay_time_ms(command))
         elif command['command'] == 'fade':
             fade_params = AnimationCalculator.for_fade_command(command, led_pwm_channels)
             current_duties = led_pwm_channels.as_duties()

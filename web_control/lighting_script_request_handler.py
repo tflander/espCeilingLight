@@ -6,6 +6,7 @@ from web_control.lighting_response import LightingResponse
 
 class LightingScriptRequestHandler:
 
+    # TODO: extract time parser for use in the animation calculator
     time_pattern = re.compile(r"([0-9]+)([a-z]+)")
 
     @staticmethod

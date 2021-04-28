@@ -5,6 +5,7 @@ from config import *
 from web_control.lighting_commands_request_handler import LightingCommandsRequestHandler
 from web_control.lighting_request import LightingRequest
 from web_control.lighting_response import LightingResponse
+from web_control.lighting_script_request_handler import LightingScriptRequestHandler
 
 
 def start_listener():
@@ -22,7 +23,9 @@ class LightingRequestHandler:
     @staticmethod
     def handle(request: LightingRequest, script):
         if request.path == '/lighting':
-            return LightingCommandsRequestHandler.handle_lighting(request)
+            # TODO: make spike real
+            # return LightingCommandsRequestHandler.handle_lighting(request)
+            return LightingScriptRequestHandler.handle_lighting(request)
         elif request.path == '/info':
             return LightingRequestHandler.handle_info(request, script)
         else:

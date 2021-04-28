@@ -39,7 +39,7 @@ def pwm_channels():
 ])
 def test_apply_deltas(pwm_channels, test_name, target_color, current_duties, expected_as_float, expected_updated_values):
     fade_command = {"command": "fade", "time": 1, "unit": "s", "color": target_color}
-    fade_params = AnimationCalculator.for_fade_command(fade_command, pwm_channels)
+    fade_params = AnimationCalculator.for_fade_command(fade_command, pwm_channels, slice_duration_ms=10)
     target_color_duties = RgbDutiesConverter.to_duties(target_color)
     current_duties.apply_deltas(fade_params.color_slice_deltas, target_color_duties)
 
