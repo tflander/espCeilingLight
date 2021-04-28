@@ -64,23 +64,22 @@ class LightingScriptRequestHandler:
         parts = command.split()
         if len(parts) != 2:
             return {'error': "Invalid syntax. Requires 'sleep [time]'", 'line': i}
-    #     if 'time' not in command:
-    #         return {'error': 'The %s command requires a time parameter' % command['command'], 'line': i}
-    #
-    #     if type(command['time']) != int and type(command['time']) != float:
-    #         return {'error': 'Invalid time parameter. Found [%s]' % command['time'], 'line': i}
-    #
-    #     if command['time'] <= 0:
-    #         return {'error': 'Invalid time parameter. Found [%s]' % command['time'], 'line': i}
-    #
-    #     if 'unit' not in command:
-    #         return {'error': 'The %s command requires a unit parameter' % command['command'], 'line': i}
-    #
-    #     if command['unit'] not in ["ms", "s", "m"]:
-    #         return {'error': 'Invalid unit parameter. Found [%s]' % command['unit'], 'line': i}
-    #
-    #     return None
-    #
+
+        time_param = parts[1]
+
+        time_pattern = re.compile(r"([0-9]+)([a-z]+)")
+        result = time_pattern.match(time_param)
+
+        if result is None:
+            return {'error': 'Invalid time parameter. Found [%s]' % time_param, 'line': i}
+
+        time_and_units = result.groups()
+        time_val = float(time_and_units[0])
+        time_units = time_and_units[1]
+
+        if time_val <= 0 or time_units not in ["ms", "s", "m"]:
+            return {'error': 'Invalid time parameter. Found [%s]' % time_param, 'line': i}
+
     @staticmethod
     def validate_fade_command(i, command):
         parts = command.split()
