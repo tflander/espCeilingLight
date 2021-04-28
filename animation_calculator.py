@@ -1,4 +1,5 @@
 from led_pwm_channels import LedPwmChannels
+from parsers.time_parser import TimeParser
 from rgb_duties_converter import RgbDutiesConverter
 from duties import Duties
 import math
@@ -41,11 +42,11 @@ class AnimationCalculator:
 
     @staticmethod
     def delay_time_ms(delay_param):
-        return 77
-        # delay_time = command['time']
-        # delay_unit = command['unit']
-        # if delay_unit == 's':
-        #     delay_time *= 1000
-        # elif delay_unit == 'm':
-        #     delay_time *= 60000
-        # return delay_time
+        time_and_unit = TimeParser.parse(delay_param)
+        delay_time = time_and_unit[0]
+        delay_unit = time_and_unit[1]
+        if delay_unit == 's':
+            delay_time *= 1000
+        elif delay_unit == 'm':
+            delay_time *= 60000
+        return delay_time

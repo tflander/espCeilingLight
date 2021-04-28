@@ -1,13 +1,11 @@
 import ujson, re
+from parsers.time_parser import TimeParser
 from rgb_duties_converter import RgbDutiesConverter
 from web_control.lighting_request import LightingRequest
 from web_control.lighting_response import LightingResponse
 
 
 class LightingScriptRequestHandler:
-
-    # TODO: extract time parser for use in the animation calculator
-    time_pattern = re.compile(r"([0-9]+)([a-z]+)")
 
     @staticmethod
     def handle_lighting(request: LightingRequest):
@@ -73,14 +71,13 @@ class LightingScriptRequestHandler:
 
     @staticmethod
     def validate_time_parameter(time_param, i):
-        result = LightingScriptRequestHandler.time_pattern.match(time_param)
+        result = TimeParser.parse(time_param)
 
         if result is None:
             return {'error': 'Invalid time parameter. Found [%s]' % time_param, 'line': i}
 
-        time_and_units = result.groups()
-        time_val = float(time_and_units[0])
-        time_units = time_and_units[1]
+        time_val = result[0]
+        time_units = result[1]
 
         if time_val <= 0 or time_units not in ["ms", "s", "m"]:
             return {'error': 'Invalid time parameter. Found [%s]' % time_param, 'line': i}
