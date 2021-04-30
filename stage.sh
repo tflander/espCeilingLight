@@ -34,6 +34,13 @@ echo "updating lighting_response.py..."
 ampy put web_control/lighting_response.py web_control/lighting_response.py
 echo "updating lighting_commands_request_handler.py..."
 ampy put web_control/lighting_commands_request_handler.py web_control/lighting_commands_request_handler.py
+echo "updating lighting_script_request_handler.py..."
+ampy put web_control/lighting_script_request_handler.py web_control/lighting_script_request_handler.py
+
+ampy rmdir parsers || echo "ignoring that folder parsers does not exist"
+ampy mkdir parsers
+echo "updating time_parser.py..."
+ampy put parsers/time_parser.py parsers/time_parser.py
 
 echo "resetting..."
 ampy reset

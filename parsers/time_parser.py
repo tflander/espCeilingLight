@@ -13,8 +13,7 @@ class TimeParser:
         if result is None:
             return None
 
-        time_and_units = result.groups()
-        time_val = float(time_and_units[0])
-        time_units = time_and_units[1]
+        time_val = float(result.group(1))
+        time_units = result.group(2)
 
         return [time_val, time_units]

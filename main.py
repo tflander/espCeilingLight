@@ -71,21 +71,31 @@ async def handle_web_command(web_command):
     if web_command.path == '/lighting':
         if current_task is not None:
             current_task.cancel()
-        current_script = web_command.body
+        current_script = web_command.body['script']
         current_task = uasyncio.create_task(LightingScriptRunner.run(current_script, led_pwm_channels))
     else:
         print("unknown web command [%s]" % web_command.path)
 
 
 presets = Presets()
-presets.add([{"command": "setColor", "color": "#ff0000"}])
-presets.add([{"command": "setColor", "color": "#00ff00"}])
-presets.add([{"command": "setColor", "color": "#0000ff"}])
+# TODO: deprecated
+# presets.add([{"command": "setColor", "color": "#ff0000"}])
+# presets.add([{"command": "setColor", "color": "#00ff00"}])
+# presets.add([{"command": "setColor", "color": "#0000ff"}])
+# presets.add([
+#     {"command": "setColor", "color": "#0000ff"},
+#     {"command": "fade", "color": "#ff0000", "time": 2, "unit": "s"},
+#     {"command": "fade", "color": "#00ff00", "time": 2, "unit": "s"},
+#     {"command": "fade", "color": "#0000ff", "time": 2, "unit": "s"}
+# ])
+presets.add(["#ff0000"])
+presets.add(["#00ff00"])
+presets.add(["#0000ff"])
 presets.add([
-    {"command": "setColor", "color": "#0000ff"},
-    {"command": "fade", "color": "#ff0000", "time": 2, "unit": "s"},
-    {"command": "fade", "color": "#00ff00", "time": 2, "unit": "s"},
-    {"command": "fade", "color": "#0000ff", "time": 2, "unit": "s"}
+    "#0000ff",
+    "fade 2s to #ff0000",
+    "fade 2s to #00ff00",
+    "fade 2s to #0000ff"
 ])
 
 

@@ -28,7 +28,7 @@ class LightingScriptRunner:
             led_pwm_channels.ultra_violet.duty(duties.ultra_violet)
         elif command.startswith('sleep'):
             parts = command.split()
-            await uasyncio.sleep_ms(AnimationCalculator.delay_time_ms(parts[1]))
+            await uasyncio.sleep_ms(round(AnimationCalculator.delay_time_ms(parts[1])))
         elif command.startswith('fade'):
             parts = command.split()
             target_color_duties = RgbDutiesConverter.to_duties(parts[3])
