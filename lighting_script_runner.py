@@ -67,5 +67,9 @@ class LightingScriptRunner:
 
     @staticmethod
     def should_run_in_loop(commands):
-        command_verbs = list(map(lambda command: command["command"], commands))
+        if type(commands[0]) == str:
+            command_verbs = list(map(lambda command: command.split()[0], commands))
+        else:
+            # TODO: remove deprecated
+            command_verbs = list(map(lambda command: command["command"], commands))
         return 'sleep' in command_verbs or 'fade' in command_verbs

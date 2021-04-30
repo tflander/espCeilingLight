@@ -147,13 +147,17 @@ def test_fade():
     ]
 
 
-# TODO: marker for new syntax support
-def test_should_run_in_loop_for_commands_with_no_sleep_or_fade():
+def test_legacy_should_run_in_loop_for_commands_with_no_sleep_or_fade():
     commands = [{"command": "setColor", "color": "#ff0000"}]
     assert not LightingScriptRunner.should_run_in_loop(commands)
 
 
-def test_should_run_in_loop_for_commands_containing_sleep():
+def test_should_run_in_loop_for_commands_with_no_sleep_or_fade():
+    commands = ["#ff0000"]
+    assert not LightingScriptRunner.should_run_in_loop(commands)
+
+
+def test_legacy_should_run_in_loop_for_commands_containing_sleep():
     commands = [
         {"command": "setColor", "color": "#ff0000"},
         {"command": "sleep", "time": 1, "unit": "s"},
@@ -163,9 +167,27 @@ def test_should_run_in_loop_for_commands_containing_sleep():
     assert LightingScriptRunner.should_run_in_loop(commands)
 
 
-def test_should_run_in_loop_for_commands_containing_fade():
+def test_should_run_in_loop_for_commands_containing_sleep():
+    commands = [
+        "#ff0000",
+        "sleep 1s",
+        "#ff0000",
+        "sleep 1s"
+    ]
+    assert LightingScriptRunner.should_run_in_loop(commands)
+
+
+def test_legacy_should_run_in_loop_for_commands_containing_fade():
     commands = [
         {"command": "fade", "color": "#ff0000", "time": 1, "unit": "s"},
         {"command": "fade", "color": "#00ff00", "time": 1, "unit": "s"},
+    ]
+    assert LightingScriptRunner.should_run_in_loop(commands)
+
+
+def test_should_run_in_loop_for_commands_containing_fade():
+    commands = [
+        "fade 1s to #ff0000",
+        "fade 1s to #00ff00"
     ]
     assert LightingScriptRunner.should_run_in_loop(commands)
