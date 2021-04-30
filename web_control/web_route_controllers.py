@@ -2,7 +2,6 @@ import ujson, usocket
 import ubinascii
 import network
 from config import *
-from web_control.lighting_commands_request_handler import LightingCommandsRequestHandler
 from web_control.lighting_request import LightingRequest
 from web_control.lighting_response import LightingResponse
 from web_control.lighting_script_request_handler import LightingScriptRequestHandler
@@ -23,8 +22,6 @@ class LightingRequestHandler:
     @staticmethod
     def handle(request: LightingRequest, script):
         if request.path == '/lighting':
-            # TODO: make spike real
-            # return LightingCommandsRequestHandler.handle_lighting(request)
             return LightingScriptRequestHandler.handle_lighting(request)
         elif request.path == '/info':
             return LightingRequestHandler.handle_info(request, script)
