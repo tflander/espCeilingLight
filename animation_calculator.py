@@ -30,7 +30,6 @@ class AnimationCalculator:
 
         return FadeParams(slice_duration_ms, target_color, color_slice_deltas)
 
-    # TODO: update tests
     @staticmethod
     def for_fade_command(target_color, delay, led_pwm_channels: LedPwmChannels, slice_duration_ms=50):
         # target_color = RgbDutiesConverter.to_duties(command['color'])
