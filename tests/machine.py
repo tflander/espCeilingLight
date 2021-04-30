@@ -19,10 +19,14 @@ class TouchPad:
 class PWM:
     def __init__(self, pin, freq, duty):
         self.current_duty = duty
+        self.duty_history = []
 
     def duty(self, value=None):
         if value is None:
             return self.current_duty
         else:
             self.current_duty = value
+            self.duty_history.append(value)
 
+    def reset_duty_history(self):
+        self.duty_history = []

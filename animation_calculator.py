@@ -15,10 +15,27 @@ class FadeParams:
 
 class AnimationCalculator:
     @staticmethod
-    def for_fade_command(command, led_pwm_channels: LedPwmChannels, slice_duration_ms=50):
+    def for_legacy_fade_command(command, led_pwm_channels: LedPwmChannels, slice_duration_ms=50):
         target_color = RgbDutiesConverter.to_duties(command['color'])
         color_total_deltas = led_pwm_channels.delta_to_color(target_color)
         total_delay_ms = AnimationCalculator.legacy_delay_time_ms(command)
+        slice_count = math.floor(total_delay_ms / slice_duration_ms)
+        x = 0
+        r = color_total_deltas.red / slice_count
+        g = color_total_deltas.green / slice_count
+        b = color_total_deltas.blue / slice_count
+        w = color_total_deltas.white / slice_count
+        u = color_total_deltas.ultra_violet / slice_count
+        color_slice_deltas = Duties(r, g, b, w, u)
+
+        return FadeParams(slice_duration_ms, target_color, color_slice_deltas)
+
+    # TODO: update tests
+    @staticmethod
+    def for_fade_command(target_color, delay, led_pwm_channels: LedPwmChannels, slice_duration_ms=50):
+        # target_color = RgbDutiesConverter.to_duties(command['color'])
+        color_total_deltas = led_pwm_channels.delta_to_color(target_color)
+        total_delay_ms = AnimationCalculator.delay_time_ms(delay)
         slice_count = math.floor(total_delay_ms / slice_duration_ms)
         x = 0
         r = color_total_deltas.red / slice_count

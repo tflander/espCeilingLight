@@ -97,7 +97,6 @@ def test_sleep(test_name, delay_value, expected_delay_ms):
     asyncio.run(LightingScriptRunner.run_command(command, pwm_channels))
     assert uasyncio.total_sleep_time_ms == expected_delay_ms
 
-# TODO: marker for new syntax support
 
 def test_legacy_fade():
     command = {"command": "fade", "time": 1, "unit": "s", "color": "#ffff00"}
@@ -118,6 +117,37 @@ def test_legacy_fade():
     assert pwm_channels.ultra_violet.duty() == 0
 
 
+def test_fade():
+    command = "fade 1s to #ffff00"
+    pwm_channels = LedPwmChannels(red_pin=2, green_pin=3, blue_pin=4, white_pin=5, uv_pin=6)
+    pwm_channels.red.duty(10)
+    pwm_channels.green.duty(20)
+    pwm_channels.blue.duty(30)
+    pwm_channels.white.duty(40)
+    pwm_channels.ultra_violet.duty(50)
+    uasyncio.total_sleep_time_ms = 0
+
+    asyncio.run(LightingScriptRunner.run_command(command, pwm_channels))
+
+    assert uasyncio.total_sleep_time_ms == 1000
+    assert pwm_channels.red.duty_history == [
+        10, 60, 111, 162, 212, 262, 313, 364, 414, 464, 515, 566, 616, 666, 717, 768, 818, 868, 919, 970, 1020
+    ]
+    assert pwm_channels.green.duty_history == [
+        20, 70, 120, 170, 220, 270, 320, 370, 420, 470, 520, 570, 620, 670, 720, 770, 820, 870, 920, 970, 1020
+    ]
+    assert pwm_channels.blue.duty_history == [
+        30, 28, 27, 26, 24, 22, 21, 20, 18, 16, 15, 14, 12, 10, 9, 8, 6, 4, 3, 2, 0
+    ]
+    assert pwm_channels.white.duty_history == [
+        40, 38, 36, 34, 32, 30, 28, 26, 24, 22, 20, 18, 16, 14, 12, 10, 8, 6, 4, 2, 0
+    ]
+    assert pwm_channels.ultra_violet.duty_history == [
+        50, 48, 45, 42, 40, 38, 35, 32, 30, 28, 25, 22, 20, 18, 15, 12, 10, 8, 5, 2, 0
+    ]
+
+
+# TODO: marker for new syntax support
 def test_should_run_in_loop_for_commands_with_no_sleep_or_fade():
     commands = [{"command": "setColor", "color": "#ff0000"}]
     assert not LightingScriptRunner.should_run_in_loop(commands)

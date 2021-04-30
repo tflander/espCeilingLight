@@ -18,26 +18,26 @@ def pwm_channels():
 def test_fade_time_slice_defaults_to_50ms(pwm_channels):
     fade_command = {"command": "fade", "time": 1, "unit": "s", "color": "#ffff00"}
 
-    fade_params = AnimationCalculator.for_fade_command(fade_command, pwm_channels)
+    fade_params = AnimationCalculator.for_legacy_fade_command(fade_command, pwm_channels)
     assert fade_params.slice_duration_ms == 50
 
 
 def test_can_override_default_fade_time_slice(pwm_channels):
     fade_command = {"command": "fade", "time": 1, "unit": "s", "color": "#ffff00"}
 
-    fade_params = AnimationCalculator.for_fade_command(fade_command, pwm_channels, slice_duration_ms=20)
+    fade_params = AnimationCalculator.for_legacy_fade_command(fade_command, pwm_channels, slice_duration_ms=20)
     assert fade_params.slice_duration_ms == 20
 
 
 def test_fade_target_color(pwm_channels):
     fade_command = {"command": "fade", "time": 1, "unit": "s", "color": "#ffcc00"}
 
-    fade_params = AnimationCalculator.for_fade_command(fade_command, pwm_channels)
+    fade_params = AnimationCalculator.for_legacy_fade_command(fade_command, pwm_channels)
     assert fade_params.target_color == Duties(red=1020, green=816)
 
 
 def test_fade_color_slice_deltas(pwm_channels):
     fade_command = {"command": "fade", "time": 1, "unit": "s", "color": "#ffcc00"}
 
-    fade_params = AnimationCalculator.for_fade_command(fade_command, pwm_channels, slice_duration_ms=10)
+    fade_params = AnimationCalculator.for_legacy_fade_command(fade_command, pwm_channels, slice_duration_ms=10)
     assert fade_params.color_slice_deltas == Duties(red=10.1, green=7.96, blue=-0.3, white=-0.4, ultra_violet=-0.5)
