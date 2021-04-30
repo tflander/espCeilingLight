@@ -78,16 +78,6 @@ async def handle_web_command(web_command):
 
 
 presets = Presets()
-# TODO: deprecated
-# presets.add([{"command": "setColor", "color": "#ff0000"}])
-# presets.add([{"command": "setColor", "color": "#00ff00"}])
-# presets.add([{"command": "setColor", "color": "#0000ff"}])
-# presets.add([
-#     {"command": "setColor", "color": "#0000ff"},
-#     {"command": "fade", "color": "#ff0000", "time": 2, "unit": "s"},
-#     {"command": "fade", "color": "#00ff00", "time": 2, "unit": "s"},
-#     {"command": "fade", "color": "#0000ff", "time": 2, "unit": "s"}
-# ])
 presets.add(["#ff0000"])
 presets.add(["#00ff00"])
 presets.add(["#0000ff"])
