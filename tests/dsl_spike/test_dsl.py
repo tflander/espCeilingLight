@@ -22,12 +22,8 @@ def test_variable_assignment():
                 print('invalid syntax', line, 'for', let_pattern)
             script_var = m.group(1).strip()
             rhs = m.group(2).strip()
-            print(script_var)
-            print(rhs)
-            print('===')
 
-            # TODO: evaluate RHS
-            script_runner.let(script_var, script_runner.add(3, 1))
+            script_runner.let(script_var, rhs)
             print(script_runner.script_vars)
             continue
         if parts[0] == 'show':
@@ -42,11 +38,11 @@ class ScriptRunner:
         self.script_vars = {}
 
     def let(self, k, v):
-        self.script_vars[k] = v
-
-    def add(self, v1, v2):
-        return v1 + v2
+        self.script_vars[k] = eval(v)
 
     def show(self, script_var):
         print(self.script_vars[script_var])
 
+
+def add(v1, v2):
+    return v1 + v2
