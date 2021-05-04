@@ -8,9 +8,10 @@ def test_variable_assignment():
     for line in script:
         parts = line.split()
         if parts[0] == 'let':
-            print("variable assignment")
+            print("variable assignment", parts)
 
-            script_runner.let('y', script_runner.add(3, 1))
+            # TODO: better lexical parsing than line.split()
+            script_runner.let(parts[1], script_runner.add(3, 1))
 
             print(script_runner.script_vars)
             continue
