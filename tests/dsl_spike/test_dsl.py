@@ -14,16 +14,17 @@ def test_simple_variable_assignments():
     assert script_runner.script_vars == {'y': 3, 'x': 4}
 
 
-def test_variable_reference_in_assignment():
+# TODO:  Investigate lexical analyzers / parse generators
+def skip_test_variable_reference_in_assignment():
     script_runner = ScriptRunner()
     script = [
         "let y = 3",
         "let x = y + 1",
-        "show y"
+        "let z = x+1"
     ]
 
     script_runner.run(script)
-    assert script_runner.script_vars == {'y': 3, 'x': 4}
+    assert script_runner.script_vars == {'y': 3, 'x': 4, 'z': 5}
 
 
 class ScriptRunner:
