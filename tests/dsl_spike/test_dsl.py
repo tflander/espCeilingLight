@@ -1,3 +1,7 @@
+# https://tomassetti.me/parsing-in-python/
+import re
+
+
 def test_variable_assignment():
     script_runner = ScriptRunner()
     script = [
@@ -10,9 +14,20 @@ def test_variable_assignment():
         if parts[0] == 'let':
             print("variable assignment", parts)
 
-            # TODO: better lexical parsing than line.split()
-            script_runner.let(parts[1], script_runner.add(3, 1))
+            let_pattern = r"^let\s+(.*)=(.*)$"
+            p = re.compile(let_pattern)
+            m = p.match(line)
+            print(m)
+            if m is None:
+                print('invalid syntax', line, 'for', let_pattern)
+            script_var = m.group(1).strip()
+            rhs = m.group(2).strip()
+            print(script_var)
+            print(rhs)
+            print('===')
 
+            # TODO: evaluate RHS
+            script_runner.let(script_var, script_runner.add(3, 1))
             print(script_runner.script_vars)
             continue
         if parts[0] == 'show':
