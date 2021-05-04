@@ -2,10 +2,22 @@
 import re
 
 
-def test_variable_assignment():
+def test_simple_variable_assignments():
     script_runner = ScriptRunner()
     script = [
         "let y = add(2, 1)",
+        "let x = 3 + 1",
+        "show y"
+    ]
+
+    script_runner.run(script)
+    assert script_runner.script_vars == {'y': 3, 'x': 4}
+
+
+def test_variable_reference_in_assignment():
+    script_runner = ScriptRunner()
+    script = [
+        "let y = 3",
         "let x = y + 1",
         "show y"
     ]
