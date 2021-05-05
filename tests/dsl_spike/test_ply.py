@@ -103,12 +103,16 @@ def p_error(t):
     print("Syntax error at '%s'" % t.value)
 
 import ply.yacc as yacc
-parser = yacc.yacc()  # this generates code
 
-def test_add():
+# TODO: we share output with test_ply_chem_example.py, so can't generate / parallel run tests
+#parser = yacc.yacc()  # this generates code
+
+
+def skip_test_add():
+    pass
     # assert parser.parse('1 + 1') == 2  # Expected 2, Actual None
 
-    parser.parse('2 + 3')
-    print(parser.parse('1 + 1'))
+    # parser.parse('2 + 3')
+    # print(parser.parse('1 + 1'))
     # print(parser.parse('this should be invalid'))  # Syntax error at 'should'
     # print(parser.parse('testing this should be invalid'))  # Syntax error at 'this'

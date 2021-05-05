@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'leftPLUSMINUSleftTIMESDIVIDErightUMINUSDIVIDE EQUALS LPAREN MINUS NAME NUMBER PLUS RPAREN TIMESstatement : NAME EQUALS expressionstatement : expressionexpression : expression PLUS expression\n                  | expression MINUS expression\n                  | expression TIMES expression\n                  | expression DIVIDE expressionexpression : MINUS expression %prec UMINUSexpression : LPAREN expression RPARENexpression : NUMBERexpression : NAME'
+_lr_signature = 'COUNT SYMBOL\n    chemical_equation :\n    chemical_equation : species_list\n    species_list :  species_list speciesspecies_list : species\n    species : SYMBOL\n    species : SYMBOL COUNT\n    '
     
-_lr_action_items = {'NAME':([0,4,5,7,8,9,10,11,],[2,13,13,13,13,13,13,13,]),'MINUS':([0,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,],[4,-10,9,4,4,-9,4,4,4,4,4,-7,-10,9,9,-3,-4,-5,-6,-8,]),'LPAREN':([0,4,5,7,8,9,10,11,],[5,5,5,5,5,5,5,5,]),'NUMBER':([0,4,5,7,8,9,10,11,],[6,6,6,6,6,6,6,6,]),'$end':([1,2,3,6,12,13,15,16,17,18,19,20,],[0,-10,-2,-9,-7,-10,-1,-3,-4,-5,-6,-8,]),'EQUALS':([2,],[7,]),'PLUS':([2,3,6,12,13,14,15,16,17,18,19,20,],[-10,8,-9,-7,-10,8,8,-3,-4,-5,-6,-8,]),'TIMES':([2,3,6,12,13,14,15,16,17,18,19,20,],[-10,10,-9,-7,-10,10,10,10,10,-5,-6,-8,]),'DIVIDE':([2,3,6,12,13,14,15,16,17,18,19,20,],[-10,11,-9,-7,-10,11,11,11,11,-5,-6,-8,]),'RPAREN':([6,12,13,14,16,17,18,19,20,],[-9,-7,-10,20,-3,-4,-5,-6,-8,]),}
+_lr_action_items = {'$end':([0,1,2,3,4,5,6,],[-1,0,-2,-4,-5,-3,-6,]),'SYMBOL':([0,2,3,4,5,6,],[4,4,-4,-5,-3,-6,]),'COUNT':([4,],[6,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'statement':([0,],[1,]),'expression':([0,4,5,7,8,9,10,11,],[3,12,14,15,16,17,18,19,]),}
+_lr_goto_items = {'chemical_equation':([0,],[1,]),'species_list':([0,],[2,]),'species':([0,2,],[3,5,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -26,15 +26,11 @@ for _k, _v in _lr_goto_items.items():
        _lr_goto[_x][_k] = _y
 del _lr_goto_items
 _lr_productions = [
-  ("S' -> statement","S'",1,None,None,None),
-  ('statement -> NAME EQUALS expression','statement',3,'p_statement_assign','test_ply.py',64),
-  ('statement -> expression','statement',1,'p_statement_expr','test_ply.py',68),
-  ('expression -> expression PLUS expression','expression',3,'p_expression_binop','test_ply.py',72),
-  ('expression -> expression MINUS expression','expression',3,'p_expression_binop','test_ply.py',73),
-  ('expression -> expression TIMES expression','expression',3,'p_expression_binop','test_ply.py',74),
-  ('expression -> expression DIVIDE expression','expression',3,'p_expression_binop','test_ply.py',75),
-  ('expression -> MINUS expression','expression',2,'p_expression_uminus','test_ply.py',82),
-  ('expression -> LPAREN expression RPAREN','expression',3,'p_expression_group','test_ply.py',86),
-  ('expression -> NUMBER','expression',1,'p_expression_number','test_ply.py',90),
-  ('expression -> NAME','expression',1,'p_expression_name','test_ply.py',94),
+  ("S' -> chemical_equation","S'",1,None,None,None),
+  ('chemical_equation -> <empty>','chemical_equation',0,'p_chemical_equation','test_ply_chem_example.py',48),
+  ('chemical_equation -> species_list','chemical_equation',1,'p_chemical_equation','test_ply_chem_example.py',49),
+  ('species_list -> species_list species','species_list',2,'p_species_list','test_ply_chem_example.py',59),
+  ('species_list -> species','species_list',1,'p_species','test_ply_chem_example.py',64),
+  ('species -> SYMBOL','species',1,'p_single_species','test_ply_chem_example.py',70),
+  ('species -> SYMBOL COUNT','species',2,'p_single_species','test_ply_chem_example.py',71),
 ]
