@@ -22,8 +22,8 @@ class LightingCommandNode:
         if self.value_type == ExpressionValueTypes.FLOAT:
             return float(self.raw)
         elif self.value_type == ExpressionValueTypes.ADDITION:
-            self.left = LightingCommandNode(LightingCommandNodeTypes.EXPR, "1")
-            self.right = LightingCommandNode(LightingCommandNodeTypes.EXPR, "2")
-            return None
+            self.left = LightingCommandNode(None, "1")
+            self.right = LightingCommandNode(None, "2")
+            return self.left.value + self.right.value
         return int(self.raw)
 

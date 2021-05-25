@@ -33,7 +33,7 @@ def test_parse_addition_of_constants():
     assert command_tree.type == LightingCommandNodeTypes.EXPR
     assert command_tree.raw == "1+2"
     assert command_tree.value_type == ExpressionValueTypes.ADDITION
-    assert command_tree.value is None
+    assert command_tree.value == 3
     assert command_tree.left.value == 1
     assert command_tree.right.value == 2
 
