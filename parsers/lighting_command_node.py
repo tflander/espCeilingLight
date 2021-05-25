@@ -6,9 +6,14 @@ class LightingCommandNode:
         self.type = command_node_type
         self.raw = raw
         self.value_type = self.determine_value_type()
+        self.left = None;
+        self.right = None;
         self.value = self.determine_value()
 
+
     def determine_value_type(self):
+        if '+' in self.raw:
+            return ExpressionValueTypes.ADDITION
         if '.' in self.raw:
             return ExpressionValueTypes.FLOAT
         return ExpressionValueTypes.INT
@@ -16,5 +21,9 @@ class LightingCommandNode:
     def determine_value(self):
         if self.value_type == ExpressionValueTypes.FLOAT:
             return float(self.raw)
+        elif self.value_type == ExpressionValueTypes.ADDITION:
+            self.left = LightingCommandNode(LightingCommandNodeTypes.EXPR, "1")
+            self.right = LightingCommandNode(LightingCommandNodeTypes.EXPR, "2")
+            return None
         return int(self.raw)
 

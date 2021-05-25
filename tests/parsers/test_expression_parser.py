@@ -20,3 +20,21 @@ def test_parse_3_14():
     assert command_tree.value == 3.14
 
 
+def test_parse_with_spaces_stripped():
+    command_tree = parser.parse("  3.14  ")
+    assert command_tree.type == LightingCommandNodeTypes.EXPR
+    assert command_tree.raw == "  3.14  "
+    assert command_tree.value_type == ExpressionValueTypes.FLOAT
+    assert command_tree.value == 3.14
+
+
+def test_parse_addition_of_constants():
+    command_tree = parser.parse("1+2")
+    assert command_tree.type == LightingCommandNodeTypes.EXPR
+    assert command_tree.raw == "1+2"
+    assert command_tree.value_type == ExpressionValueTypes.ADDITION
+    assert command_tree.value is None
+    assert command_tree.left.value == 1
+    assert command_tree.right.value == 2
+
+
