@@ -38,3 +38,13 @@ def test_parse_addition_of_constants():
     assert command_tree.right.value == 2
 
 
+# TODO: skip test until I understand parser combinators
+def skip_test_parse_addition_of_multiple_constants():
+    command_tree = parser.parse("1+2+3")
+    assert command_tree.type == LightingCommandNodeTypes.EXPR
+    assert command_tree.raw == "1+2+3"
+    assert command_tree.value_type == ExpressionValueTypes.ADDITION
+    assert command_tree.value == 6
+    assert command_tree.left.value_type == ExpressionValueTypes.ADDITION
+    assert command_tree.right.value == 3
+

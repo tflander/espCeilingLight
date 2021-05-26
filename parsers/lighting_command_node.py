@@ -10,7 +10,6 @@ class LightingCommandNode:
         self.right = None;
         self.value = self.determine_value()
 
-
     def determine_value_type(self):
         if '+' in self.raw:
             return ExpressionValueTypes.ADDITION
