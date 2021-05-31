@@ -1,6 +1,5 @@
 import re
 
-# https://gist.github.com/yelouafi/556e5159e869952335e01f6b473c4ec1
 from parsers.expression_parser import *
 
 
