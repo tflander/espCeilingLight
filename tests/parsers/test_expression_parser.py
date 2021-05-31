@@ -15,14 +15,6 @@ def test_parse_number():
     assert result.right is None
 
 
-def test_parse_number_with_trailing_text():
-    result = parser.parse("0 plus more text")
-    assert result.token == "0 plus more text"
-    assert result.match == "0"
-    assert result.left is None
-    assert result.right == "plus more text"
-
-
 @pytest.mark.skip("TODO: test after combining parsers")
 def test_parse_invalid_expression():
     result = parser.parse("this is invalid")
@@ -32,7 +24,7 @@ def test_parse_invalid_expression():
 
 
 def test_number_parser_failure():
-    result = parser.parse("not a number 123, so parse error")
+    result = number_parser.parse("not a number 123, so parse error")
     assert result.position == 0
     assert result.expected == "a valid number"
     assert result.actual == "not a number 123, so parse error"
