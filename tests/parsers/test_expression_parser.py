@@ -40,7 +40,7 @@ def test_parse_invalid_expression():
 
 
 def test_number_parser_failure():
-    result = number_parser.parse("not a number 123, so parse error")
+    result = parse_number("not a number 123, so parse error")
     assert result.expected == "a valid number"
     assert result.actual == "not a number 123, so parse error"
 
