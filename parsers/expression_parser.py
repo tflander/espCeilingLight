@@ -9,7 +9,7 @@ addition_pattern = '(\\s?\\+\\s?)'
 class NumberParser:
 
     def parse(self, token):
-        result = re.match(number_pattern, token)
+        result = re.search(number_pattern, token)
         if result is None:
             return ParseFailure(0, "a valid number", token)
         return ParseResult(token, result.group(1))
@@ -18,10 +18,10 @@ class NumberParser:
 class AdditionParser:
 
     def parse(self, token):
-        result = re.findall(addition_pattern, token)
-        if len(result) == 0:
+        result = re.search(addition_pattern, token)
+        if result is None:
             return ParseFailure(0, "expr + expr", token)
-        return ParseResult(token, result[0])
+        return ParseResult(token, result.group(1))
 
 
 class ExpressionParser:
