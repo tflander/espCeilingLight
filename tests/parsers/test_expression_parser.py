@@ -18,6 +18,11 @@ def test_parse_multiple_addition():
     assert result.value == 6
 
 
+def test_parse_multiplication_with_addition():
+    result = parse_expression("1 + 2 * 3 + 4")
+    assert result.value == 11
+
+
 @pytest.mark.skip("TODO: test after combining parsers.  Maybe after writing the command parser.")
 def test_parse_invalid_expression():
     result = parse_expression("this is invalid")

@@ -7,6 +7,10 @@ def test_addition():
     assert re.findall(addition_pattern, '12 + 34') == [' + ']
 
 
+def test_addition():
+    assert re.findall(multiplication_pattern, '12 * 34') == [' * ']
+
+
 def test_positive_int():
     result = re.match(number_pattern, '12')
     assert result.group(1) == "12"

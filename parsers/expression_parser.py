@@ -2,7 +2,10 @@ from parsers.lighting_command_node import LightingCommandNode
 import re
 
 number_pattern = '^(-?[0-9]+\\.?[0-9]*)$'
+
+# TODO: should we have an operation pattern?
 addition_pattern = '(\\s?\\+\\s?)'
+multiplication_pattern = '(\\s?\\*\\s?)'
 
 # expression := number | operation
 # operation := expression~operator~expression
@@ -37,8 +40,29 @@ def parse_addition(token):
     return parse_result
 
 
+def parse_multiplication(token):
+    result = re.search(multiplication_pattern, token)
+    if result is None:
+        return ParseFailure("expr * expr", token)
+    parse_result = ParseResult(token, result.group(1))
+
+    if parse_result.left is not None:
+        parse_result.left = parse_expression(parse_result.left)
+    if parse_result.right is not None:
+        parse_result.right = parse_expression(parse_result.right)
+    parse_result.value = parse_result.left.value * parse_result.right.value
+    return parse_result
+
+
+def parse_operation(token):
+    result = parse_multiplication(token)
+    if type(result) is ParseFailure:
+        return parse_addition(token)
+    return result
+
+
 def parse_expression(token):
-    result = parse_addition(token)
+    result = parse_operation(token)
     if type(result) is ParseFailure:
         return parse_number(token)
     return result
