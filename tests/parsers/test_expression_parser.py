@@ -13,7 +13,6 @@ def test_parse_number():
     assert result.value == 0
 
 
-@pytest.mark.skip("refactor first to make parsing more logical")
 def test_parse_addition():
     result = parse_expression("1 + 2")
     assert result.token == "1 + 2"
@@ -30,6 +29,7 @@ def test_parse_multiple_addition():
     assert result.match == " + "
     assert result.left.match == "1"
     assert result.right.match == " + "
+    assert result.value == 6
 
 
 @pytest.mark.skip("TODO: test after combining parsers.  Maybe after writing the command parser.")

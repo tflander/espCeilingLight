@@ -28,8 +28,12 @@ def parse_addition(token):
     if result is None:
         return ParseFailure("expr + expr", token)
     parse_result = ParseResult(token, result.group(1))
-    # TODO: need to resolve left and right.  So need a global expression parser
-    # parse_result.value = parse_result.left.value + parse_result.right.value
+
+    if parse_result.left is not None:
+        parse_result.left = parse_expression(parse_result.left)
+    if parse_result.right is not None:
+        parse_result.right = parse_expression(parse_result.right)
+    parse_result.value = parse_result.left.value + parse_result.right.value
     return parse_result
 
 
@@ -37,11 +41,6 @@ def parse_expression(token):
     result = parse_addition(token)
     if type(result) is ParseFailure:
         return parse_number(token)
-
-    if result.left is not None:
-        result.left = parse_expression(result.left)
-    if result.right is not None:
-        result.right = parse_expression(result.right)
     return result
 
 
