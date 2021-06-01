@@ -1,34 +1,20 @@
 import pytest
 
 from parsers.expression_parser import *
-from parsers.parser_constants import LightingCommandNodeTypes, ExpressionValueTypes
 
 
 def test_parse_number():
     result = parse_expression("0")
-    assert result.token == "0"
-    assert result.match == "0"
-    assert result.left is None
-    assert result.right is None
     assert result.value == 0
 
 
 def test_parse_addition():
     result = parse_expression("1 + 2")
-    assert result.token == "1 + 2"
-    assert result.match == " + "
-    assert result.left.match == "1"
-    assert result.right.match == "2"
     assert result.value == 3
 
 
-# TODO: clean up test
 def test_parse_multiple_addition():
     result = parse_expression("1 + 2 + 3")
-    assert result.token == "1 + 2 + 3"
-    assert result.match == " + "
-    assert result.left.match == "1"
-    assert result.right.match == " + "
     assert result.value == 6
 
 
