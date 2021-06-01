@@ -23,6 +23,14 @@ def test_parse_addition():
     assert result.right == "2"
 
 
+def test_parse_multiple_addition():
+    result = parser.parse("1 + 2 + 3")
+    assert result.token == "1 + 2 + 3"
+    assert result.match == " + "
+    assert result.left == "1"
+    assert result.right == "2 + 3"
+
+
 @pytest.mark.skip("TODO: test after combining parsers")
 def test_parse_invalid_expression():
     result = parser.parse("this is invalid")
