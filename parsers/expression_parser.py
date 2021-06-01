@@ -11,7 +11,7 @@ class NumberParser:
     def parse(self, token):
         result = re.search(number_pattern, token)
         if result is None:
-            return ParseFailure(0, "a valid number", token)
+            return ParseFailure("a valid number", token)
         return ParseResult(token, result.group(1))
 
 
@@ -20,7 +20,7 @@ class AdditionParser:
     def parse(self, token):
         result = re.search(addition_pattern, token)
         if result is None:
-            return ParseFailure(0, "expr + expr", token)
+            return ParseFailure("expr + expr", token)
         return ParseResult(token, result.group(1))
 
 
@@ -59,7 +59,6 @@ class ParseResult:
 
 class ParseFailure:
     
-    def __init__(self, position, expected, actual):
+    def __init__(self, expected, actual):
         self.actual = actual
         self.expected = expected
-        self.position = position

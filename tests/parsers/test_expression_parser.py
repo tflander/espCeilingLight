@@ -23,6 +23,7 @@ def test_parse_addition():
     assert result.right.match == "2"
 
 
+# TODO: clean up test
 def test_parse_multiple_addition():
     result = parser.parse("1 + 2 + 3")
     assert result.token == "1 + 2 + 3"
@@ -34,14 +35,12 @@ def test_parse_multiple_addition():
 @pytest.mark.skip("TODO: test after combining parsers.  Maybe after writing the command parser.")
 def test_parse_invalid_expression():
     result = parser.parse("this is invalid")
-    assert result.position == 0
     assert result.expected == "a valid expression"
     assert result.actual == "this is invalid"
 
 
 def test_number_parser_failure():
     result = number_parser.parse("not a number 123, so parse error")
-    assert result.position == 0
     assert result.expected == "a valid number"
     assert result.actual == "not a number 123, so parse error"
 
