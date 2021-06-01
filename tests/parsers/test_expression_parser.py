@@ -19,19 +19,19 @@ def test_parse_addition():
     result = parser.parse("1 + 2")
     assert result.token == "1 + 2"
     assert result.match == " + "
-    assert result.left == "1"
-    assert result.right == "2"
+    assert result.left.match == "1"
+    assert result.right.match == "2"
 
 
 def test_parse_multiple_addition():
     result = parser.parse("1 + 2 + 3")
     assert result.token == "1 + 2 + 3"
     assert result.match == " + "
-    assert result.left == "1"
-    assert result.right == "2 + 3"
+    assert result.left.match == "1"
+    assert result.right.match == " + "
 
 
-@pytest.mark.skip("TODO: test after combining parsers")
+@pytest.mark.skip("TODO: test after combining parsers.  Maybe after writing the command parser.")
 def test_parse_invalid_expression():
     result = parser.parse("this is invalid")
     assert result.position == 0

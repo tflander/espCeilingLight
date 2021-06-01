@@ -34,6 +34,11 @@ class ExpressionParser:
         result = self.additionParser.parse(token)
         if type(result) is ParseFailure:
             return self.numberParser.parse(token)
+
+        if result.left is not None:
+            result.left = self.parse(result.left)
+        if result.right is not None:
+            result.right = self.parse(result.right)
         return result
 
 
