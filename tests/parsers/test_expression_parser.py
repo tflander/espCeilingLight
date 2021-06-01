@@ -3,29 +3,29 @@ import pytest
 from parsers.expression_parser import *
 from parsers.parser_constants import LightingCommandNodeTypes, ExpressionValueTypes
 
-parser = ExpressionParser()
-number_parser = NumberParser()
-
 
 def test_parse_number():
-    result = parser.parse("0")
+    result = parse_expression("0")
     assert result.token == "0"
     assert result.match == "0"
     assert result.left is None
     assert result.right is None
+    assert result.value == 0
 
 
+@pytest.mark.skip("refactor first to make parsing more logical")
 def test_parse_addition():
-    result = parser.parse("1 + 2")
+    result = parse_expression("1 + 2")
     assert result.token == "1 + 2"
     assert result.match == " + "
     assert result.left.match == "1"
     assert result.right.match == "2"
+    assert result.value == 3
 
 
 # TODO: clean up test
 def test_parse_multiple_addition():
-    result = parser.parse("1 + 2 + 3")
+    result = parse_expression("1 + 2 + 3")
     assert result.token == "1 + 2 + 3"
     assert result.match == " + "
     assert result.left.match == "1"
@@ -34,7 +34,7 @@ def test_parse_multiple_addition():
 
 @pytest.mark.skip("TODO: test after combining parsers.  Maybe after writing the command parser.")
 def test_parse_invalid_expression():
-    result = parser.parse("this is invalid")
+    result = parse_expression("this is invalid")
     assert result.expected == "a valid expression"
     assert result.actual == "this is invalid"
 
