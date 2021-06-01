@@ -3,7 +3,6 @@ import re
 
 number_pattern = '^(-?[0-9]+\\.?[0-9]*)$'
 
-# TODO: should we have an operation pattern?
 addition_pattern = '(\\s?\\+\\s?)'
 multiplication_pattern = '(\\s?\\*\\s?)'
 
