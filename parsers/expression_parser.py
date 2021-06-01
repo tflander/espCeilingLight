@@ -15,13 +15,26 @@ class NumberParser:
         return ParseResult(token, result.group(1))
 
 
+class AdditionParser:
+
+    def parse(self, token):
+        result = re.findall(addition_pattern, token)
+        if len(result) == 0:
+            return ParseFailure(0, "expr + expr", token)
+        return ParseResult(token, result[0])
+
+
 class ExpressionParser:
 
     def __init__(self):
         self.numberParser = NumberParser();
+        self.additionParser = AdditionParser();
 
     def parse(self, token):
-        return self.numberParser.parse(token)
+        result = self.additionParser.parse(token)
+        if type(result) is ParseFailure:
+            return self.numberParser.parse(token)
+        return result
 
 
 class ParseResult:
@@ -31,9 +44,12 @@ class ParseResult:
         self.match = match
         self.left = None
         self.right = None
+        candidate_left = token[0:token.find(match)]
         candidate_right = token[token.find(match) + len(match):].strip()
         if len(candidate_right) > 0:
             self.right = candidate_right
+        if len(candidate_left) > 0:
+            self.left = candidate_left
 
 
 class ParseFailure:
