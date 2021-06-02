@@ -16,8 +16,6 @@ subtraction_pattern = '^(\\s?\\-\\s?)'
 # number := int | float | hex
 
 
-# https://gist.github.com/yelouafi/556e5159e869952335e01f6b473c4ec1
-
 def parse_number(token):
     result = parse_hex(token)
     if type(result) == ParseFailure:
@@ -53,37 +51,26 @@ def parse_hex(token):
 
 
 def parse_addition(token):
-    result = re.search(addition_pattern, token)
-    if result is None:
-        return ParseFailure(token, token, 1)
-    parse_result = ParseResult(token, result.group(1), ExpressionValueTypes.ADDITION)
-
-    return parse_result
+    return parse_operation(token, addition_pattern, ExpressionValueTypes.ADDITION)
 
 
 def parse_multiplication(token):
-    result = re.search(multiplication_pattern, token)
-    if result is None:
-        return ParseFailure(token, token, 1)
-    parse_result = ParseResult(token, result.group(1), ExpressionValueTypes.MULTIPLICATION)
-
-    return parse_result
+    return parse_operation(token, multiplication_pattern, ExpressionValueTypes.MULTIPLICATION)
 
 
 def parse_division(token):
-    result = re.search(division_pattern, token)
-    if result is None:
-        return ParseFailure(token, token, 1)
-    parse_result = ParseResult(token, result.group(1), ExpressionValueTypes.DIVISION)
-
-    return parse_result
+    return parse_operation(token, division_pattern, ExpressionValueTypes.DIVISION)
 
 
 def parse_subtraction(token):
-    result = re.search(subtraction_pattern, token)
+    return parse_operation(token, subtraction_pattern, ExpressionValueTypes.SUBTRACTION)
+
+
+def parse_operation(token, pattern, value_type):
+    result = re.search(pattern, token)
     if result is None:
         return ParseFailure(token, token, 1)
-    parse_result = ParseResult(token, result.group(1), ExpressionValueTypes.SUBTRACTION)
+    parse_result = ParseResult(token, result.group(1), value_type)
 
     return parse_result
 
@@ -163,7 +150,7 @@ class ParseResult:
         self.token = token
         self.match = match
         self.value = None
-        if match is not None:  # TODO: true when combinining.  Should we have a combine result type?
+        if match is not None:  # TODO: true when combining.  Should we have a combine result type?
             self.rest = token[len(match):]
 
 
