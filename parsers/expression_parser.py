@@ -58,7 +58,18 @@ def parse_subtraction(token):
     return parse_generic(token, subtraction_pattern, ExpressionValueTypes.SUBTRACTION)
 
 
-def parse_generic(token, pattern, value_type, value_resolver = None):
+operation_parsers = [parse_addition, parse_multiplication, parse_division, parse_subtraction]
+
+
+def parse_operation(token):
+    for parser in operation_parsers:
+        result = parser(token)
+        if type(result) is ParseResult:
+            return result
+    return result
+
+
+def parse_generic(token, pattern, value_type, value_resolver=None):
     result = re.search(pattern, token)
     if result is None:
         return ParseFailure(token, token, 1)
@@ -69,7 +80,7 @@ def parse_generic(token, pattern, value_type, value_resolver = None):
     return parse_result
 
 
-expression_parsers = [parse_number, parse_addition, parse_multiplication, parse_division, parse_subtraction]
+expression_parsers = [parse_number, parse_operation]
 
 
 def parse_expression(original_token):
