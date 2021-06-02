@@ -50,7 +50,7 @@ def parse_multiplication(token):
     return parse_result
 
 
-basic_parsers = [parse_number, parse_addition, parse_multiplication]
+expression_parsers = [parse_number, parse_addition, parse_multiplication]
 
 
 def parse_expression(original_token):
@@ -58,7 +58,7 @@ def parse_expression(original_token):
     token = original_token
     while len(token) > 0:
         latest_result = None
-        for parser in basic_parsers:
+        for parser in expression_parsers:
             result = parser(token)
             if type(result) == ParseResult:
                 latest_result = result
@@ -74,26 +74,25 @@ def parse_expression(original_token):
     return combined_results[0]
 
 
-def combine_expression_results(results):
-    combined_results = results
-    while True:
-        combined_results, combined = combine_multiplication_results(combined_results)
-        if not combined:
-            break
-
-    while True:
-        combined_results, combined = combine_addition_results(combined_results)
-        if not combined:
-            break
-    return combined_results
-
-
 def combine_multiplication_results(results):
     return combine_operator_results(results, ExpressionValueTypes.MULTIPLICATION, lambda a, b: a*b)
 
 
 def combine_addition_results(results):
     return combine_operator_results(results, ExpressionValueTypes.ADDITION, lambda a, b: a+b)
+
+
+expression_combinators = [combine_multiplication_results, combine_addition_results]
+
+
+def combine_expression_results(results):
+    combined_results = results
+    for combinator in expression_combinators:
+        while True:
+            combined_results, combined = combinator(combined_results)
+            if not combined:
+                break
+    return combined_results
 
 
 def combine_operator_results(results, operator_value_type, value_combiner):
