@@ -94,8 +94,7 @@ def combine_multiplication_results(results):
             token = results[i-1].match + results[i].match + results[i+1].match
             combined_result = ParseResult(token, token, ExpressionValueTypes.OPERATION)
             combined_result.value = results[i - 1].value * results[i + 1].value
-            # TODO: also include previous stuff
-            return [combined_result] + results[i+2:], True
+            return results[:i-1] + [combined_result] + results[i+2:], True
     return results, False
 
 
@@ -105,8 +104,7 @@ def combine_addition_results(results):
             token = results[i-1].match + results[i].match + results[i+1].match
             combined_result = ParseResult(token, token, ExpressionValueTypes.OPERATION)
             combined_result.value = results[i - 1].value + results[i + 1].value
-            # TODO: also include previous stuff
-            return [combined_result] + results[i+2:], True
+            return results[:i-1] + [combined_result] + results[i+2:], True
     return results, False
 
 
