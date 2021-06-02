@@ -39,38 +39,32 @@ def parse_int_or_float(token):
 
 
 def parse_hex(token):
-    result = re.search(hex_number_pattern, token)
-    if result is None:
-        return ParseFailure(token, token, 1)
-    parse_result = ParseResult(token, result.group(1), None)
-
-    parse_result.value = int(parse_result.match, 16)
-    parse_result.result_type = ExpressionValueTypes.HEX
-
-    return parse_result
+    return parse_generic(token, hex_number_pattern, ExpressionValueTypes.HEX, lambda v: int(v, 16))
 
 
 def parse_addition(token):
-    return parse_operation(token, addition_pattern, ExpressionValueTypes.ADDITION)
+    return parse_generic(token, addition_pattern, ExpressionValueTypes.ADDITION)
 
 
 def parse_multiplication(token):
-    return parse_operation(token, multiplication_pattern, ExpressionValueTypes.MULTIPLICATION)
+    return parse_generic(token, multiplication_pattern, ExpressionValueTypes.MULTIPLICATION)
 
 
 def parse_division(token):
-    return parse_operation(token, division_pattern, ExpressionValueTypes.DIVISION)
+    return parse_generic(token, division_pattern, ExpressionValueTypes.DIVISION)
 
 
 def parse_subtraction(token):
-    return parse_operation(token, subtraction_pattern, ExpressionValueTypes.SUBTRACTION)
+    return parse_generic(token, subtraction_pattern, ExpressionValueTypes.SUBTRACTION)
 
 
-def parse_operation(token, pattern, value_type):
+def parse_generic(token, pattern, value_type, value_resolver = None):
     result = re.search(pattern, token)
     if result is None:
         return ParseFailure(token, token, 1)
     parse_result = ParseResult(token, result.group(1), value_type)
+    if value_resolver is not None:
+        parse_result.value = value_resolver(parse_result.match)
 
     return parse_result
 
