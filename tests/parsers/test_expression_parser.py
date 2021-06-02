@@ -18,11 +18,9 @@ def test_parse_multiplication():
     assert result.value == 6
 
 
-@pytest.mark.skip("rescue after building the combinator")
 def test_parse_multiple_addition():
-    results = parse_expression("1 + 2 + 3")
-    assert len(results) == 5
-    # TODO: test result of combinator
+    result = parse_expression("1 + 2 + 3")
+    assert result.value == 6
 
 
 @pytest.mark.skip("rescue after building the combinator")
