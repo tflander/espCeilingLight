@@ -23,6 +23,11 @@ def test_parse_multiple_addition():
     assert result.value == 6
 
 
+def test_parse_multiple_multiplication():
+    result = parse_expression("2 * 3 * 4")
+    assert result.value == 24
+
+
 @pytest.mark.skip("rescue after building the combinator")
 def test_parse_multiplication_with_addition():
     results = parse_expression("1 + 2 * 3 + 4")
