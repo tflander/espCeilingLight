@@ -33,7 +33,11 @@ def test_parse_multiplication_with_addition():
     assert result.value == 11
 
 
-@pytest.mark.skip("rescue after building the combinator")
+def test_hex_math():
+    result = parse_expression("0x0f * 10")
+    assert result.value == 150
+
+
 def test_parse_invalid_expression():
     result = parse_expression("1 + 2 * 3 + 4 junk")
     assert result.line == 1

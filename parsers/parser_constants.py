@@ -7,4 +7,5 @@ class ExpressionValueTypes:
     FLOAT = 2,
     ADDITION = 3,
     MULTIPLICATION = 4,
-    OPERATION = 5
+    OPERATION = 5,
+    HEX = 6

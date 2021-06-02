@@ -3,9 +3,10 @@ import re
 from parsers.parser_constants import ExpressionValueTypes
 
 number_pattern = '^(-?[0-9]+\\.?[0-9]*)'
-
+hex_number_pattern = '^(0x[0-9,a-f,A-F]+)'
 addition_pattern = '^(\\s?\\+\\s?)'
 multiplication_pattern = '^(\\s?\\*\\s?)'
+
 
 # expression := number | operation
 # operation := expression~operator~expression
@@ -15,20 +16,37 @@ multiplication_pattern = '^(\\s?\\*\\s?)'
 
 # https://gist.github.com/yelouafi/556e5159e869952335e01f6b473c4ec1
 
-
 def parse_number(token):
+    result = parse_hex(token)
+    if type(result) == ParseFailure:
+        result = parse_int_or_float(token)
+    return result
+
+
+def parse_int_or_float(token):
     result = re.search(number_pattern, token)
     if result is None:
         return ParseFailure(token, token, 1)
     parse_result = ParseResult(token, result.group(1), None)
 
-    # TODO: replace this crap with a parser sequence
     if '.' in parse_result.match:
         parse_result.value = float(parse_result.match)
         parse_result.result_type = ExpressionValueTypes.FLOAT
     else:
         parse_result.value = int(parse_result.match)
         parse_result.result_type = ExpressionValueTypes.INT
+    return parse_result
+
+
+def parse_hex(token):
+    result = re.search(hex_number_pattern, token)
+    if result is None:
+        return ParseFailure(token, token, 1)
+    parse_result = ParseResult(token, result.group(1), None)
+
+    parse_result.value = int(parse_result.match, 16)
+    parse_result.result_type = ExpressionValueTypes.HEX
+
     return parse_result
 
 
