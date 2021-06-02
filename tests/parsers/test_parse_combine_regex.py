@@ -4,11 +4,11 @@ from parsers.expression_parser import *
 
 
 def test_addition():
-    assert re.findall(addition_pattern, '12 + 34') == [' + ']
+    assert re.findall(addition_pattern, '+ 34') == ['+ ']
 
 
-def test_addition():
-    assert re.findall(multiplication_pattern, '12 * 34') == [' * ']
+def test_multiplication():
+    assert re.findall(multiplication_pattern, '* 34') == ['* ']
 
 
 def test_positive_int():
