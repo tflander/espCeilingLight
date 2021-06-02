@@ -75,7 +75,9 @@ def parse_expression(original_token):
 
 
 def combine_expression_results(results):
-    return combine_multiplication_results(results)
+    combined_results = combine_multiplication_results(results)
+    combined_results = combine_addition_results(combined_results)
+    return combined_results
 
 
 def combine_multiplication_results(results):
@@ -85,6 +87,19 @@ def combine_multiplication_results(results):
             token = results[i-1].match + results[i].match + results[i+1].match
             combined_result = ParseResult(token, None, ExpressionValueTypes.OPERATION)
             combined_result.value = results[i - 1].value * results[i + 1].value
+            return [
+                combined_result
+            ]
+    return results
+
+
+def combine_addition_results(results):
+    for i, result in enumerate(results):
+        if result.result_type == ExpressionValueTypes.ADDITION:
+            # TODO: slice list if not three elements to insert combined result
+            token = results[i-1].match + results[i].match + results[i+1].match
+            combined_result = ParseResult(token, None, ExpressionValueTypes.OPERATION)
+            combined_result.value = results[i - 1].value + results[i + 1].value
             return [
                 combined_result
             ]
