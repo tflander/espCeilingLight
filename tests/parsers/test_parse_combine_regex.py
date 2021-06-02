@@ -11,6 +11,14 @@ def test_multiplication():
     assert re.findall(multiplication_pattern, '* 34') == ['* ']
 
 
+def test_division():
+    assert re.findall(division_pattern, '/ 34') == ['/ ']
+
+
+def test_subtraction():
+    assert re.findall(subtraction_pattern, '- 34') == ['- ']
+
+
 def test_positive_int():
     result = re.match(number_pattern, '12')
     assert result.group(1) == "12"

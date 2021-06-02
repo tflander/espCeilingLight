@@ -6,12 +6,14 @@ number_pattern = '^(-?[0-9]+\\.?[0-9]*)'
 hex_number_pattern = '^(0x[0-9,a-f,A-F]+)'
 addition_pattern = '^(\\s?\\+\\s?)'
 multiplication_pattern = '^(\\s?\\*\\s?)'
+division_pattern = '^(\\s?\\/\\s?)'
+subtraction_pattern = '^(\\s?\\-\\s?)'
 
 
 # expression := number | operation
 # operation := expression~operator~expression
-# operator := multiplication | addition  TODO: division and subtraction
-# number := int | float TODO: hex
+# operator := multiplication | addition | division | subtraction
+# number := int | float | hex
 
 
 # https://gist.github.com/yelouafi/556e5159e869952335e01f6b473c4ec1
@@ -68,7 +70,25 @@ def parse_multiplication(token):
     return parse_result
 
 
-expression_parsers = [parse_number, parse_addition, parse_multiplication]
+def parse_division(token):
+    result = re.search(division_pattern, token)
+    if result is None:
+        return ParseFailure(token, token, 1)
+    parse_result = ParseResult(token, result.group(1), ExpressionValueTypes.DIVISION)
+
+    return parse_result
+
+
+def parse_subtraction(token):
+    result = re.search(subtraction_pattern, token)
+    if result is None:
+        return ParseFailure(token, token, 1)
+    parse_result = ParseResult(token, result.group(1), ExpressionValueTypes.SUBTRACTION)
+
+    return parse_result
+
+
+expression_parsers = [parse_number, parse_addition, parse_multiplication, parse_division, parse_subtraction]
 
 
 def parse_expression(original_token):
@@ -100,7 +120,20 @@ def combine_addition_results(results):
     return combine_operator_results(results, ExpressionValueTypes.ADDITION, lambda a, b: a+b)
 
 
-expression_combinators = [combine_multiplication_results, combine_addition_results]
+def combine_division_results(results):
+    return combine_operator_results(results, ExpressionValueTypes.DIVISION, lambda a, b: a/b)
+
+
+def combine_subtraction_results(results):
+    return combine_operator_results(results, ExpressionValueTypes.SUBTRACTION, lambda a, b: a-b)
+
+
+expression_combinators = [
+    combine_multiplication_results,
+    combine_division_results,
+    combine_addition_results,
+    combine_subtraction_results
+]
 
 
 def combine_expression_results(results):

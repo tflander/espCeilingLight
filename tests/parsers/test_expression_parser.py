@@ -18,6 +18,16 @@ def test_parse_multiplication():
     assert result.value == 6
 
 
+def test_parse_division():
+    result = parse_expression("10 / 2")
+    assert result.value == 5
+
+
+def test_parse_subtractiontion():
+    result = parse_expression("2 - 3")
+    assert result.value == -1
+
+
 def test_parse_multiple_addition():
     result = parse_expression("1 + 2 + 3")
     assert result.value == 6
