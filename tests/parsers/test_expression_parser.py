@@ -34,15 +34,11 @@ def test_parse_multiplication_with_addition():
     # TODO: test result of combinator
 
 
-@pytest.mark.skip("TODO: test after combining parsers.  Maybe after writing the command parser.")
 def test_parse_invalid_expression():
-    result = parse_expression("this is invalid")
-    assert result.expected == "a valid expression"
-    assert result.actual == "this is invalid"
-
-
-def test_number_parser_failure():
-    result = parse_number("not a number 123, so parse error")
-    assert result.expected == "a valid number"
-    assert result.actual == "not a number 123, so parse error"
-
+    result = parse_expression("1 + 2 * 3 + 4 junk")
+    assert result.line == 1
+    assert result.message == [
+        "Syntax Error, line 1",
+        "  1 + 2 * 3 + 4 junk",
+        "                ^"
+    ]
