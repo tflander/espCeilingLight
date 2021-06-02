@@ -5,4 +5,6 @@ class LightingCommandNodeTypes:
 class ExpressionValueTypes:
     INT = 1,
     FLOAT = 2,
-    ADDITION = 3
+    ADDITION = 3,
+    MULTIPLICATION = 4,
+    OPERATION = 5
