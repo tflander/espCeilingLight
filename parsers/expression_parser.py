@@ -89,21 +89,19 @@ def combine_expression_results(results):
 
 
 def combine_multiplication_results(results):
-    for i, result in enumerate(results):
-        if result.result_type == ExpressionValueTypes.MULTIPLICATION:
-            token = results[i-1].match + results[i].match + results[i+1].match
-            combined_result = ParseResult(token, token, ExpressionValueTypes.OPERATION)
-            combined_result.value = results[i - 1].value * results[i + 1].value
-            return results[:i-1] + [combined_result] + results[i+2:], True
-    return results, False
+    return combine_operator_results(results, ExpressionValueTypes.MULTIPLICATION, lambda a, b: a*b)
 
 
 def combine_addition_results(results):
+    return combine_operator_results(results, ExpressionValueTypes.ADDITION, lambda a, b: a+b)
+
+
+def combine_operator_results(results, operator_value_type, value_combiner):
     for i, result in enumerate(results):
-        if result.result_type == ExpressionValueTypes.ADDITION:
+        if result.result_type == operator_value_type:
             token = results[i-1].match + results[i].match + results[i+1].match
             combined_result = ParseResult(token, token, ExpressionValueTypes.OPERATION)
-            combined_result.value = results[i - 1].value + results[i + 1].value
+            combined_result.value = value_combiner(results[i - 1].value, results[i + 1].value)
             return results[:i-1] + [combined_result] + results[i+2:], True
     return results, False
 
