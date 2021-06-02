@@ -100,6 +100,7 @@ def parse_expression(original_token):
 
     combined_results = combine_expression_results(token_results)
     if len(combined_results) != 1:
+        # TODO
         return ParseFailure("TODO: Some decent handling", original_token, 1)
     return combined_results[0]
 
@@ -148,15 +149,20 @@ def combine_operator_results(results, operator_value_type, value_combiner):
     return results, False
 
 
-class ParseResult:
+class CombineResult:
 
     def __init__(self, token, match, result_type):
         self.result_type = result_type
         self.token = token
         self.match = match
         self.value = None
-        if match is not None:  # TODO: true when combining.  Should we have a combine result type?
-            self.rest = token[len(match):]
+
+
+class ParseResult(CombineResult):
+
+    def __init__(self, token, match, result_type):
+        CombineResult.__init__(self, token, match, result_type)
+        self.rest = token[len(match):]
 
 
 class ParseFailure:
