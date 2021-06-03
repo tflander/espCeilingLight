@@ -9,7 +9,7 @@ def test_parse_number():
 
 
 def test_parse_addition():
-    result = parse_expression("1 + 2")
+    result = parse_expression("1    + 2")
     assert result.value == 3
 
 
@@ -23,7 +23,7 @@ def test_parse_division():
     assert result.value == 5
 
 
-def test_parse_subtractiontion():
+def test_parse_subtraction():
     result = parse_expression("2 - 3")
     assert result.value == -1
 
@@ -45,6 +45,12 @@ def test_parse_multiplication_with_addition():
 
 def test_hex_math():
     result = parse_expression("0x0f * 10")
+    assert result.value == 150
+
+
+@pytest.mark.skip("See TODO in operator combiner")
+def test_variable_identifier():
+    result = parse_expression("some_variableName20 * 10")
     assert result.value == 150
 
 

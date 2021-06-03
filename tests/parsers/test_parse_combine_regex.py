@@ -42,3 +42,8 @@ def test_negative_float():
 def test_hex():
     result = re.match(hex_number_pattern, '0x0f')
     assert result.group(1) == "0x0f"
+
+
+def test_variable_identifier():
+    result = re.match(variable_identifier_pattern, 'some_variableName10=0')
+    assert result.group(1) == "some_variableName10"

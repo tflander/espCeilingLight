@@ -3,11 +3,13 @@ class LightingCommandNodeTypes:
 
 
 class ExpressionValueTypes:
-    INT = 1,
-    FLOAT = 2,
-    HEX = 3
-    ADDITION = 3,
-    MULTIPLICATION = 4,
-    DIVISION = 5,
-    SUBTRACTION = 6
-    OPERATION = 7,
+    ASSIGNMENT = "="
+    INT = "int",
+    FLOAT = "float",
+    HEX = "hex"
+    ADDITION = "+",
+    MULTIPLICATION = "*",
+    DIVISION = "/",
+    SUBTRACTION = "-"
+    OPERATION = "op",
+    VARIABLE = "var"

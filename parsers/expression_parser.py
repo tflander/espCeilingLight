@@ -3,14 +3,14 @@ import re
 from parsers.parser_constants import ExpressionValueTypes
 
 number_pattern = '^(-?[0-9]+\\.?[0-9]*)'
-hex_number_pattern = '^(0x[0-9,a-f,A-F]+)'
-addition_pattern = '^(\\s?\\+\\s?)'
-multiplication_pattern = '^(\\s?\\*\\s?)'
-division_pattern = '^(\\s?\\/\\s?)'
-subtraction_pattern = '^(\\s?\\-\\s?)'
+hex_number_pattern = '^(0x[0-9a-fA-F]+)'
+addition_pattern = '^(\\s*\\+\\s*)'
+multiplication_pattern = '^(\\s*\\*\\s*)'
+division_pattern = '^(\\s*\\/\\s*)'
+subtraction_pattern = '^(\\s*\\-\\s*)'
+variable_identifier_pattern = '^([_a-zA-Z][_0-9a-zA-Z]*)'
 
-
-# expression := number | operation
+# expression := number | variable_identifier | operation
 # operation := expression~operator~expression
 # operator := multiplication | addition | division | subtraction
 # number := int | float | hex
@@ -40,6 +40,10 @@ def parse_int_or_float(token):
 
 def parse_hex(token):
     return parse_generic(token, hex_number_pattern, ExpressionValueTypes.HEX, lambda v: int(v, 16))
+
+
+def parse_variable_identifier(token):
+    return parse_generic(token, variable_identifier_pattern, ExpressionValueTypes.VARIABLE)
 
 
 def parse_addition(token):
@@ -80,7 +84,7 @@ def parse_generic(token, pattern, value_type, value_resolver=None):
     return parse_result
 
 
-expression_parsers = [parse_number, parse_operation]
+expression_parsers = [parse_number, parse_operation, parse_variable_identifier]
 
 
 def parse_expression(original_token):
@@ -156,6 +160,8 @@ def combine_operator_results(results, operator_value_type, value_combiner):
         if result.result_type == operator_value_type:
             token = results[i-1].match + results[i].match + results[i+1].match
             combined_result = ParseResult(token, token, ExpressionValueTypes.OPERATION)
+
+            # TODO: allow variable identifiers as well as values
             if results[i - 1].value is None or results[i + 1].value is None:
                 # TODO: consider adding message about the invalid operand
                 return CombineFailure(token, 1), None
