@@ -48,11 +48,21 @@ def test_hex_math():
     assert result.value == 150
 
 
-def test_parse_invalid_expression():
+def test_parse_invalid_parse():
     result = parse_expression("1 + 2 * 3 + 4 junk")
     assert result.line == 1
     assert result.message == [
         "Syntax Error, line 1",
         "  1 + 2 * 3 + 4 junk",
         "                ^"
+    ]
+
+
+def test_parse_invalid_combine():
+    result = parse_expression("1 + 2 * * 3 + 4")
+    assert result.line == 1
+    assert result.message == [
+        "Syntax Error, line 1",
+        "  1 + 2 * * 3 + 4",
+        "        ^"
     ]

@@ -99,8 +99,18 @@ def parse_expression(original_token):
         token_results.append(result)
 
     combined_results = combine_expression_results(token_results)
+    if type(combined_results) == CombineFailure:
+        failure = ParseFailure("", original_token, 1)
+
+        failure.message = [
+            "Syntax Error, line " + str(1),
+            "  " + original_token,
+            "  " + (" " * len(combined_results.errored_token)) + "^"
+        ]
+        return failure
+
     if len(combined_results) != 1:
-        # TODO
+        # TODO Can this happen?
         return ParseFailure("TODO: Some decent handling", original_token, 1)
     return combined_results[0]
 
@@ -134,6 +144,8 @@ def combine_expression_results(results):
     for combinator in expression_combinators:
         while True:
             combined_results, combined = combinator(combined_results)
+            if type(combined_results) == CombineFailure:
+                return combined_results
             if not combined:
                 break
     return combined_results
@@ -144,6 +156,9 @@ def combine_operator_results(results, operator_value_type, value_combiner):
         if result.result_type == operator_value_type:
             token = results[i-1].match + results[i].match + results[i+1].match
             combined_result = ParseResult(token, token, ExpressionValueTypes.OPERATION)
+            if results[i - 1].value is None or results[i + 1].value is None:
+                # TODO: consider adding message about the invalid operand
+                return CombineFailure(token, 1), None
             combined_result.value = value_combiner(results[i - 1].value, results[i + 1].value)
             return results[:i-1] + [combined_result] + results[i+2:], True
     return results, False
@@ -165,10 +180,17 @@ class ParseResult(CombineResult):
         self.rest = token[len(match):]
 
 
-class ParseFailure:
+class CombineFailure:
+
+    def __init__(self, errored_token, line):
+        self.errored_token = errored_token
+        self.line = line
+
+
+class ParseFailure(CombineFailure):
     
     def __init__(self, errored_token, text, line):
-        self.line = line
+        CombineFailure.__init__(self, errored_token, line)
         pos = text.index(errored_token) + 1
         if pos > 1:
             self.message = [
