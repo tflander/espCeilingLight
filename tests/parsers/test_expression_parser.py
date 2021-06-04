@@ -50,9 +50,10 @@ def test_hex_math():
 
 def test_variable_identifier():
     result = parse_expression("some_variableName20 * 10")
-    assert result.result_type == ExpressionValueTypes.OPERATION
-    assert result.left.match == "some_variableName20"
-    assert result.right.value == 10
+
+    assert flatten(result) == (ExpressionValueTypes.MULTIPLICATION, ExpressionValueTypes.OPERATION)
+    assert flatten(result.left) == ("some_variableName20", ExpressionValueTypes.VARIABLE)
+    assert flatten(result.right) == (10, ExpressionValueTypes.INT)
 
 
 def test_complex_variable_expression():
@@ -69,19 +70,24 @@ def test_complex_variable_expression():
     assert flatten(right) == ("z", ExpressionValueTypes.VARIABLE)
 
 
-@pytest.mark.skip("first clean previous test")
 def test_more_complex_variable_expression():
     result = parse_expression("x * 10 + y * 20 / z")
-    assert result.match == ExpressionValueTypes.DIVISION
-    assert result.result_type == ExpressionValueTypes.OPERATION
-    assert result.left.match == ExpressionValueTypes.MULTIPLICATION
-    assert result.left.result_type == ExpressionValueTypes.OPERATION
-    assert result.left.left.match == "y"
-    assert result.left.left.result_type == ExpressionValueTypes.VARIABLE
-    assert result.left.right.value == 20
-    assert result.left.right.result_type == ExpressionValueTypes.INT
-    assert result.right.match == "z"
-    assert result.right.result_type == ExpressionValueTypes.VARIABLE
+
+    assert flatten(result) == (ExpressionValueTypes.ADDITION, ExpressionValueTypes.OPERATION)
+
+    left_of_addition = result.left
+    assert flatten(left_of_addition) == (ExpressionValueTypes.MULTIPLICATION, ExpressionValueTypes.OPERATION)
+    assert flatten(left_of_addition.left) == ("x", ExpressionValueTypes.VARIABLE)
+    assert flatten(left_of_addition.right) == (10, ExpressionValueTypes.INT)
+
+    right_of_addition = result.right
+    assert flatten(right_of_addition) == (ExpressionValueTypes.DIVISION, ExpressionValueTypes.OPERATION)
+    assert flatten(right_of_addition.left) == (ExpressionValueTypes.MULTIPLICATION, ExpressionValueTypes.OPERATION)
+
+    assert flatten(right_of_addition.left.left) == ('y', ExpressionValueTypes.VARIABLE)
+    assert flatten(right_of_addition.left.right) == (20, ExpressionValueTypes.INT)
+
+    assert flatten(right_of_addition.right) == ('z', ExpressionValueTypes.VARIABLE)
 
 # TODO: parens
 
