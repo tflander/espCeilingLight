@@ -75,15 +75,16 @@ def test_more_complex_variable_expression():
 
     assert flatten(result) == (ExpressionValueTypes.ADDITION, ExpressionValueTypes.OPERATION)
 
-    left_of_addition = result.left
+    left_of_addition = result.left  # "x * 10"
     assert flatten(left_of_addition) == (ExpressionValueTypes.MULTIPLICATION, ExpressionValueTypes.OPERATION)
     assert flatten(left_of_addition.left) == ("x", ExpressionValueTypes.VARIABLE)
     assert flatten(left_of_addition.right) == (10, ExpressionValueTypes.INT)
 
-    right_of_addition = result.right
+    right_of_addition = result.right  # "y * 20 / z" as "(y * 20) / z"
     assert flatten(right_of_addition) == (ExpressionValueTypes.DIVISION, ExpressionValueTypes.OPERATION)
-    assert flatten(right_of_addition.left) == (ExpressionValueTypes.MULTIPLICATION, ExpressionValueTypes.OPERATION)
 
+    # "y * 20"
+    assert flatten(right_of_addition.left) == (ExpressionValueTypes.MULTIPLICATION, ExpressionValueTypes.OPERATION)
     assert flatten(right_of_addition.left.left) == ('y', ExpressionValueTypes.VARIABLE)
     assert flatten(right_of_addition.left.right) == (20, ExpressionValueTypes.INT)
 
