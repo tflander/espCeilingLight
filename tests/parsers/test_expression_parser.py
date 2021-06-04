@@ -56,7 +56,22 @@ def test_variable_identifier():
 
 
 def test_complex_variable_expression():
-    result = parse_expression("y * 20 / z")  # TODO: more complex, like "x * 10 + y * 20 / z"
+    result = parse_expression("y * 20 / z")
+
+    assert flatten(result) == (ExpressionValueTypes.DIVISION, ExpressionValueTypes.OPERATION)
+
+    left = result.left
+    assert flatten(left) == (ExpressionValueTypes.MULTIPLICATION, ExpressionValueTypes.OPERATION)
+    assert flatten(left.left) == ("y", ExpressionValueTypes.VARIABLE)
+    assert flatten(left.right) == (20, ExpressionValueTypes.INT)
+
+    right = result.right
+    assert flatten(right) == ("z", ExpressionValueTypes.VARIABLE)
+
+
+@pytest.mark.skip("first clean previous test")
+def test_more_complex_variable_expression():
+    result = parse_expression("x * 10 + y * 20 / z")
     assert result.match == ExpressionValueTypes.DIVISION
     assert result.result_type == ExpressionValueTypes.OPERATION
     assert result.left.match == ExpressionValueTypes.MULTIPLICATION
@@ -90,3 +105,10 @@ def test_parse_invalid_combine():
         "  1 + 2 * * 3 + 4",
         "        ^"
     ]
+
+
+def flatten(result):
+    if result.value is not None:
+        return result.value, result.result_type
+
+    return result.match, result.result_type
