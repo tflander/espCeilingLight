@@ -158,16 +158,26 @@ def combine_expression_results(results):
 def combine_operator_results(results, operator_value_type, value_combiner):
     for i, result in enumerate(results):
         if result.result_type == operator_value_type:
-            token = results[i-1].match + results[i].match + results[i+1].match
+            left_operand = results[i-1]
+            right_operand = results[i+1]
+            token = left_operand.match + results[i].match + right_operand.match
             combined_result = ParseResult(token, token, ExpressionValueTypes.OPERATION)
 
-            # TODO: allow variable identifiers as well as values
-            if results[i - 1].value is None or results[i + 1].value is None:
+            if not is_valid_operand(left_operand) or not is_valid_operand(right_operand):
                 # TODO: consider adding message about the invalid operand
                 return CombineFailure(token, 1), None
-            combined_result.value = value_combiner(results[i - 1].value, results[i + 1].value)
+
+            if left_operand.value is not None and right_operand.value is not None:
+                combined_result.value = value_combiner(left_operand.value, right_operand.value)
+            else:
+                combined_result.left = left_operand
+                combined_result.right = right_operand
             return results[:i-1] + [combined_result] + results[i+2:], True
     return results, False
+
+
+def is_valid_operand(result):
+    return result.value is not None or result.result_type == ExpressionValueTypes.VARIABLE
 
 
 class CombineResult:

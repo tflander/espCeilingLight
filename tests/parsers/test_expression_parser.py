@@ -48,10 +48,10 @@ def test_hex_math():
     assert result.value == 150
 
 
-@pytest.mark.skip("See TODO in operator combiner")
 def test_variable_identifier():
     result = parse_expression("some_variableName20 * 10")
-    assert result.value == 150
+    assert result.left.match == "some_variableName20"
+    assert result.right.value == 10
 
 
 def test_parse_invalid_parse():
