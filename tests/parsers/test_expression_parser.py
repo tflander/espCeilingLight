@@ -50,8 +50,25 @@ def test_hex_math():
 
 def test_variable_identifier():
     result = parse_expression("some_variableName20 * 10")
+    assert result.result_type == ExpressionValueTypes.OPERATION
     assert result.left.match == "some_variableName20"
     assert result.right.value == 10
+
+
+def test_complex_variable_expression():
+    result = parse_expression("y * 20 / z")  # TODO: more complex, like "x * 10 + y * 20 / z"
+    assert result.match == ExpressionValueTypes.DIVISION
+    assert result.result_type == ExpressionValueTypes.OPERATION
+    assert result.left.match == ExpressionValueTypes.MULTIPLICATION
+    assert result.left.result_type == ExpressionValueTypes.OPERATION
+    assert result.left.left.match == "y"
+    assert result.left.left.result_type == ExpressionValueTypes.VARIABLE
+    assert result.left.right.value == 20
+    assert result.left.right.result_type == ExpressionValueTypes.INT
+    assert result.right.match == "z"
+    assert result.right.result_type == ExpressionValueTypes.VARIABLE
+
+# TODO: parens
 
 
 def test_parse_invalid_parse():
@@ -66,6 +83,7 @@ def test_parse_invalid_parse():
 
 def test_parse_invalid_combine():
     result = parse_expression("1 + 2 * * 3 + 4")
+    show_message(result)
     assert result.line == 1
     assert result.message == [
         "Syntax Error, line 1",

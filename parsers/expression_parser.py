@@ -161,7 +161,7 @@ def combine_operator_results(results, operator_value_type, value_combiner):
             left_operand = results[i-1]
             right_operand = results[i+1]
             token = left_operand.match + results[i].match + right_operand.match
-            combined_result = ParseResult(token, token, ExpressionValueTypes.OPERATION)
+            combined_result = ParseResult(token, operator_value_type, ExpressionValueTypes.OPERATION)
 
             if not is_valid_operand(left_operand) or not is_valid_operand(right_operand):
                 # TODO: consider adding message about the invalid operand
@@ -177,7 +177,10 @@ def combine_operator_results(results, operator_value_type, value_combiner):
 
 
 def is_valid_operand(result):
-    return result.value is not None or result.result_type == ExpressionValueTypes.VARIABLE
+    return result.value is not None \
+        or result.result_type == ExpressionValueTypes.VARIABLE \
+        or result.result_type == ExpressionValueTypes.OPERATION
+
 
 
 class CombineResult:
@@ -215,3 +218,7 @@ class ParseFailure(CombineFailure):
                 "  " + (" " * pos) + "^"
         ]
 
+
+def show_message(failure):
+    for line in failure.message:
+        print(line)
