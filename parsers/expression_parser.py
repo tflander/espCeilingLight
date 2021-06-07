@@ -123,6 +123,8 @@ def parse_expression(original_token):
             "  " + original_token,
             "  " + (" " * len(combined_results.errored_token)) + "^"
         ]
+
+        failure.inner = combined_results
         return failure
 
     if len(combined_results) != 1:
@@ -150,6 +152,7 @@ def combine_subtraction_results(results):
 
 
 def combine_parens(results):
+    left_paren_pos = None
     for i, result in enumerate(results):
         if result.result_type == ExpressionValueTypes.LEFT_PAREN:
             left_paren_pos = i
@@ -158,6 +161,10 @@ def combine_parens(results):
             inner_result = combine_expression_results(inner_expression)
             # TODO: should inner result be a list of results if can't resolve to a value?
             return results[:left_paren_pos] + inner_result + results[i+1:], True
+
+    if left_paren_pos is not None:
+        return CombineFailure("unmatched left paren: " + results[0].token, 1), False
+
     return results, False
 
 

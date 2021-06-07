@@ -100,7 +100,12 @@ def test_complex_parens():
     result = parse_expression("10 * ((3 + 4) * (5 + 6))")
     assert result.value == 770
 
-# TODO: unmatched left paren
+
+def test_unmatched_left_paren():
+    result = parse_expression("(5 + 6")
+    assert result.inner.errored_token == "unmatched left paren: (5 + 6"
+
+
 # TODO: unmatched right paren
 # TODO: test parens with variables.  Maybe do this first?
 
