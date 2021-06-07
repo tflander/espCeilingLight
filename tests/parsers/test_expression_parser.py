@@ -90,8 +90,19 @@ def test_more_complex_variable_expression():
 
     assert flatten(right_of_addition.right) == ('z', ExpressionValueTypes.VARIABLE)
 
-# TODO: parens
 
+def test_parens():
+    result = parse_expression("(5 + 6)")
+    assert result.value == 11
+
+
+@pytest.mark.skip("do simple test first")
+def test_complex_parens():
+    result = parse_expression("10 * ((3 + 4) * (5 + 6))")
+    assert result.value == 770
+
+
+# TODO: test parens with variables.  Maybe do this first?
 
 def test_parse_invalid_parse():
     result = parse_expression("1 + 2 * 3 + 4 junk")

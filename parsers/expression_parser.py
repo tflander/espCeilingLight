@@ -4,6 +4,10 @@ from parsers.parser_constants import ExpressionValueTypes
 
 number_pattern = '^(-?[0-9]+\\.?[0-9]*)'
 hex_number_pattern = '^(0x[0-9a-fA-F]+)'
+
+left_paren_pattern = '^(\\s*\\(\\s*)'
+right_paren_pattern = '^(\\s*\\)\\s*)'
+
 addition_pattern = '^(\\s*\\+\\s*)'
 multiplication_pattern = '^(\\s*\\*\\s*)'
 division_pattern = '^(\\s*\\/\\s*)'
@@ -40,6 +44,14 @@ def parse_int_or_float(token):
 
 def parse_hex(token):
     return parse_generic(token, hex_number_pattern, ExpressionValueTypes.HEX, lambda v: int(v, 16))
+
+
+def parse_left_paren(token):
+    return parse_generic(token, left_paren_pattern, ExpressionValueTypes.LEFT_PAREN)
+
+
+def parse_right_paren(token):
+    return parse_generic(token, right_paren_pattern, ExpressionValueTypes.RIGHT_PAREN)
 
 
 def parse_variable_identifier(token):
@@ -84,7 +96,7 @@ def parse_generic(token, pattern, value_type, value_resolver=None):
     return parse_result
 
 
-expression_parsers = [parse_number, parse_operation, parse_variable_identifier]
+expression_parsers = [parse_number, parse_operation, parse_variable_identifier, parse_left_paren, parse_right_paren]
 
 
 def parse_expression(original_token):
@@ -114,8 +126,10 @@ def parse_expression(original_token):
         return failure
 
     if len(combined_results) != 1:
-        # TODO Can this happen?
-        return ParseFailure("TODO: Some decent handling", original_token, 1)
+        # TODO this happens for unexpected combine errors, such as leftover tokens
+        failure = CombineFailure(original_token, 1)
+        failure.message = ["unexpected combine error for token " + original_token]
+        return failure
     return combined_results[0]
 
 
@@ -135,7 +149,21 @@ def combine_subtraction_results(results):
     return combine_operator_results(results, ExpressionValueTypes.SUBTRACTION, lambda a, b: a-b)
 
 
+def combine_parens(results):
+    for i, result in enumerate(results):
+        if result.result_type == ExpressionValueTypes.LEFT_PAREN:
+            left_paren_pos = i
+            for j in range(len(results)-1, i, -1):
+                if results[j].result_type == ExpressionValueTypes.RIGHT_PAREN:
+                    inner_expression = results[left_paren_pos+1: j]
+                    inner_result = combine_expression_results(inner_expression)
+                    # TODO: should inner result be a list of results if can't resolve to a value?
+                    return results[:left_paren_pos] + inner_result + results[j+1:], True
+    return results, False
+
+
 expression_combinators = [
+    combine_parens,
     combine_multiplication_results,
     combine_division_results,
     combine_addition_results,
@@ -180,7 +208,6 @@ def is_valid_operand(result):
     return result.value is not None \
         or result.result_type == ExpressionValueTypes.VARIABLE \
         or result.result_type == ExpressionValueTypes.OPERATION
-
 
 
 class CombineResult:

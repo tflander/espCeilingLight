@@ -3,6 +3,8 @@ class LightingCommandNodeTypes:
 
 
 class ExpressionValueTypes:
+    LEFT_PAREN = "("
+    RIGHT_PAREN = ")"
     ASSIGNMENT = "="
     INT = "int"
     FLOAT = "float"

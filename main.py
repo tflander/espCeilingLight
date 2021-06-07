@@ -81,6 +81,7 @@ presets = Presets()
 presets.add(["#ff0000"])
 presets.add(["#00ff00"])
 presets.add(["#0000ff"])
+presets.add(["#ccccff"])
 presets.add([
     "#0000ff",
     "fade 2s to #ff0000",

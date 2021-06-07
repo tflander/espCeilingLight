@@ -47,3 +47,13 @@ def test_hex():
 def test_variable_identifier():
     result = re.match(variable_identifier_pattern, 'some_variableName10=0')
     assert result.group(1) == "some_variableName10"
+
+
+def test_left_paren():
+    result = re.match(left_paren_pattern, '( x + 1)')
+    assert result.group(1) == "( "
+
+
+def test_right_paren():
+    result = re.match(right_paren_pattern, ') + 3')
+    assert result.group(1) == ") "
