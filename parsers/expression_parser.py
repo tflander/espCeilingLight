@@ -153,12 +153,11 @@ def combine_parens(results):
     for i, result in enumerate(results):
         if result.result_type == ExpressionValueTypes.LEFT_PAREN:
             left_paren_pos = i
-            for j in range(len(results)-1, i, -1):
-                if results[j].result_type == ExpressionValueTypes.RIGHT_PAREN:
-                    inner_expression = results[left_paren_pos+1: j]
-                    inner_result = combine_expression_results(inner_expression)
-                    # TODO: should inner result be a list of results if can't resolve to a value?
-                    return results[:left_paren_pos] + inner_result + results[j+1:], True
+        if result.result_type == ExpressionValueTypes.RIGHT_PAREN:
+            inner_expression = results[left_paren_pos+1: i]
+            inner_result = combine_expression_results(inner_expression)
+            # TODO: should inner result be a list of results if can't resolve to a value?
+            return results[:left_paren_pos] + inner_result + results[i+1:], True
     return results, False
 
 
