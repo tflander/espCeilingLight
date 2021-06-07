@@ -96,23 +96,14 @@ def test_parens():
     assert result.value == 11
 
 
-def test_more_complex_parens():
-    result = parse_expression("10 * (3+4)")
-    assert result.value == 70
-
-
-def test_slightly_more_complex_parens():
-    result = parse_expression("(3 + 4) * (5+6)")
-    assert result.value == 77
-
-
-@pytest.mark.skip("do simple test first")
 def test_complex_parens():
     result = parse_expression("10 * ((3 + 4) * (5 + 6))")
     assert result.value == 770
 
-
+# TODO: unmatched left paren
+# TODO: unmatched right paren
 # TODO: test parens with variables.  Maybe do this first?
+
 
 def test_parse_invalid_parse():
     result = parse_expression("1 + 2 * 3 + 4 junk")
