@@ -159,15 +159,18 @@ def combine_parens(results):
         if result.result_type == ExpressionValueTypes.RIGHT_PAREN:
 
             if left_paren_pos is None:
-                return CombineFailure("unmatched right paren: " + results[0].token, 1), False
+                failure = CombineFailure(results[0].token, 1)
+                failure.message = "unmatched right paren: " + results[0].token
+                return failure, False
 
             inner_expression = results[left_paren_pos+1: i]
             inner_result = combine_expression_results(inner_expression)
-            # TODO: should inner result be a list of results if can't resolve to a value?
             return results[:left_paren_pos] + inner_result + results[i+1:], True
 
     if left_paren_pos is not None:
-        return CombineFailure("unmatched left paren: " + results[0].token, 1), False
+        failure = CombineFailure(results[0].token, 1)
+        failure.message = "unmatched left paren: " + results[0].token
+        return failure, False
 
     return results, False
 
@@ -202,8 +205,12 @@ def combine_operator_results(results, operator_value_type, value_combiner):
             combined_result = ParseResult(token, operator_value_type, ExpressionValueTypes.OPERATION)
 
             if not is_valid_operand(left_operand) or not is_valid_operand(right_operand):
-                # TODO: consider adding message about the invalid operand
-                return CombineFailure(token, 1), None
+                failure = CombineFailure(token, 1)
+                if not is_valid_operand(left_operand):
+                    failure.message = "invalid left operand: " + left_operand.match
+                else:
+                    failure.message = "invalid right operand: " + right_operand.match
+                return failure, False
 
             if left_operand.value is not None and right_operand.value is not None:
                 combined_result.value = value_combiner(left_operand.value, right_operand.value)

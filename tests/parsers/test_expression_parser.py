@@ -103,12 +103,23 @@ def test_complex_parens():
 
 def test_unmatched_left_paren():
     result = parse_expression("(5 + 6")
-    assert result.inner.errored_token == "unmatched left paren: (5 + 6"
+    assert result.message == [
+        "Syntax Error, line 1",
+        "  (5 + 6",
+        "        ^"
+    ]
+
+    assert result.inner.message == "unmatched left paren: (5 + 6"
 
 
 def test_unmatched_right_paren():
     result = parse_expression("5 + 6)")
-    assert result.inner.errored_token == "unmatched right paren: 5 + 6)"
+    assert result.message == [
+        "Syntax Error, line 1",
+        "  5 + 6)",
+        "        ^"
+    ]
+    assert result.inner.message == "unmatched right paren: 5 + 6)"
 
 
 def test_parens_with_variable():
@@ -150,6 +161,7 @@ def test_parse_invalid_combine():
         "  1 + 2 * * 3 + 4",
         "        ^"
     ]
+    assert result.inner.message == 'invalid right operand: * '
 
 
 def flatten(result):
