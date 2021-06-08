@@ -106,8 +106,12 @@ def test_unmatched_left_paren():
     assert result.inner.errored_token == "unmatched left paren: (5 + 6"
 
 
-# TODO: unmatched right paren
-# TODO: test parens with variables.  Maybe do this first?
+def test_unmatched_right_paren():
+    result = parse_expression("5 + 6)")
+    assert result.inner.errored_token == "unmatched right paren: 5 + 6)"
+
+
+# TODO: test parens with variables.
 
 
 def test_parse_invalid_parse():

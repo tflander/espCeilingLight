@@ -157,6 +157,10 @@ def combine_parens(results):
         if result.result_type == ExpressionValueTypes.LEFT_PAREN:
             left_paren_pos = i
         if result.result_type == ExpressionValueTypes.RIGHT_PAREN:
+
+            if left_paren_pos is None:
+                return CombineFailure("unmatched right paren: " + results[0].token, 1), False
+
             inner_expression = results[left_paren_pos+1: i]
             inner_result = combine_expression_results(inner_expression)
             # TODO: should inner result be a list of results if can't resolve to a value?
