@@ -111,7 +111,24 @@ def test_unmatched_right_paren():
     assert result.inner.errored_token == "unmatched right paren: 5 + 6)"
 
 
-# TODO: test parens with variables.
+def test_parens_with_variable():
+    result = parse_expression("(5 + x)")
+    assert flatten(result) == (ExpressionValueTypes.ADDITION, ExpressionValueTypes.OPERATION)
+    assert flatten(result.left) == (5, ExpressionValueTypes.INT)
+    assert flatten(result.right) == ('x', ExpressionValueTypes.VARIABLE)
+
+
+def test_complex_parens_with_variable():
+    result = parse_expression("x * ((3 + y) / (z - 6))")
+    assert flatten(result) == (ExpressionValueTypes.MULTIPLICATION, ExpressionValueTypes.OPERATION)
+    assert flatten(result.left) == ('x', ExpressionValueTypes.VARIABLE)
+    assert flatten(result.right) == (ExpressionValueTypes.DIVISION, ExpressionValueTypes.OPERATION)
+    assert flatten(result.right.left) == (ExpressionValueTypes.ADDITION, ExpressionValueTypes.OPERATION)
+    assert flatten(result.right.left.left) == (3, ExpressionValueTypes.INT)
+    assert flatten(result.right.left.right) == ('y', ExpressionValueTypes.VARIABLE)
+    assert flatten(result.right.right) == (ExpressionValueTypes.SUBTRACTION, ExpressionValueTypes.OPERATION)
+    assert flatten(result.right.right.left) == ('z', ExpressionValueTypes.VARIABLE)
+    assert flatten(result.right.right.right) == (6, ExpressionValueTypes.INT)
 
 
 def test_parse_invalid_parse():
