@@ -2,6 +2,7 @@ from parsers.expression_parser import *
 from parsers.parser_constants import CommandTypes
 
 assignment_pattern = '^(\\s*\\=\\s*)'
+comment_pattern = '^\\s*(//)'
 
 
 def parse_command(token):
@@ -12,7 +13,7 @@ def parse_command(token):
 
 
 def parse_combine_comment(token):
-    pass  # TODO: stuffis
+    return parse_generic(token, comment_pattern, CommandTypes.COMMENT)
 
 
 def parse_combine_assignment(token):

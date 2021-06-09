@@ -1,6 +1,7 @@
 import pytest
 
 from parsers.command_parser import *
+from parsers.support.flatten import flatten
 
 
 def test_parse_variable_assignment():
@@ -14,4 +15,4 @@ def test_parse_variable_assignment():
 
 def test_comment():
     result = parse_command("// This is a comment")
-    assert result.result_type == CommandTypes.COMMENT
+    assert flatten(result) == (CommandTypes.COMMENT, CommandTypes.COMMENT)

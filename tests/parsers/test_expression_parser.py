@@ -1,6 +1,7 @@
 import pytest
 
 from parsers.expression_parser import *
+from parsers.support.flatten import flatten
 
 
 def test_parse_number():
@@ -164,8 +165,3 @@ def test_parse_invalid_combine():
     assert result.inner.message == 'invalid right operand: * '
 
 
-def flatten(result):
-    if result.value is not None:
-        return result.value, result.result_type
-
-    return result.match, result.result_type
