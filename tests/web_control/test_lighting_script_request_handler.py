@@ -55,7 +55,7 @@ def test_request_must_have_a_description():
     assert json.loads(response.body) == {"error": 'request must have a description'}
 
 
-# TODO: think about id uniqueness
+# TODO: think about id uniqueness. SHA on MP?
 
 def test_request_must_have_a_script():
     commands = {
