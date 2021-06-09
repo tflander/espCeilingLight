@@ -5,7 +5,6 @@ class LightingCommandNodeTypes:
 class ExpressionValueTypes:
     LEFT_PAREN = "("
     RIGHT_PAREN = ")"
-    ASSIGNMENT = "="
     INT = "int"
     FLOAT = "float"
     HEX = "hex"
@@ -15,3 +14,8 @@ class ExpressionValueTypes:
     SUBTRACTION = "-"
     OPERATION = "op"
     VARIABLE = "var"
+
+
+class CommandTypes:
+    ASSIGNMENT = "="
+    COMMENT = "//"
