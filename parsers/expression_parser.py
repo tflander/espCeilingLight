@@ -128,7 +128,6 @@ def parse_expression(original_token):
         return failure
 
     if len(combined_results) != 1:
-        # TODO this happens for unexpected combine errors, such as leftover tokens
         failure = CombineFailure(original_token, 1)
         failure.message = ["unexpected combine error for token " + original_token]
         return failure
