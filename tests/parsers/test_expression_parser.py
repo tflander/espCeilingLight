@@ -1,7 +1,7 @@
 import pytest
 
 from parsers.expression_parser import *
-from parsers.support.flatten import flatten
+from parsers.support.testing_dsl import flatten
 
 
 def test_parse_number():

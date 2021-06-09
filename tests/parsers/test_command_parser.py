@@ -1,16 +1,15 @@
 import pytest
 
 from parsers.command_parser import *
-from parsers.support.flatten import flatten
+from parsers.support.testing_dsl import flatten
 
 
 def test_parse_variable_assignment():
     result = parse_command("x=0")
-    assert result.result_type == CommandTypes.ASSIGNMENT
-    assert result.left.result_type == ExpressionValueTypes.VARIABLE
-    assert result.left.match == 'x'
-    assert result.right.result_type == ExpressionValueTypes.INT
-    assert result.right.value == 0
+
+    assert flatten(result) == ("=", CommandTypes.ASSIGNMENT)
+    assert flatten(result.left) == ("x", ExpressionValueTypes.VARIABLE)
+    assert flatten(result.right) == (0, ExpressionValueTypes.INT)
 
 
 def test_comment():
