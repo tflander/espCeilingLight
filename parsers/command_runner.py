@@ -48,11 +48,22 @@ class CommandScope:
         if result.value is not None:
             return result.value
         else:
-            return self.local_variables[result.match]
+            if result.match in self.local_variables:
+                return self.local_variables[result.match]
+            else:
+                return "whoopsie-poopsie"
 
     @staticmethod
     def resolve_operator(operator, left_operand, right_operand):
+        if type(left_operand) == str:
+            return left_operand
+        if type(right_operand) == str:
+            return right_operand
         if operator == ExpressionValueTypes.ADDITION:
             return left_operand + right_operand
         elif operator == ExpressionValueTypes.MULTIPLICATION:
             return left_operand * right_operand
+        elif operator == ExpressionValueTypes.DIVISION:
+            return left_operand / right_operand
+        elif operator == ExpressionValueTypes.SUBTRACTION:
+            return left_operand - right_operand

@@ -21,9 +21,10 @@ def test_script_operations():
     commands = [
         "x = 0",
         "x = x+1",
-        "x = x * 5"
+        "x = x * 5",
+        "x = x / 2",
+        "x = x - 5"
     ]
-    # TODO: test all operations
 
     run_scope = CommandScope(commands)
     assert run_scope.value_for_local("x") is None
@@ -33,7 +34,25 @@ def test_script_operations():
     assert run_scope.value_for_local("x") == 1
     run_scope.step_command()
     assert run_scope.value_for_local("x") == 5
+    run_scope.step_command()
+    assert run_scope.value_for_local("x") == 2.5
+    run_scope.step_command()
+    assert run_scope.value_for_local("x") == -2.5
 
 
-# TODO: degenerate test run for undefined variable
+# TODO: test complex assignment with parens
+
+def test_undefined_variable():
+    commands = [
+        "x = 0",
+        "x = y+1"
+    ]
+
+    run_scope = CommandScope(commands)
+    run_scope.step_command()
+    assert run_scope.value_for_local("x") == 0
+    run_scope.step_command()
+    assert run_scope.value_for_local("x") == "some error"
+
+
 # TODO: degenerate test for running past end of script?
