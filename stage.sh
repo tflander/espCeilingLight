@@ -39,6 +39,14 @@ ampy rmdir parsers || echo "ignoring that folder parsers does not exist"
 ampy mkdir parsers
 echo "updating time_parser.py..."
 ampy put parsers/time_parser.py parsers/time_parser.py
+echo "updating command_parser.py..."
+ampy put parsers/command_parser.py parsers/command_parser.py
+echo "updating command_runner.py..."
+ampy put parsers/command_runner.py parsers/command_runner.py
+echo "updating expression_parser.py..."
+ampy put parsers/expression_parser.py parsers/expression_parser.py
+echo "updating parser_constants.py..."
+ampy put parsers/parser_constants.py parsers/parser_constants.py
 
 echo "resetting..."
 ampy reset

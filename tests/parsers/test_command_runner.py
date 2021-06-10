@@ -55,4 +55,3 @@ def test_undefined_variable():
     assert run_scope.runtime_error == "variable y not found in expression x = y+1"
 
 
-# TODO: degenerate test for running past end of script?
