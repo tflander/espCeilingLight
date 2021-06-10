@@ -52,7 +52,7 @@ def test_undefined_variable():
     run_scope.step_command()
     assert run_scope.value_for_local("x") == 0
     run_scope.step_command()
-    assert run_scope.value_for_local("x") == "some error"
+    assert run_scope.runtime_error == "variable y not found in expression x = y+1"
 
 
 # TODO: degenerate test for running past end of script?

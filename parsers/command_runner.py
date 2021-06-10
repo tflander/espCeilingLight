@@ -21,14 +21,19 @@ class CommandScope:
 
         self.local_variables = {}
         self.command_pointer = 0
+        self.runtime_error = None
 
     def step_command(self):
+        if self.runtime_error is not None:
+            return
         command = self.parse_results[self.command_pointer]
         var_name = command.left.match
         if command.right.value is not None:
             value = command.right.value
         else:
             value = self.resolve_expression(command.right)
+            if type(value) is str:
+                self.runtime_error = value + ' ' + "in expression " + self.commands[self.command_pointer]
         self.local_variables[var_name] = value
 
         self.command_pointer += 1
@@ -51,7 +56,7 @@ class CommandScope:
             if result.match in self.local_variables:
                 return self.local_variables[result.match]
             else:
-                return "whoopsie-poopsie"
+                return "variable " + result.match + " not found"
 
     @staticmethod
     def resolve_operator(operator, left_operand, right_operand):
