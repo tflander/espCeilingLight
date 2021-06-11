@@ -18,14 +18,15 @@ def parse_combine_comment(token):
 
 def parse_combine_assignment(token):
     variable = parse_variable_identifier(token)
-    if type(variable) is not ParseFailure:
-        assignment = parse_assignment(variable.rest)
-        rhs = parse_expression(assignment.rest)
-        assignment.left = variable
-        assignment.right = rhs
+    if type(variable) is ParseFailure:
+        return variable
+    assignment = parse_assignment(variable.rest)
+    if type(assignment) is ParseFailure:
         return assignment
-
-    return variable
+    rhs = parse_expression(assignment.rest)
+    assignment.left = variable
+    assignment.right = rhs
+    return assignment
 
 
 def parse_assignment(token):

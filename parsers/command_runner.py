@@ -1,4 +1,5 @@
 from parsers.command_parser import parse_command
+from parsers.expression_parser import ParseFailure
 from parsers.parser_constants import ExpressionValueTypes
 
 
@@ -16,6 +17,8 @@ class CommandScope:
         for command in commands:
             result = parse_command(command)
             self.parse_results.append(result)
+            if type(result) == ParseFailure:
+                return
 
         self.is_parsed = True
 

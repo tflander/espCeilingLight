@@ -1,22 +1,8 @@
 import pytest
 
 from parsers.command_runner import *
+from parsers.expression_parser import ParseFailure
 from parsers.support.testing_dsl import *
-
-
-def test_script_parse():
-    commands = [
-        "x = 0",
-        "x = x+1"
-    ]
-
-    run_scope = CommandScope(commands)
-
-    assert run_scope.is_parsed
-    assert that(run_scope.parse_results[0]).is_assignment("x", 0)
-    assert that(run_scope.parse_results[1]).is_assignment("x", "x+1")
-
-# TODO: degenerate test parse for invalid script
 
 
 def test_script_operations():
@@ -70,3 +56,16 @@ def test_undefined_variable():
     run_scope.step_command()
     assert run_scope.runtime_error == "variable y not found in expression x = y+1"
 
+
+def test_invalid_script_parse():
+    commands = [
+        "x = 0",
+        "this is not a script command"
+    ]
+
+    run_scope = CommandScope(commands)
+
+    assert not run_scope.is_parsed
+    assert that(run_scope.parse_results[0]).is_assignment("x", 0)
+    assert type(run_scope.parse_results[1]) is ParseFailure
+    # TODO: test drive error message
