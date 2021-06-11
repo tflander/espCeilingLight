@@ -34,14 +34,13 @@ class CommandScope:
             self.runtime_error = self.runtime_error + ' ' + "in expression " + self.commands[self.command_pointer]
             return
         else:
-            value = command.right.value
-            if value is None:
-                value = self.resolve_expression(command.right)
-            if type(value) is str:
+            if command.right.value is None:
+                self.resolve_expression(command.right)
+            if type(command.right.value) is str:
                 # TODO: is this dead code?
-                self.runtime_error = value + ' ' + "in expression " + self.commands[self.command_pointer]
+                self.runtime_error = command.right.value + ' ' + "in expression " + self.commands[self.command_pointer]
                 return
-            self.local_variables[var_name] = value
+            self.local_variables[var_name] = command.right.value
 
         self.command_pointer += 1
 
@@ -67,7 +66,7 @@ class CommandScope:
         operator = result.match
         self.resolve_operand(result.left)
         self.resolve_operand(result.right)
-        return self.resolve_operator(operator, result.left.value, result.right.value)
+        result.value = self.resolve_operator(operator, result.left.value, result.right.value)
 
     def resolve_operand(self, result):
         if result.result_type == ExpressionValueTypes.OPERATION:
@@ -75,10 +74,12 @@ class CommandScope:
 
     @staticmethod
     def resolve_operator(operator, left_operand, right_operand):
+        # TODO: is this dead code?
         if type(left_operand) == str:
             return left_operand
         if type(right_operand) == str:
             return right_operand
+
         if operator == ExpressionValueTypes.ADDITION:
             return left_operand + right_operand
         elif operator == ExpressionValueTypes.MULTIPLICATION:

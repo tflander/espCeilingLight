@@ -19,7 +19,6 @@ def test_script_parse():
 # TODO: degenerate test parse for invalid script
 
 
-@pytest.mark.skip("avoid noise while debugging")
 def test_script_operations():
     commands = [
         "x = 0",
@@ -56,10 +55,9 @@ def test_assignment_with_params():
     run_scope.step_command()
     run_scope.step_command()
     run_scope.step_command()
-    assert run_scope.value_for_local("answer") == 24
+    assert run_scope.value_for_local("answer") == 14
 
 
-@pytest.mark.skip("avoid noise while debugging")
 def test_undefined_variable():
     commands = [
         "x = 0",
