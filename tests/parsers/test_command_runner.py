@@ -1,3 +1,5 @@
+import pytest
+
 from parsers.command_runner import *
 from parsers.support.testing_dsl import *
 
@@ -17,6 +19,7 @@ def test_script_parse():
 # TODO: degenerate test parse for invalid script
 
 
+@pytest.mark.skip("avoid noise while debugging")
 def test_script_operations():
     commands = [
         "x = 0",
@@ -40,8 +43,23 @@ def test_script_operations():
     assert run_scope.value_for_local("x") == -2.5
 
 
-# TODO: test complex assignment with parens
+def test_assignment_with_params():
+    commands = [
+        "x = 2",
+        "y = 3",
+        "z = 4",
+        "answer = x * ( y + z)",
+    ]
 
+    run_scope = CommandScope(commands)
+    run_scope.step_command()
+    run_scope.step_command()
+    run_scope.step_command()
+    run_scope.step_command()
+    assert run_scope.value_for_local("answer") == 24
+
+
+@pytest.mark.skip("avoid noise while debugging")
 def test_undefined_variable():
     commands = [
         "x = 0",
@@ -53,5 +71,4 @@ def test_undefined_variable():
     assert run_scope.value_for_local("x") == 0
     run_scope.step_command()
     assert run_scope.runtime_error == "variable y not found in expression x = y+1"
-
 
