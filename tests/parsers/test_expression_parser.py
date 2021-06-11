@@ -105,7 +105,7 @@ def test_complex_parens():
 def test_unmatched_left_paren():
     result = parse_expression("(5 + 6")
     assert result.message == [
-        "Syntax Error, line 1",
+        "Syntax Error",
         "  (5 + 6",
         "        ^"
     ]
@@ -116,7 +116,7 @@ def test_unmatched_left_paren():
 def test_unmatched_right_paren():
     result = parse_expression("5 + 6)")
     assert result.message == [
-        "Syntax Error, line 1",
+        "Syntax Error",
         "  5 + 6)",
         "        ^"
     ]
@@ -145,9 +145,8 @@ def test_complex_parens_with_variable():
 
 def test_parse_invalid_parse():
     result = parse_expression("1 + 2 * 3 + 4 junk")
-    assert result.line == 1
     assert result.message == [
-        "Syntax Error, line 1",
+        "Syntax Error",
         "  1 + 2 * 3 + 4 junk",
         "                ^"
     ]
@@ -156,9 +155,8 @@ def test_parse_invalid_parse():
 def test_parse_invalid_combine():
     result = parse_expression("1 + 2 * * 3 + 4")
     show_message(result)
-    assert result.line == 1
     assert result.message == [
-        "Syntax Error, line 1",
+        "Syntax Error",
         "  1 + 2 * * 3 + 4",
         "        ^"
     ]

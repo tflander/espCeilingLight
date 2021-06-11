@@ -30,7 +30,7 @@ def parse_number(token):
 def parse_int_or_float(token):
     result = re.search(number_pattern, token)
     if result is None:
-        return ParseFailure(token, token, 1)
+        return ParseFailure(token, token)
     parse_result = ParseResult(token, result.group(1), None)
 
     if '.' in parse_result.match:
@@ -88,7 +88,7 @@ def parse_operation(token):
 def parse_generic(token, pattern, value_type, value_resolver=None):
     result = re.search(pattern, token)
     if result is None:
-        return ParseFailure(token, token, 1)
+        return ParseFailure(token, token)
     parse_result = ParseResult(token, result.group(1), value_type)
     if value_resolver is not None:
         parse_result.value = value_resolver(parse_result.match)
@@ -111,15 +111,15 @@ def parse_expression(original_token):
                 token = result.rest
                 break
         if latest_result is None:
-            return ParseFailure(token, original_token, 1)
+            return ParseFailure(token, original_token)
         token_results.append(result)
 
     combined_results = combine_expression_results(token_results)
     if type(combined_results) == CombineFailure:
-        failure = ParseFailure("", original_token, 1)
+        failure = ParseFailure("", original_token)
 
         failure.message = [
-            "Syntax Error, line " + str(1),
+            "Syntax Error",
             "  " + original_token,
             "  " + (" " * len(combined_results.errored_token)) + "^"
         ]
@@ -158,7 +158,7 @@ def combine_parens(results):
         if result.result_type == ExpressionValueTypes.RIGHT_PAREN:
 
             if left_paren_pos is None:
-                failure = CombineFailure(results[0].token, 1)
+                failure = CombineFailure(results[0].token)
                 failure.message = "unmatched right paren: " + results[0].token
                 return failure, False
 
@@ -167,7 +167,7 @@ def combine_parens(results):
             return results[:left_paren_pos] + inner_result + results[i+1:], True
 
     if left_paren_pos is not None:
-        failure = CombineFailure(results[0].token, 1)
+        failure = CombineFailure(results[0].token)
         failure.message = "unmatched left paren: " + results[0].token
         return failure, False
 
@@ -204,7 +204,7 @@ def combine_operator_results(results, operator_value_type, value_combiner):
             combined_result = ParseResult(token, operator_value_type, ExpressionValueTypes.OPERATION)
 
             if not is_valid_operand(left_operand) or not is_valid_operand(right_operand):
-                failure = CombineFailure(token, 1)
+                failure = CombineFailure(token)
                 if not is_valid_operand(left_operand):
                     failure.message = "invalid left operand: " + left_operand.match
                 else:
@@ -244,19 +244,18 @@ class ParseResult(CombineResult):
 
 class CombineFailure:
 
-    def __init__(self, errored_token, line):
+    def __init__(self, errored_token):
         self.errored_token = errored_token
-        self.line = line
 
 
 class ParseFailure(CombineFailure):
     
-    def __init__(self, errored_token, text, line):
-        CombineFailure.__init__(self, errored_token, line)
+    def __init__(self, errored_token, text):
+        CombineFailure.__init__(self, errored_token)
         pos = text.index(errored_token) + 1
         if pos > 1:
             self.message = [
-                "Syntax Error, line " + str(line),
+                "Syntax Error",
                 "  " + text,
                 "  " + (" " * pos) + "^"
         ]
