@@ -42,7 +42,7 @@ def test_script_operations():
     assert run_scope.value_for_local("x") == -2.5
 
 
-def test_assignment_with_params():
+def test_assignment_with_parens():
     commands = [
         "x = 2",
         "y = 3",
