@@ -3,6 +3,7 @@ class LightingCommandNodeTypes:
 
 
 class ExpressionValueTypes:
+    FUNCTION = "fn"
     LEFT_PAREN = "("
     RIGHT_PAREN = ")"
     INT = "int"
