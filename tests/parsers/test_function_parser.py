@@ -1,5 +1,6 @@
 import pytest
 
+from parsers.expression_parser import ParseFailure
 from parsers.function_parser import *
 from parsers.support.testing_dsl import flatten
 
@@ -11,7 +12,12 @@ def test_function_regex():
 
 
 def test_parse_function():
-    result = parse_function("random(0,1023)");
+    result = parse_function("random(0,1023)")
     assert type(result) == CombineResult
     assert result.match == ["random", "0,1023"]
     assert result.result_type == ExpressionValueTypes.FUNCTION
+
+
+def test_not_a_function():
+    result = parse_function("this is not a function")
+    assert type(result) == ParseFailure
