@@ -5,11 +5,13 @@ from parsers.parser_constants import ExpressionValueTypes
 function_pattern = "^([_a-zA-Z][_0-9a-zA-Z]*)\\((.*)\\)"
 comma_pattern = "^(\\,)"
 
+
 def parse_function(original_token):
     result = re.match(function_pattern, original_token)
     if result is None:
         return ParseFailure(original_token, original_token)
-    match = [result.group(1), result.group(2)]
+    function_parameters = parse_function_parameters(result.group(2))
+    match = [result.group(1), function_parameters]
     return CombineResult(original_token, match, ExpressionValueTypes.FUNCTION)
 
 
@@ -30,5 +32,4 @@ def parse_function_parameters(original_token):
         results.append(result)
         token = result.rest
 
-        # TODO: combine results
     return results
