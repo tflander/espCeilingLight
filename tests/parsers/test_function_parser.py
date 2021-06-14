@@ -1,14 +1,18 @@
 import pytest
 
-from parsers.expression_parser import ParseFailure
 from parsers.function_parser import *
-from parsers.support.testing_dsl import flatten
 
 
 def test_function_regex():
     result = re.match(function_pattern, 'random(0,1023)')
     assert result.group(1) == "random"
     assert result.group(2) == "0,1023"
+
+
+@pytest.mark.skip("not ready")
+def test_parse_function_parameters():
+    result = parse_function_parameters("0,1023")
+    x = 0
 
 
 def test_parse_function():

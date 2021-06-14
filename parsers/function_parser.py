@@ -11,3 +11,7 @@ def parse_function(original_token):
         return ParseFailure(original_token, original_token)
     match = [result.group(1), result.group(2)]
     return CombineResult(original_token, match, ExpressionValueTypes.FUNCTION)
+
+
+def parse_function_parameters(original_token):
+    pass
