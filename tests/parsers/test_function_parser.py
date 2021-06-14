@@ -1,6 +1,6 @@
 import pytest
 
-from parsers.function_parser import *
+from parsers.expression_parser import *
 from parsers.support.testing_dsl import flatten
 
 
@@ -12,12 +12,10 @@ def test_function_regex():
 
 def test_parse_function():
     result = parse_function("random(0,1023)")
-    assert type(result) == CombineResult
-    assert result.match[0] == "random"
-    function_parameters = result.match[1]
-    assert flatten(function_parameters[0]) == (0, ExpressionValueTypes.INT)
-    assert flatten(function_parameters[1]) == (',', ExpressionValueTypes.COMMA)
-    assert flatten(function_parameters[2]) == (1023, ExpressionValueTypes.INT)
+    assert result.function_name == "random"
+    assert flatten(result.function_parameters[0]) == (0, ExpressionValueTypes.INT)
+    assert flatten(result.function_parameters[1]) == (',', ExpressionValueTypes.COMMA)
+    assert flatten(result.function_parameters[2]) == (1023, ExpressionValueTypes.INT)
     assert result.result_type == ExpressionValueTypes.FUNCTION
 
 

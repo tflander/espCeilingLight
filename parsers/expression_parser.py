@@ -15,6 +15,9 @@ division_pattern = '^(\\s*\\/\\s*)'
 subtraction_pattern = '^(\\s*\\-\\s*)'
 variable_identifier_pattern = '^([_a-zA-Z][_0-9a-zA-Z]*)'
 
+function_pattern = "^([_a-zA-Z][_0-9a-zA-Z]*)\\((.*)\\)"
+comma_pattern = "^(\\,)"
+
 # expression := number | variable_identifier | operation | expression in parens | function # TODO: list lookup, dictionary lookup
 # operation := expression~operator~expression
 # operator := multiplication | addition | division | subtraction  # TODO: exp and mod
@@ -97,8 +100,22 @@ def parse_generic(token, pattern, value_type, value_resolver=None):
     return parse_result
 
 
-# TODO: add function.  Fix recursive include problem
-expression_parsers = [parse_number, parse_operation, parse_variable_identifier, parse_left_paren, parse_right_paren]
+def parse_function(original_token):
+    result = re.match(function_pattern, original_token)
+    if result is None:
+        return ParseFailure(original_token, original_token)
+    function_name = result.group(1)
+    function_parameters = parse_function_parameters(result.group(2))
+    if type(function_parameters) is ParseFailure:
+        return ParseFailure(function_parameters.errored_token, original_token)
+    match = original_token[result.pos:result.endpos]
+    result = ParseResult(original_token, match, ExpressionValueTypes.FUNCTION)
+    result.function_name = function_name
+    result.function_parameters = function_parameters
+    return result
+
+
+expression_parsers = [parse_number, parse_operation, parse_function, parse_variable_identifier, parse_left_paren, parse_right_paren]
 
 
 def get_expression_token(original_token, token):
@@ -249,4 +266,24 @@ def is_valid_operand(result):
         or result.result_type == ExpressionValueTypes.VARIABLE \
         or result.result_type == ExpressionValueTypes.OPERATION
 
+
+def consume_comma(token):
+    return parse_generic(token, comma_pattern, ExpressionValueTypes.COMMA)
+
+
+# TODO: call this parse_expression list?
+def parse_function_parameters(original_token):
+    results = []
+    token = original_token
+    while len(token) > 0:
+        result = get_expression_token(original_token, token)
+        if type(result) is ParseFailure:
+            result = consume_comma(token)
+
+        if type(result) == ParseFailure:
+            return result
+        results.append(result)
+        token = result.rest.strip()
+
+    return results
 
