@@ -66,6 +66,8 @@ def test_invalid_script_parse():
     run_scope = CommandScope(commands)
 
     assert not run_scope.is_parsed
-    assert that(run_scope.parse_results[0]).is_assignment("x", 0)
-    assert type(run_scope.parse_results[1]) is ParseFailure
-    # TODO: test drive error message
+    assert run_scope.parse_error.message == [
+        "Syntax Error, line 2",
+        "  this is not a script command",
+        "   ^"
+    ]

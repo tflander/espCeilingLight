@@ -14,10 +14,11 @@ class CommandScope:
         self.is_parsed = False
         self.parse_results = []
 
-        for command in commands:
+        for i, command in enumerate(commands, start=1):
             result = parse_command(command)
             self.parse_results.append(result)
             if type(result) == ParseFailure:
+                self.parse_error = ParseFailure(result.errored_token, command, i)
                 return
 
         self.is_parsed = True

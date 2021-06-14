@@ -272,15 +272,18 @@ class CombineFailure:
 
 class ParseFailure(CombineFailure):
     
-    def __init__(self, errored_token, text):
+    def __init__(self, errored_token, text, line=None):
         CombineFailure.__init__(self, errored_token)
         pos = text.index(errored_token) + 1
-        if pos > 1:
+        message_main = "Syntax Error"
+        if line is not None:
+            message_main += ", line " + str(line)
+        if pos >= 1:
             self.message = [
-                "Syntax Error",
+                message_main,
                 "  " + text,
                 "  " + (" " * pos) + "^"
-        ]
+            ]
 
 
 def show_message(failure):
