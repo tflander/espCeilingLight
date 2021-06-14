@@ -14,9 +14,9 @@ division_pattern = '^(\\s*\\/\\s*)'
 subtraction_pattern = '^(\\s*\\-\\s*)'
 variable_identifier_pattern = '^([_a-zA-Z][_0-9a-zA-Z]*)'
 
-# expression := number | variable_identifier | operation
+# expression := number | variable_identifier | operation | expression in parens  # TODO: result from function, list lookup, dictionary lookup
 # operation := expression~operator~expression
-# operator := multiplication | addition | division | subtraction
+# operator := multiplication | addition | division | subtraction  # TODO: exp and mod
 # number := int | float | hex
 
 

@@ -143,6 +143,11 @@ def test_complex_parens_with_variable():
     assert flatten(result.right.right.right) == (6, ExpressionValueTypes.INT)
 
 
+def test_function():
+    result = parse_expression("min(1, 2)")
+    assert result.value == 1
+
+
 def test_parse_invalid_parse():
     result = parse_expression("1 + 2 * 3 + 4 junk")
     assert result.message == [
