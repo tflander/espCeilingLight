@@ -13,14 +13,17 @@ addition_pattern = '^(\\s*\\+\\s*)'
 multiplication_pattern = '^(\\s*\\*\\s*)'
 division_pattern = '^(\\s*\\/\\s*)'
 subtraction_pattern = '^(\\s*\\-\\s*)'
+exponent_pattern =  '^(\\s*\\^\\s*)'
+
 variable_identifier_pattern = '^([_a-zA-Z][_0-9a-zA-Z]*)'
 
 function_pattern = "^([_a-zA-Z][_0-9a-zA-Z]*)\\((.*)\\)"
 comma_pattern = "^(\\,)"
 
-# expression := number | variable_identifier | operation | expression in parens | function # TODO: list lookup, dictionary lookup
+# expression := number | variable_identifier | operation | expression in parens
+#               | function # TODO: list lookup, dictionary lookup
 # operation := expression~operator~expression
-# operator := multiplication | addition | division | subtraction  # TODO: exp and mod
+# operator := exponent | multiplication | addition | division | subtraction  # TODO:  mod
 # number := int | float | hex
 
 
@@ -78,7 +81,11 @@ def parse_subtraction(token):
     return parse_generic(token, subtraction_pattern, ExpressionValueTypes.SUBTRACTION)
 
 
-operation_parsers = [parse_addition, parse_multiplication, parse_division, parse_subtraction]
+def parse_exponent(token):
+    return parse_generic(token, exponent_pattern, ExpressionValueTypes.EXPONENT)
+
+
+operation_parsers = [parse_addition, parse_multiplication, parse_division, parse_subtraction, parse_exponent]
 
 
 def parse_operation(token):
@@ -191,6 +198,10 @@ def combine_subtraction_results(results):
     return combine_operator_results(results, ExpressionValueTypes.SUBTRACTION, lambda a, b: a-b)
 
 
+def combine_exponent_results(results):
+    return combine_operator_results(results, ExpressionValueTypes.EXPONENT, lambda a, b: a**b)
+
+
 def combine_parens(results):
     left_paren_pos = None
     for i, result in enumerate(results):
@@ -217,6 +228,7 @@ def combine_parens(results):
 
 expression_combinators = [
     combine_parens,
+    combine_exponent_results,
     combine_multiplication_results,
     combine_division_results,
     combine_addition_results,
