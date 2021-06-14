@@ -1,7 +1,6 @@
 import pytest
 
 from parsers.command_runner import *
-from parsers.expression_parser import ParseFailure
 from parsers.support.testing_dsl import *
 
 

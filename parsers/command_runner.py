@@ -1,6 +1,6 @@
 from parsers.command_parser import parse_command
-from parsers.expression_parser import ParseFailure
 from parsers.parser_constants import ExpressionValueTypes
+from parsers.result_objects import ParseFailure
 
 
 def run_command(commands):

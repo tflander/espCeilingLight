@@ -1,6 +1,7 @@
 import re
 
 from parsers.parser_constants import ExpressionValueTypes
+from parsers.result_objects import *
 
 number_pattern = '^(-?[0-9]+\\.?[0-9]*)'
 hex_number_pattern = '^(0x[0-9a-fA-F]+)'
@@ -14,7 +15,7 @@ division_pattern = '^(\\s*\\/\\s*)'
 subtraction_pattern = '^(\\s*\\-\\s*)'
 variable_identifier_pattern = '^([_a-zA-Z][_0-9a-zA-Z]*)'
 
-# expression := number | variable_identifier | operation | expression in parens  # TODO: result from function, list lookup, dictionary lookup
+# expression := number | variable_identifier | operation | expression in parens | function # TODO: list lookup, dictionary lookup
 # operation := expression~operator~expression
 # operator := multiplication | addition | division | subtraction  # TODO: exp and mod
 # number := int | float | hex
@@ -96,6 +97,7 @@ def parse_generic(token, pattern, value_type, value_resolver=None):
     return parse_result
 
 
+# TODO: add function.  Fix recursive include problem
 expression_parsers = [parse_number, parse_operation, parse_variable_identifier, parse_left_paren, parse_right_paren]
 
 
@@ -248,44 +250,3 @@ def is_valid_operand(result):
         or result.result_type == ExpressionValueTypes.OPERATION
 
 
-class CombineResult:
-
-    def __init__(self, token, match, result_type):
-        self.result_type = result_type
-        self.token = token
-        self.match = match
-        self.value = None
-
-
-class ParseResult(CombineResult):
-
-    def __init__(self, token, match, result_type):
-        CombineResult.__init__(self, token, match, result_type)
-        self.rest = token[len(match):]
-
-
-class CombineFailure:
-
-    def __init__(self, errored_token):
-        self.errored_token = errored_token
-
-
-class ParseFailure(CombineFailure):
-    
-    def __init__(self, errored_token, text, line=None):
-        CombineFailure.__init__(self, errored_token)
-        pos = text.index(errored_token) + 1
-        message_main = "Syntax Error"
-        if line is not None:
-            message_main += ", line " + str(line)
-        if pos >= 1:
-            self.message = [
-                message_main,
-                "  " + text,
-                "  " + (" " * pos) + "^"
-            ]
-
-
-def show_message(failure):
-    for line in failure.message:
-        print(line)
