@@ -16,7 +16,7 @@ def parse_function(original_token):
 
 
 def consume_comma(token):
-    return parse_generic(token, comma_pattern, ",")  # TODO: figure out where the comma value type belongs
+    return parse_generic(token, comma_pattern, ExpressionValueTypes.COMMA)
 
 
 # TODO: call this parse_expression list?
