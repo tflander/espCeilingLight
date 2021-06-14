@@ -99,20 +99,29 @@ def parse_generic(token, pattern, value_type, value_resolver=None):
 expression_parsers = [parse_number, parse_operation, parse_variable_identifier, parse_left_paren, parse_right_paren]
 
 
+def get_expression_token(original_token, token):
+    latest_result = None
+    for parser in expression_parsers:
+        result = parser(token)
+        if type(result) == ParseResult:
+            latest_result = result
+            # token = result.rest
+            break
+    if latest_result is None:
+        return ParseFailure(token, original_token)
+    return result
+
+
 def tokenize_expression(original_token):
     token_results = []
     token = original_token
     while len(token) > 0:
-        latest_result = None
-        for parser in expression_parsers:
-            result = parser(token)
-            if type(result) == ParseResult:
-                latest_result = result
-                token = result.rest
-                break
-        if latest_result is None:
-            return ParseFailure(token, original_token)
-        token_results.append(result)
+        latest_result = get_expression_token(original_token, token)
+        if type(latest_result) is ParseFailure:
+            return latest_result
+        token = latest_result.rest
+        token_results.append(latest_result)
+
     return token_results
 
 

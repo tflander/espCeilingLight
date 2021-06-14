@@ -1,5 +1,5 @@
 import re
-from parsers.expression_parser import CombineResult, ParseFailure
+from parsers.expression_parser import *
 from parsers.parser_constants import ExpressionValueTypes
 
 function_pattern = "^([_a-zA-Z][_0-9a-zA-Z]*)\\((.*)\\)"
@@ -14,4 +14,5 @@ def parse_function(original_token):
 
 
 def parse_function_parameters(original_token):
-    pass
+    foo = tokenize_expression(original_token)
+    x = 0
