@@ -116,11 +116,7 @@ def tokenize_expression(original_token):
     return token_results
 
 
-def parse_expression(original_token):
-
-    token_results = tokenize_expression(original_token)
-    if type(token_results) == ParseFailure:
-        return token_results
+def combine_expression_tokens(original_token, token_results):
 
     combined_results = combine_expression_results(token_results)
     if type(combined_results) == CombineFailure:
@@ -140,6 +136,15 @@ def parse_expression(original_token):
         failure.message = ["unexpected combine error for token " + original_token]
         return failure
     return combined_results[0]
+
+
+def parse_expression(original_token):
+
+    token_results = tokenize_expression(original_token)
+    if type(token_results) == ParseFailure:
+        return token_results
+
+    return combine_expression_tokens(original_token, token_results)
 
 
 def combine_multiplication_results(results):
