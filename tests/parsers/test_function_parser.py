@@ -21,6 +21,16 @@ def test_parse_function():
     assert result.result_type == ExpressionValueTypes.FUNCTION
 
 
+def test_parse_invalid_function():
+    result = parse_function("random(0:1023)")
+    assert type(result) == ParseFailure
+    assert result.message == [
+        'Syntax Error',
+        '  random(0:1023)',
+        '           ^'
+    ]
+
+
 def test_not_a_function():
     result = parse_function("this is not a function")
     assert type(result) == ParseFailure

@@ -11,6 +11,8 @@ def parse_function(original_token):
     if result is None:
         return ParseFailure(original_token, original_token)
     function_parameters = parse_function_parameters(result.group(2))
+    if type(function_parameters) is ParseFailure:
+        return ParseFailure(function_parameters.errored_token, original_token)
     match = [result.group(1), function_parameters]
     return CombineResult(original_token, match, ExpressionValueTypes.FUNCTION)
 
@@ -28,7 +30,8 @@ def parse_function_parameters(original_token):
         if type(result) is ParseFailure:
             result = consume_comma(token)
 
-        # TODO: need test where result failure is here
+        if type(result) == ParseFailure:
+            return result
         results.append(result)
         token = result.rest
 
