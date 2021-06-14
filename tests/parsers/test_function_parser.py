@@ -9,10 +9,11 @@ def test_function_regex():
     assert result.group(2) == "0,1023"
 
 
-@pytest.mark.skip("not ready")
 def test_parse_function_parameters():
     result = parse_function_parameters("0,1023")
-    x = 0
+
+    # TODO: assert on combined expression list
+    assert "todo" is False
 
 
 def test_parse_function():
