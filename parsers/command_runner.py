@@ -49,8 +49,10 @@ class CommandScope:
         self.command_pointer += 1
 
     def resolve_function(self, result):
+        parameters = result.function_parameters
         if result.function_name == 'min':
-            result.value = 999  # "stub for now"
+            # TODO: require two parameters
+            result.value = min(parameters[0].value, parameters[1].value)
 
     def resolve_variables(self, result):
         if result.result_type in [ExpressionValueTypes.INT, ExpressionValueTypes.FLOAT]:
