@@ -78,3 +78,22 @@ def combine_operator_results(results, operator_value_type, value_combiner):
             return results[:i-1] + [combined_result] + results[i+2:], True
     return results, False
 
+
+def combine_multiplication_results(results):
+    return combine_operator_results(results, ExpressionValueTypes.MULTIPLICATION, lambda a, b: a*b)
+
+
+def combine_addition_results(results):
+    return combine_operator_results(results, ExpressionValueTypes.ADDITION, lambda a, b: a+b)
+
+
+def combine_division_results(results):
+    return combine_operator_results(results, ExpressionValueTypes.DIVISION, lambda a, b: a/b)
+
+
+def combine_subtraction_results(results):
+    return combine_operator_results(results, ExpressionValueTypes.SUBTRACTION, lambda a, b: a-b)
+
+
+def combine_exponent_results(results):
+    return combine_operator_results(results, ExpressionValueTypes.EXPONENT, lambda a, b: a**b)

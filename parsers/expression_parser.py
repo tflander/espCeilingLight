@@ -78,26 +78,6 @@ def parse_expression(original_token):
     return combine_expression_tokens(original_token, token_results)
 
 
-def combine_multiplication_results(results):
-    return combine_operator_results(results, ExpressionValueTypes.MULTIPLICATION, lambda a, b: a*b)
-
-
-def combine_addition_results(results):
-    return combine_operator_results(results, ExpressionValueTypes.ADDITION, lambda a, b: a+b)
-
-
-def combine_division_results(results):
-    return combine_operator_results(results, ExpressionValueTypes.DIVISION, lambda a, b: a/b)
-
-
-def combine_subtraction_results(results):
-    return combine_operator_results(results, ExpressionValueTypes.SUBTRACTION, lambda a, b: a-b)
-
-
-def combine_exponent_results(results):
-    return combine_operator_results(results, ExpressionValueTypes.EXPONENT, lambda a, b: a**b)
-
-
 def combine_parens(results):
     left_paren_pos = None
     for i, result in enumerate(results):
@@ -122,6 +102,7 @@ def combine_parens(results):
     return results, False
 
 
+# TODO: use operator combinator
 expression_combinators = [
     combine_parens,
     combine_exponent_results,
