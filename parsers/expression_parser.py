@@ -133,15 +133,7 @@ expression_combinators = [
 
 
 def combine_expression_results(results):
-    combined_results = results
-    for combinator in expression_combinators:
-        while True:
-            combined_results, combined = combinator(combined_results)
-            if type(combined_results) == CombineFailure:
-                return combined_results
-            if not combined:
-                break
-    return combined_results
+    return combine_results(results, expression_combinators)
 
 
 def combine_operator_results(results, operator_value_type, value_combiner):

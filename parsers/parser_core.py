@@ -59,3 +59,15 @@ def get_token(original_token, token, parsers):
     if latest_result is None:
         return ParseFailure(token, original_token)
     return result
+
+
+def combine_results(results, combinators):
+    combined_results = results
+    for combinator in combinators:
+        while True:
+            combined_results, combined = combinator(combined_results)
+            if type(combined_results) == CombineFailure:
+                return combined_results
+            if not combined:
+                break
+    return combined_results
