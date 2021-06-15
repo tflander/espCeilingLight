@@ -43,6 +43,14 @@ def test_assignment_with_parens():
     assert run_scope.value_for_local("answer") == 14
 
 
+@pytest.mark.skip("First need to combine the parameters and throw away the comma tokens")
+def test_min_function():
+    commands = ["x = min(1,2)"]
+    run_scope = CommandScope(commands)
+    run_scope.step_command()
+    assert run_scope.value_for_local("x") == 1
+
+
 def test_undefined_variable():
     commands = [
         "x = 0",

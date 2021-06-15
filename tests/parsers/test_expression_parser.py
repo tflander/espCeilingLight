@@ -107,8 +107,7 @@ def test_function():
     result = parse_expression("min(1, 2)")
     assert result.function_name == 'min'
     assert flatten(result.function_parameters[0]) == (1, ExpressionValueTypes.INT)
-    assert flatten(result.function_parameters[1]) == (',', ExpressionValueTypes.COMMA)
-    assert flatten(result.function_parameters[2]) == (2, ExpressionValueTypes.INT)
+    assert flatten(result.function_parameters[1]) == (2, ExpressionValueTypes.INT)
 
 
 def test_parse_invalid_parse():

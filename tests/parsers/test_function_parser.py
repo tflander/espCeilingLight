@@ -14,8 +14,9 @@ def test_parse_function():
     result = parse_function("random(0,1023)")
     assert result.function_name == "random"
     assert flatten(result.function_parameters[0]) == (0, ExpressionValueTypes.INT)
-    assert flatten(result.function_parameters[1]) == (',', ExpressionValueTypes.COMMA)
-    assert flatten(result.function_parameters[2]) == (1023, ExpressionValueTypes.INT)
+    # assert flatten(result.function_parameters[1]) == (',', ExpressionValueTypes.COMMA)
+    # assert flatten(result.function_parameters[2]) == (1023, ExpressionValueTypes.INT)
+    assert flatten(result.function_parameters[1]) == (1023, ExpressionValueTypes.INT)
     assert result.result_type == ExpressionValueTypes.FUNCTION
 
 

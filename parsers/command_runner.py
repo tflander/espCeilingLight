@@ -48,8 +48,15 @@ class CommandScope:
 
         self.command_pointer += 1
 
+    def resolve_function(self, result):
+        if result.function_name == 'min':
+            result.value = 999  # "stub for now"
+
     def resolve_variables(self, result):
         if result.result_type in [ExpressionValueTypes.INT, ExpressionValueTypes.FLOAT]:
+            return
+        if result.result_type == ExpressionValueTypes.FUNCTION:
+            self.resolve_function(result)
             return
         if result.result_type == ExpressionValueTypes.VARIABLE:
             if result.match in self.local_variables:
