@@ -1,11 +1,5 @@
-import re
-
-from parsers.parser_constants import ExpressionValueTypes
-from parsers.parser_core import parse_generic
+from parsers.parser_core import *
 from parsers.result_objects import *
-
-number_pattern = '^(-?[0-9]+\\.?[0-9]*)'
-hex_number_pattern = '^(0x[0-9a-fA-F]+)'
 
 left_paren_pattern = '^(\\s*\\(\\s*)'
 right_paren_pattern = '^(\\s*\\)\\s*)'
@@ -14,7 +8,7 @@ addition_pattern = '^(\\s*\\+\\s*)'
 multiplication_pattern = '^(\\s*\\*\\s*)'
 division_pattern = '^(\\s*\\/\\s*)'
 subtraction_pattern = '^(\\s*\\-\\s*)'
-exponent_pattern =  '^(\\s*\\^\\s*)'
+exponent_pattern = '^(\\s*\\^\\s*)'
 
 variable_identifier_pattern = '^([_a-zA-Z][_0-9a-zA-Z]*)'
 
@@ -26,32 +20,6 @@ comma_pattern = "^(\\,)"
 # operation := expression~operator~expression
 # operator := exponent | multiplication | addition | division | subtraction  # TODO:  mod
 # number := int | float | hex
-
-
-def parse_number(token):
-    result = parse_hex(token)
-    if type(result) == ParseFailure:
-        result = parse_int_or_float(token)
-    return result
-
-
-def parse_int_or_float(token):
-    result = re.search(number_pattern, token)
-    if result is None:
-        return ParseFailure(token, token)
-    parse_result = ParseResult(token, result.group(1), None)
-
-    if '.' in parse_result.match:
-        parse_result.value = float(parse_result.match)
-        parse_result.result_type = ExpressionValueTypes.FLOAT
-    else:
-        parse_result.value = int(parse_result.match)
-        parse_result.result_type = ExpressionValueTypes.INT
-    return parse_result
-
-
-def parse_hex(token):
-    return parse_generic(token, hex_number_pattern, ExpressionValueTypes.HEX, lambda v: int(v, 16))
 
 
 def parse_left_paren(token):
