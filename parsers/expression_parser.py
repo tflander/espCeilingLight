@@ -31,16 +31,7 @@ expression_parsers = [parse_number, parse_operation, parse_function, parse_varia
 
 
 def get_expression_token(original_token, token):
-    latest_result = None
-    for parser in expression_parsers:
-        result = parser(token)
-        if type(result) == ParseResult:
-            latest_result = result
-            # token = result.rest
-            break
-    if latest_result is None:
-        return ParseFailure(token, original_token)
-    return result
+    return get_token(original_token, token, expression_parsers)
 
 
 def tokenize_expression(original_token):

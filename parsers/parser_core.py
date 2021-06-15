@@ -47,3 +47,15 @@ def parse_generic(token, pattern, value_type, value_resolver=None):
         parse_result.value = value_resolver(parse_result.match)
 
     return parse_result
+
+
+def get_token(original_token, token, parsers):
+    latest_result = None
+    for parser in parsers:
+        result = parser(token)
+        if type(result) == ParseResult:
+            latest_result = result
+            break
+    if latest_result is None:
+        return ParseFailure(token, original_token)
+    return result
