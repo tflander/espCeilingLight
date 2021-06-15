@@ -1,6 +1,7 @@
 import re
 
 from parsers.parser_constants import ExpressionValueTypes
+from parsers.parser_core import parse_generic
 from parsers.result_objects import *
 
 number_pattern = '^(-?[0-9]+\\.?[0-9]*)'
@@ -94,17 +95,6 @@ def parse_operation(token):
         if type(result) is ParseResult:
             return result
     return result
-
-
-def parse_generic(token, pattern, value_type, value_resolver=None):
-    result = re.search(pattern, token)
-    if result is None:
-        return ParseFailure(token, token)
-    parse_result = ParseResult(token, result.group(1), value_type)
-    if value_resolver is not None:
-        parse_result.value = value_resolver(parse_result.match)
-
-    return parse_result
 
 
 def parse_function(original_token):
