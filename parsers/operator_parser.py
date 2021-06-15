@@ -97,3 +97,13 @@ def combine_subtraction_results(results):
 
 def combine_exponent_results(results):
     return combine_operator_results(results, ExpressionValueTypes.EXPONENT, lambda a, b: a**b)
+
+
+operator_combinators = [
+    combine_exponent_results,
+    combine_multiplication_results,
+    combine_division_results,
+    combine_addition_results,
+    combine_subtraction_results
+]
+

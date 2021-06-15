@@ -102,15 +102,7 @@ def combine_parens(results):
     return results, False
 
 
-# TODO: use operator combinator
-expression_combinators = [
-    combine_parens,
-    combine_exponent_results,
-    combine_multiplication_results,
-    combine_division_results,
-    combine_addition_results,
-    combine_subtraction_results
-]
+expression_combinators = [combine_parens] + operator_combinators
 
 
 def combine_expression_results(results):
