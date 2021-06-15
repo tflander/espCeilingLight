@@ -1,16 +1,11 @@
 from parsers.parser_core import *
 from parsers.result_objects import *
 
-left_paren_pattern = '^(\\s*\\(\\s*)'
-right_paren_pattern = '^(\\s*\\)\\s*)'
-
 addition_pattern = '^(\\s*\\+\\s*)'
 multiplication_pattern = '^(\\s*\\*\\s*)'
 division_pattern = '^(\\s*\\/\\s*)'
 subtraction_pattern = '^(\\s*\\-\\s*)'
 exponent_pattern = '^(\\s*\\^\\s*)'
-
-variable_identifier_pattern = '^([_a-zA-Z][_0-9a-zA-Z]*)'
 
 function_pattern = "^([_a-zA-Z][_0-9a-zA-Z]*)\\((.*)\\)"
 comma_pattern = "^(\\,)"
@@ -20,18 +15,6 @@ comma_pattern = "^(\\,)"
 # operation := expression~operator~expression
 # operator := exponent | multiplication | addition | division | subtraction  # TODO:  mod
 # number := int | float | hex
-
-
-def parse_left_paren(token):
-    return parse_generic(token, left_paren_pattern, ExpressionValueTypes.LEFT_PAREN)
-
-
-def parse_right_paren(token):
-    return parse_generic(token, right_paren_pattern, ExpressionValueTypes.RIGHT_PAREN)
-
-
-def parse_variable_identifier(token):
-    return parse_generic(token, variable_identifier_pattern, ExpressionValueTypes.VARIABLE)
 
 
 def parse_addition(token):

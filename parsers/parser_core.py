@@ -5,6 +5,22 @@ from parsers.result_objects import *
 
 number_pattern = '^(-?[0-9]+\\.?[0-9]*)'
 hex_number_pattern = '^(0x[0-9a-fA-F]+)'
+left_paren_pattern = '^(\\s*\\(\\s*)'
+right_paren_pattern = '^(\\s*\\)\\s*)'
+variable_identifier_pattern = '^([_a-zA-Z][_0-9a-zA-Z]*)'
+
+
+def parse_left_paren(token):
+    return parse_generic(token, left_paren_pattern, ExpressionValueTypes.LEFT_PAREN)
+
+
+def parse_right_paren(token):
+    return parse_generic(token, right_paren_pattern, ExpressionValueTypes.RIGHT_PAREN)
+
+
+def parse_variable_identifier(token):
+    return parse_generic(token, variable_identifier_pattern, ExpressionValueTypes.VARIABLE)
+
 
 def parse_number(token):
     result = parse_hex(token)
