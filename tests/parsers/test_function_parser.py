@@ -21,9 +21,11 @@ def test_parse_function():
 def test_parse_function_parameter_expressions():
     result = parse_function("random(x+1,1023)")
     assert result.function_name == "random"
-    assert flatten(result.function_parameters[0]) == (ExpressionValueTypes.ADDITION, ExpressionValueTypes.OPERATION)
-    # TODO: test the operation tree left and right
     assert result.result_type == ExpressionValueTypes.FUNCTION
+    assert flatten(result.function_parameters[0]) == (ExpressionValueTypes.ADDITION, ExpressionValueTypes.OPERATION)
+    assert flatten(result.function_parameters[0].left) == ('x', ExpressionValueTypes.VARIABLE)
+    assert flatten(result.function_parameters[0].right) == (1, ExpressionValueTypes.INT)
+    assert flatten(result.function_parameters[1]) == (1023, ExpressionValueTypes.INT)
 
 
 def test_parse_invalid_function():
