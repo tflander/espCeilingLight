@@ -28,7 +28,17 @@ def test_parse_function_parameter_expressions():
     assert flatten(result.function_parameters[1]) == (1023, ExpressionValueTypes.INT)
 
 
-def test_parse_invalid_function():
+def test_parse_function_invalid_parameter_list():
+    result = parse_function("random(0, 1023, )")
+    assert type(result) == ParseFailure
+    assert result.message == [
+        'Syntax Error',
+        '  random(0, 1023, )',
+        '   ^'
+    ]
+
+
+def test_parse_function_invalid_parameter():
     result = parse_function("random(0:1023)")
     assert type(result) == ParseFailure
     assert result.message == [
