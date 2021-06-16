@@ -52,7 +52,6 @@ class CommandScope:
                 self.resolve_expression(parameter)
 
         if result.function_name == 'min':
-            # TODO: should number of parameters be a parse/combine error or parse_command() error?
             if len(parameters) != 2:
                 self.runtime_error = "min(a,b) requires two parameters, found " + str(len(parameters))
                 return
