@@ -12,6 +12,12 @@ def test_parse_variable_assignment():
     assert flatten(result.right) == (0, ExpressionValueTypes.INT)
 
 
+def test_begin_while_forever_loop():
+    # TODO: for now, let's defer the { } braces as a command for defining, pushing and popping a new run scope
+    result = parse_command("while forever")
+    assert flatten(result) == ("forever", CommandTypes.WHILE)
+
+
 def test_comment():
     result = parse_command("// This is a comment")
     assert flatten(result) == (CommandTypes.COMMENT, CommandTypes.COMMENT)

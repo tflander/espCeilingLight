@@ -20,5 +20,6 @@ class ExpressionValueTypes:
 
 
 class CommandTypes:
+    WHILE = "while"
     ASSIGNMENT = "="
     COMMENT = "//"
