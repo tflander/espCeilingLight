@@ -50,6 +50,21 @@ def test_min_function():
     assert run_scope.value_for_local("x") == 1
 
 
+def test_function_parameter_expressions():
+    commands = [
+        "x = 0",
+        "y = 10",
+        "z = min(x+3,y)"
+    ]
+    run_scope = CommandScope(commands)
+    run_scope.step_command()
+    run_scope.step_command()
+    run_scope.step_command()
+    assert run_scope.value_for_local("x") == 0
+    assert run_scope.value_for_local("y") == 10
+    assert run_scope.value_for_local("z") == 3
+
+
 def test_undefined_variable():
     commands = [
         "x = 0",

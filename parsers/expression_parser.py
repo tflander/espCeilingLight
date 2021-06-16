@@ -24,17 +24,15 @@ def parse_function(original_token):
     result = ParseResult(original_token, match, ExpressionValueTypes.FUNCTION)
     result.function_name = function_name
     result.function_parameters = function_parameters
-    return combine_function(result)
+    return validate_function_parameters(result)
 
 
-def combine_function(result):
-    function_parameters = []
+def validate_function_parameters(result):
     for i, param_result in enumerate(result.function_parameters):
         if i % 2 == 0:
-            function_parameters.append(param_result)
+            pass
         # TODO: else fail if odd token is not a comma
     # TODO: fail if last parameter is a comma
-    result.function_parameters = function_parameters
     return result
 
 
@@ -138,5 +136,23 @@ def parse_function_parameters(original_token):
         results.append(result)
         token = result.rest.strip()
 
-    return results
+    return combine_function_parameters(results)
+
+
+def combine_function_parameters(results):
+    combined_parameters = []
+    parameter_tokens = []
+    for result in results:
+        if result.result_type == ExpressionValueTypes.COMMA:
+            combined_parameter = combine_expression_results(parameter_tokens)
+            # if len(combined_parameter) != 1:
+            #     # TODO: good message
+            #     return CombineFailure("whoops")
+            combined_parameters.append(combined_parameter[0])
+            parameter_tokens = []
+        else:
+            parameter_tokens.append(result)
+
+    combined_parameters.append(combine_expression_results(parameter_tokens)[0])
+    return combined_parameters
 

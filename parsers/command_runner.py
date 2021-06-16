@@ -50,6 +50,11 @@ class CommandScope:
 
     def resolve_function(self, result):
         parameters = result.function_parameters
+        for parameter in parameters:
+            self.resolve_variables(parameter)
+            if parameter.value is None:
+                self.resolve_expression(parameter)
+
         if result.function_name == 'min':
             # TODO: require two parameters
             result.value = min(parameters[0].value, parameters[1].value)
