@@ -136,9 +136,6 @@ def combine_function_parameters(results):
     for result in results:
         if result.result_type == ExpressionValueTypes.COMMA:
             combined_parameter = combine_expression_results(parameter_tokens)
-            # if len(combined_parameter) != 1:
-            #     # TODO: good message
-            #     return CombineFailure("whoops")
             combined_parameters.append(combined_parameter[0])
             parameter_tokens = []
         else:

@@ -40,10 +40,6 @@ class CommandScope:
         else:
             if command.right.value is None:
                 self.resolve_expression(command.right)
-            if type(command.right.value) is str:
-                # TODO: is this dead code?
-                self.runtime_error = command.right.value + ' ' + "in expression " + self.commands[self.command_pointer]
-                return
             self.local_variables[var_name] = command.right.value
 
         self.command_pointer += 1
@@ -95,11 +91,6 @@ class CommandScope:
 
     @staticmethod
     def resolve_operator(operator, left_operand, right_operand):
-        # TODO: is this dead code?
-        if type(left_operand) == str:
-            return left_operand
-        if type(right_operand) == str:
-            return right_operand
 
         if operator == ExpressionValueTypes.ADDITION:
             return left_operand + right_operand
