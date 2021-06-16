@@ -50,6 +50,20 @@ def test_min_function():
     assert run_scope.value_for_local("x") == 1
 
 
+def test_min_function_not_enough_parameters():
+    commands = ["x = min(1)"]
+    run_scope = CommandScope(commands)
+    run_scope.step_command()
+    assert run_scope.runtime_error == "min(a,b) requires two parameters, found 1 in expression x = min(1)"
+
+
+def test_min_function_too_many_parameters():
+    commands = ["x = min(1, 2, 3)"]
+    run_scope = CommandScope(commands)
+    run_scope.step_command()
+    assert run_scope.runtime_error == "min(a,b) requires two parameters, found 3 in expression x = min(1, 2, 3)"
+
+
 def test_function_parameter_expressions():
     commands = [
         "x = 0",

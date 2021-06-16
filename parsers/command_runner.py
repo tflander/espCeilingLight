@@ -56,7 +56,10 @@ class CommandScope:
                 self.resolve_expression(parameter)
 
         if result.function_name == 'min':
-            # TODO: require two parameters
+            # TODO: should number of parameters be a parse/combine error or parse_command() error?
+            if len(parameters) != 2:
+                self.runtime_error = "min(a,b) requires two parameters, found " + str(len(parameters))
+                return
             result.value = min(parameters[0].value, parameters[1].value)
 
     def resolve_variables(self, result):
