@@ -50,15 +50,6 @@ class LightingScriptRunner:
             parts = command.split()
             target_color_duties = RgbDutiesConverter.to_duties(parts[3])
             await LightingScriptRunner.fade(target_color_duties, parts[1], led_pwm_channels)
-            # fade_params = AnimationCalculator.for_fade_command(target_color_duties, parts[1], led_pwm_channels)
-            # current_duties = led_pwm_channels.as_duties()
-            #
-            # duties_as_float = current_duties
-            # while current_duties != fade_params.target_color:
-            #     duties_as_float.apply_deltas(fade_params.color_slice_deltas, target_color_duties)
-            #     current_duties = duties_as_float.to_rounded_int()
-            #     led_pwm_channels.set_from_duties(current_duties)
-            #     await uasyncio.sleep_ms(fade_params.slice_duration_ms)
 
     @staticmethod
     def should_run_in_loop(commands):
