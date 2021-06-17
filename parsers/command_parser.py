@@ -5,10 +5,15 @@ assignment_pattern = '^(\\s*\\=\\s*)'
 comment_pattern = '^\\s*(//)'
 while_pattern = '^while\\s+(.*)'
 for_pattern = '^for\\s+(.*)\\s+in+\\s+(.*)'
+color_string_pattern = '^(#[0-9a-zA-Z]{6})$'
 
 
 def parse_combine_comment(token):
     return parse_generic(token, comment_pattern, CommandTypes.COMMENT)
+
+
+def parse_combine_color_string(token):
+    return parse_generic(token, color_string_pattern, CommandTypes.COLOR)
 
 
 def parse_combine_for(token):
@@ -38,7 +43,13 @@ def parse_combine_assignment(token):
     return assignment
 
 
-command_parsers = [parse_combine_assignment, parse_combine_comment, parse_combine_while, parse_combine_for]
+command_parsers = [
+    parse_combine_assignment,
+    parse_combine_comment,
+    parse_combine_while,
+    parse_combine_for,
+    parse_combine_color_string
+]
 
 
 def parse_command(token):

@@ -26,6 +26,11 @@ def test_begin_for_loop():
     assert flatten(result.enumerable) == ("range(1, 10)", ExpressionValueTypes.FUNCTION)
 
 
+def test_set_color():
+    result = parse_command("#aa99C0")
+    assert flatten(result) == ("#aa99C0", CommandTypes.COLOR)
+
+
 def test_comment():
     result = parse_command("// This is a comment")
     assert flatten(result) == (CommandTypes.COMMENT, CommandTypes.COMMENT)

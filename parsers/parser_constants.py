@@ -20,6 +20,7 @@ class ExpressionValueTypes:
 
 
 class CommandTypes:
+    COLOR = "color"
     FOR = "for"
     WHILE = "while"
     ASSIGNMENT = "="
