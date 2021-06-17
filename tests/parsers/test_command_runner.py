@@ -43,6 +43,14 @@ def test_assignment_with_parens():
     assert run_scope.value_for_local("answer") == 14
 
 
+def test_color():
+    commands = ["#aabb00"]
+    run_scope = CommandScope(commands)
+    run_scope.step_command()
+    # TODO: assert led duties facade or something
+    assert 1 == 2
+
+
 def test_min_function():
     commands = ["x = min(1,2)"]
     run_scope = CommandScope(commands)

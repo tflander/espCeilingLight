@@ -1,5 +1,5 @@
 from parsers.command_parser import parse_command
-from parsers.parser_constants import ExpressionValueTypes
+from parsers.parser_constants import ExpressionValueTypes, CommandTypes
 from parsers.result_objects import ParseFailure
 
 
@@ -31,7 +31,15 @@ class CommandScope:
         if self.runtime_error is not None:
             return
         command = self.parse_results[self.command_pointer]
-        # TODO: this assumes assignment, which is currently the only command
+        if command.result_type == CommandTypes.ASSIGNMENT:
+            self.do_assignment(command)
+        else:
+            self.runtime_error = "command " + self.commands[self.command_pointer] + " not found"
+            return
+
+        self.command_pointer += 1
+
+    def do_assignment(self, command):
         var_name = command.left.match
         self.resolve_variables(command.right)
         if self.runtime_error is not None:
@@ -41,8 +49,6 @@ class CommandScope:
             if command.right.value is None:
                 self.resolve_expression(command.right)
             self.local_variables[var_name] = command.right.value
-
-        self.command_pointer += 1
 
     def resolve_function(self, result):
         parameters = result.function_parameters
