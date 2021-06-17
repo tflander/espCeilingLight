@@ -1,6 +1,11 @@
+import asyncio
+
+from led_pwm_channels import LedPwmChannels
+from lighting_script_runner import LightingScriptRunner
 from parsers.command_parser import parse_command
 from parsers.parser_constants import ExpressionValueTypes, CommandTypes
 from parsers.result_objects import ParseFailure
+from rgb_duties_converter import RgbDutiesConverter
 
 
 def run_command(commands):
@@ -9,7 +14,8 @@ def run_command(commands):
 
 class CommandScope:
 
-    def __init__(self, commands):
+    def __init__(self, commands, led_pwm_channels: LedPwmChannels):
+        self.led_pwm_channels = led_pwm_channels
         self.commands = commands
         self.is_parsed = False
         self.parse_results = []
@@ -33,11 +39,17 @@ class CommandScope:
         command = self.parse_results[self.command_pointer]
         if command.result_type == CommandTypes.ASSIGNMENT:
             self.do_assignment(command)
+        elif command.result_type == CommandTypes.COLOR:
+            self.do_color(command)
         else:
             self.runtime_error = "command " + self.commands[self.command_pointer] + " not found"
             return
 
         self.command_pointer += 1
+
+    def do_color(self, command):
+        duties = RgbDutiesConverter.to_duties(command.match)
+        asyncio.run(LightingScriptRunner.set_color(duties, self.led_pwm_channels))
 
     def do_assignment(self, command):
         var_name = command.left.match

@@ -1,5 +1,6 @@
 import pytest
 
+from led_pwm_channels import LedPwmChannels
 from parsers.command_runner import *
 from parsers.support.testing_dsl import *
 
@@ -13,7 +14,7 @@ def test_script_operations():
         "x = x - 5"
     ]
 
-    run_scope = CommandScope(commands)
+    run_scope = CommandScope(commands, None)
     assert run_scope.value_for_local("x") is None
     run_scope.step_command()
     assert run_scope.value_for_local("x") == 0
@@ -35,7 +36,7 @@ def test_assignment_with_parens():
         "answer = x * ( y + z)",
     ]
 
-    run_scope = CommandScope(commands)
+    run_scope = CommandScope(commands, None)
     run_scope.step_command()
     run_scope.step_command()
     run_scope.step_command()
@@ -45,29 +46,31 @@ def test_assignment_with_parens():
 
 def test_color():
     commands = ["#aabb00"]
-    run_scope = CommandScope(commands)
+    pwm_channels = LedPwmChannels(red_pin=2, green_pin=3, blue_pin=4, white_pin=5, uv_pin=6)
+    run_scope = CommandScope(commands, pwm_channels)
     run_scope.step_command()
-    # TODO: assert led duties facade or something
-    assert 1 == 2
+    assert pwm_channels.red.duty() == 680
+    assert pwm_channels.green.duty() == 748
+    assert pwm_channels.blue.duty() == 0
 
 
 def test_min_function():
     commands = ["x = min(1,2)"]
-    run_scope = CommandScope(commands)
+    run_scope = CommandScope(commands, None)
     run_scope.step_command()
     assert run_scope.value_for_local("x") == 1
 
 
 def test_min_function_not_enough_parameters():
     commands = ["x = min(1)"]
-    run_scope = CommandScope(commands)
+    run_scope = CommandScope(commands, None)
     run_scope.step_command()
     assert run_scope.runtime_error == "min(a,b) requires two parameters, found 1 in expression x = min(1)"
 
 
 def test_min_function_too_many_parameters():
     commands = ["x = min(1, 2, 3)"]
-    run_scope = CommandScope(commands)
+    run_scope = CommandScope(commands, None)
     run_scope.step_command()
     assert run_scope.runtime_error == "min(a,b) requires two parameters, found 3 in expression x = min(1, 2, 3)"
 
@@ -78,7 +81,7 @@ def test_function_parameter_expressions():
         "y = 10",
         "z = min(x+3,y)"
     ]
-    run_scope = CommandScope(commands)
+    run_scope = CommandScope(commands, None)
     run_scope.step_command()
     run_scope.step_command()
     run_scope.step_command()
@@ -93,7 +96,7 @@ def test_undefined_variable():
         "x = y+1"
     ]
 
-    run_scope = CommandScope(commands)
+    run_scope = CommandScope(commands, None)
     run_scope.step_command()
     assert run_scope.value_for_local("x") == 0
     run_scope.step_command()
@@ -106,7 +109,7 @@ def test_invalid_script_parse():
         "this is not a script command"
     ]
 
-    run_scope = CommandScope(commands)
+    run_scope = CommandScope(commands, None)
 
     assert not run_scope.is_parsed
     assert run_scope.parse_error.message == [
