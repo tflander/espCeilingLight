@@ -47,6 +47,7 @@ echo "updating expression_parser.py..."
 ampy put parsers/expression_parser.py parsers/expression_parser.py
 echo "updating parser_constants.py..."
 ampy put parsers/parser_constants.py parsers/parser_constants.py
+# TODO: need operator parser, result_objects and parser core.  Time to refactor.
 
 echo "resetting..."
 ampy reset

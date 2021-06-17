@@ -1,8 +1,6 @@
 import pytest
 
-from led_pwm_channels import LedPwmChannels
 from parsers.command_runner import *
-from parsers.support.testing_dsl import *
 
 
 def test_script_operations():

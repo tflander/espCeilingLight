@@ -1,4 +1,4 @@
-import asyncio
+import uasyncio
 
 from led_pwm_channels import LedPwmChannels
 from lighting_script_runner import LightingScriptRunner
