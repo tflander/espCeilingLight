@@ -5,7 +5,7 @@ assignment_pattern = '^(\\s*\\=\\s*)'
 comment_pattern = '^\\s*(//)'
 while_pattern = '^while\\s+(.*)'
 for_pattern = '^for\\s+(.*)\\s+in+\\s+(.*)'
-color_string_pattern = '^(#[0-9a-zA-Z]{6})$'
+color_string_pattern = '^(#' + hex_digit_pattern * 6 + ')$'
 
 
 def parse_combine_comment(token):

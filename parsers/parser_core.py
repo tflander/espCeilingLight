@@ -4,7 +4,8 @@ from parsers.parser_constants import ExpressionValueTypes
 from parsers.result_objects import *
 
 number_pattern = '^(-?[0-9]+\\.?[0-9]*)'
-hex_number_pattern = '^(0x[0-9a-fA-F]+)'
+hex_digit_pattern = '[0-9a-fA-F]'
+hex_number_pattern = '^(0x' + hex_digit_pattern + '+)'
 variable_identifier_pattern = '^([_a-zA-Z][_0-9a-zA-Z]*)'
 
 

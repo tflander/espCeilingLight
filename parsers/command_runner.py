@@ -49,7 +49,7 @@ class CommandScope:
 
     def do_color(self, command):
         duties = RgbDutiesConverter.to_duties(command.match)
-        asyncio.run(LightingScriptRunner.set_color(duties, self.led_pwm_channels))
+        uasyncio.run(LightingScriptRunner.set_color(duties, self.led_pwm_channels))
 
     def do_assignment(self, command):
         var_name = command.left.match
