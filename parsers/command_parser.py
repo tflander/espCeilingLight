@@ -12,6 +12,13 @@ def parse_combine_comment(token):
     return parse_generic(token, comment_pattern, CommandTypes.COMMENT)
 
 
+def parse_sleep_function(token):
+    result = parse_function(token)
+    if type(result) is ParseResult:
+        result.result_type = CommandTypes.SLEEP
+    return result
+
+
 def parse_combine_color_string(token):
     return parse_generic(token, color_string_pattern, CommandTypes.COLOR)
 
@@ -48,7 +55,8 @@ command_parsers = [
     parse_combine_comment,
     parse_combine_while,
     parse_combine_for,
-    parse_combine_color_string
+    parse_combine_color_string,
+    parse_sleep_function
 ]
 
 

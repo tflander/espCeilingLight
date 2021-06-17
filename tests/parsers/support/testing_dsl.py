@@ -1,7 +1,11 @@
 from parsers.parser_constants import ExpressionValueTypes
+from parsers.result_objects import ParseFailure
 
 
 def flatten(result):
+    if type(result) is ParseFailure:
+        print("ParseFailure " + str(result.message))
+        return result
     if result.value is not None:
         return result.value, result.result_type
 

@@ -20,6 +20,7 @@ class ExpressionValueTypes:
 
 
 class CommandTypes:
+    SLEEP = "sleep"
     COLOR = "color"
     FOR = "for"
     WHILE = "while"

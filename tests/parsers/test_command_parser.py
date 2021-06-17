@@ -31,6 +31,11 @@ def test_set_color():
     assert flatten(result) == ("#aa99C0", CommandTypes.COLOR)
 
 
+def test_sleep():
+    result = parse_command("sleep_ms(1000)")
+    assert flatten(result) == ("sleep_ms(1000)", CommandTypes.SLEEP)
+
+
 def test_comment():
     result = parse_command("// This is a comment")
     assert flatten(result) == (CommandTypes.COMMENT, CommandTypes.COMMENT)
