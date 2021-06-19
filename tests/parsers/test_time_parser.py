@@ -1,5 +1,8 @@
 import pytest
-from parsers.old_time_parser import Old_TimeParser
+
+from parsers.parser_constants import ExpressionValueTypes
+from parsers.support.testing_dsl import flatten
+from parsers.time_parser import TimeParser
 
 
 @pytest.mark.parametrize("test_name, time_param, expected_val_and_unit, expected_delay_ms", [
@@ -9,8 +12,10 @@ from parsers.old_time_parser import Old_TimeParser
     ("2 minutes", "2m", [2, "m"], 120000),
 ])
 def test_time_parser(test_name, time_param, expected_val_and_unit, expected_delay_ms):
-    assert Old_TimeParser.parse(time_param) == expected_val_and_unit
+    assert flatten(TimeParser.parse(time_param)) == (expected_delay_ms, ExpressionValueTypes.TIME)
 
 
 def test_invalid_param():
-    assert Old_TimeParser.parse("invalid time") is None
+    result = TimeParser.parse("10x")
+    assert result.errored_token == '10x'
+    assert result.message == ['Syntax Error', '  10x', '   ^']
