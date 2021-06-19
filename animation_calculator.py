@@ -1,5 +1,5 @@
 from led_pwm_channels import LedPwmChannels
-from parsers.time_parser import Old_TimeParser
+from parsers.old_time_parser import Old_TimeParser
 from rgb_duties_converter import RgbDutiesConverter
 from duties import Duties
 import math
