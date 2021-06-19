@@ -1,5 +1,5 @@
 import ujson, re
-from parsers.time_parser import TimeParser
+from parsers.time_parser import Old_TimeParser
 from rgb_duties_converter import RgbDutiesConverter
 from web_control.lighting_request import LightingRequest
 from web_control.lighting_response import LightingResponse
@@ -71,7 +71,7 @@ class LightingScriptRequestHandler:
 
     @staticmethod
     def validate_time_parameter(time_param, i):
-        result = TimeParser.parse(time_param)
+        result = Old_TimeParser.parse(time_param)
 
         if result is None:
             return {'error': 'Invalid time parameter. Found [%s]' % time_param, 'line': i}

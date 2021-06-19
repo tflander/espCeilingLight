@@ -1,14 +1,14 @@
 import re
 
 
-class TimeParser:
+class Old_TimeParser:
 
     time_pattern = re.compile(r"([0-9]+)([a-z]+)")
 
     @staticmethod
     def parse(time_param):
 
-        result = TimeParser.time_pattern.match(time_param)
+        result = Old_TimeParser.time_pattern.match(time_param)
 
         if result is None:
             return None
