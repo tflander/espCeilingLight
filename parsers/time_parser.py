@@ -4,22 +4,20 @@ from parsers.parser_constants import ExpressionValueTypes
 from parsers.parser_core import parse_generic
 from parsers.result_objects import ParseResult
 
-time_pattern = "^([0-9]+)(s|m|ms)$"
+time_parameter_pattern = "([0-9]+)(s|m|ms)"
+time_pattern = "^" + time_parameter_pattern + "$"
 
 
-class TimeParser:
-
+def parse_classic_time(token):
     compiled_time_pattern = re.compile(time_pattern)
-
-    @staticmethod
-    def parse(token):
-        result = parse_generic(token, TimeParser.compiled_time_pattern, ExpressionValueTypes.TIME)
-        if type(result) is ParseResult:
-            delay_time = float(result.match)
-            delay_unit = result.rest
-            if delay_unit == 's':
-                delay_time *= 1000
-            elif delay_unit == 'm':
-                delay_time *= 60000
-            result.value = delay_time
-        return result
+    # TODO: precompile all regex patterns?
+    result = parse_generic(token, compiled_time_pattern, ExpressionValueTypes.TIME)
+    if type(result) is ParseResult:
+        delay_time = float(result.match)
+        delay_unit = result.rest
+        if delay_unit == 's':
+            delay_time *= 1000
+        elif delay_unit == 'm':
+            delay_time *= 60000
+        result.value = delay_time
+    return result
