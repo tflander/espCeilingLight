@@ -1,11 +1,13 @@
 from parsers.expression_parser import *
 from parsers.parser_constants import CommandTypes
+from parsers.time_parser import time_pattern
 
 assignment_pattern = '^(\\s*\\=\\s*)'
 comment_pattern = '^\\s*(//)'
 while_pattern = '^while\\s+(.*)'
 for_pattern = '^for\\s+(.*)\\s+in+\\s+(.*)'
 color_string_pattern = '^(#' + hex_digit_pattern * 6 + ')$'
+classic_sleep_pattern = '^sleep\\s+' + time_pattern
 
 
 def parse_combine_comment(token):
@@ -17,6 +19,10 @@ def parse_sleep_function(token):
     if type(result) is ParseResult:
         result.result_type = CommandTypes.SLEEP
     return result
+
+
+def parse_classic_sleep(token):
+    pass  # TODO
 
 
 def parse_combine_color_string(token):
