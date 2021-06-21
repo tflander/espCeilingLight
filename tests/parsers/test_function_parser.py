@@ -35,6 +35,13 @@ def test_parse_function_one_parameter():
     assert flatten(result.function_parameters[0]) == (1000, ExpressionValueTypes.INT)
 
 
+def test_parse_function_no_parameter():
+    result = parse_function("random()")
+    assert result.function_name == "random"
+    assert result.result_type == ExpressionValueTypes.FUNCTION
+    assert len(result.function_parameters) == 0
+
+
 def test_parse_function_invalid_parameter_list():
     result = parse_function("random(0, 1023, )")
     assert type(result) == ParseFailure

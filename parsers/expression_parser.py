@@ -116,6 +116,8 @@ def consume_comma(token):
 # TODO: call this parse_expression list?
 def parse_function_parameters(original_token):
     results = []
+    if len(original_token) == 0:
+        return results
     token = original_token
     while len(token) > 0:
         result = get_expression_token(original_token, token)
