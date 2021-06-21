@@ -42,6 +42,11 @@ def test_set_color():
     assert flatten(result) == ("#aa99C0", CommandTypes.COLOR)
 
 
+def test_drop_leading_spaces():
+    result = parse_command("   #aa99C0")
+    assert flatten(result) == ("#aa99C0", CommandTypes.COLOR)
+
+
 def test_classic_sleep():
     result = parse_command("sleep 2s")
     assert flatten(result) == ("sleep_ms(2000)", CommandTypes.SLEEP)

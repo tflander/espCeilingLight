@@ -3,6 +3,25 @@ import pytest
 from parsers.command_runner import *
 
 
+def test_run_forever():
+    commands = [
+        "while forever {",
+        "  #ff0000",
+        "  sleep 1s",
+        "  #00ff00",
+        "  sleep 1s",
+        "  #0000ff",
+        "  sleep 1s",
+        "}"
+    ]
+    run_scope = CommandScope(commands, None)
+    # TODO: test that colors and sleep are in a new command scope
+    x = 0
+
+
+# TODO: also verify that run_forever works if the squiggly is on a new line
+# TODO: also verify an error if the loop end token is not found
+# TODO: also verify an error if an unmatched loop end token is found
 def test_script_operations():
     commands = [
         "x = 0",

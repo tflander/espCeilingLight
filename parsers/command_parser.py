@@ -93,7 +93,8 @@ command_parsers = [
 
 
 def parse_command(token):
-    return get_token(token, token, command_parsers)
+    stripped = token.strip()
+    return get_token(stripped, stripped, command_parsers)
 
 
 def parse_assignment(token):
