@@ -21,6 +21,7 @@ class ExpressionValueTypes:
 
 
 class CommandTypes:
+    END_LOOP = "end_loop"
     SLEEP = "sleep"
     COLOR = "color"
     FOR = "for"

@@ -24,6 +24,11 @@ def test_begin_while_forever_loop_with_curly():
     assert result.new_scope
 
 
+def test_end_loop_scope():
+    result = parse_command("}")
+    assert flatten(result) == ("}", CommandTypes.END_LOOP)
+
+
 def test_begin_for_loop():
     # TODO: for now, let's defer the { } braces as a command for defining, pushing and popping a new run scope
     result = parse_command("for x in range(1, 10)")

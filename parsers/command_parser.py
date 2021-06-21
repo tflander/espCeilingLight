@@ -8,10 +8,15 @@ while_pattern = '^while\\s+(.*)'
 for_pattern = '^for\\s+(.*)\\s+in+\\s+(.*)'
 color_string_pattern = '^(#' + hex_digit_pattern * 6 + ')$'
 classic_sleep_pattern = '^sleep\\s+' + time_parameter_pattern + '$'
+end_loop_scope_pattern = '^(\\})$'
 
 
 def parse_combine_comment(token):
     return parse_generic(token, comment_pattern, CommandTypes.COMMENT)
+
+
+def parse_combine_end_loop_scope(token):
+    return parse_generic(token, end_loop_scope_pattern, CommandTypes.END_LOOP)
 
 
 def parse_sleep_function(token):
@@ -82,7 +87,8 @@ command_parsers = [
     parse_combine_for,
     parse_combine_color_string,
     parse_sleep_function,
-    parse_classic_sleep
+    parse_classic_sleep,
+    parse_combine_end_loop_scope
 ]
 
 
