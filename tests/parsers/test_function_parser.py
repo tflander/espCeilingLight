@@ -28,6 +28,13 @@ def test_parse_function_parameter_expressions():
     assert flatten(result.function_parameters[1]) == (1023, ExpressionValueTypes.INT)
 
 
+def test_parse_function_one_parameter():
+    result = parse_function("sleep_ms(1000)")
+    assert result.function_name == "sleep_ms"
+    assert result.result_type == ExpressionValueTypes.FUNCTION
+    assert flatten(result.function_parameters[0]) == (1000, ExpressionValueTypes.INT)
+
+
 def test_parse_function_invalid_parameter_list():
     result = parse_function("random(0, 1023, )")
     assert type(result) == ParseFailure

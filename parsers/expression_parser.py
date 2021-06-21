@@ -20,10 +20,10 @@ def parse_function(original_token):
     function_parameters = parse_function_parameters(result.group(2))
     if type(function_parameters) is ParseFailure:
         return ParseFailure(function_parameters.errored_token, original_token)
-    match = original_token[result.pos:result.endpos]
-    result = ParseResult(original_token, match, ExpressionValueTypes.FUNCTION)
+    result = ParseResult(original_token, original_token, ExpressionValueTypes.FUNCTION)
     result.function_name = function_name
     result.function_parameters = function_parameters
+    # TODO: result.rest = result.group(3) to capture curlie?
     return result
 
 
