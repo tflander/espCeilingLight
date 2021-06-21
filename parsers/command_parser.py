@@ -52,7 +52,14 @@ def parse_combine_for(token):
 
 
 def parse_combine_while(token):
-    return parse_generic(token, while_pattern, CommandTypes.WHILE)
+    result = parse_generic(token, while_pattern, CommandTypes.WHILE)
+    if type(result) is ParseFailure:
+        return result
+    result.new_scope = False
+    if result.match.endswith('{'):
+        result.match = result.match[:len(result.match) - 1].strip()
+        result.new_scope = True
+    return result
 
 
 def parse_combine_assignment(token):

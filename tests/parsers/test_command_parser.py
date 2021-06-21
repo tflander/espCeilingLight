@@ -13,9 +13,15 @@ def test_parse_variable_assignment():
 
 
 def test_begin_while_forever_loop():
-    # TODO: for now, let's defer the { } braces as a command for defining, pushing and popping a new run scope
     result = parse_command("while forever")
     assert flatten(result) == ("forever", CommandTypes.WHILE)
+    assert not result.new_scope
+
+
+def test_begin_while_forever_loop_with_curly():
+    result = parse_command("while forever {")
+    assert flatten(result) == ("forever", CommandTypes.WHILE)
+    assert result.new_scope
 
 
 def test_begin_for_loop():
