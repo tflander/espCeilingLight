@@ -1,6 +1,7 @@
 import pytest
 
 from parsers.command_runner import *
+from parsers.support.testing_dsl import flatten
 
 
 def test_run_forever():
@@ -15,13 +16,23 @@ def test_run_forever():
         "}"
     ]
     run_scope = CommandScope(commands, None)
-    # TODO: test that colors and sleep are in a new command scope
-    x = 0
+    assert len(run_scope.parse_results) == 1
+    forever_command = run_scope.parse_results[0]
+    assert flatten(forever_command) == ('forever', CommandTypes.WHILE)
+    commands_in_new_scope = forever_command.scope
+    assert len(commands_in_new_scope) == 6
+    assert flatten(commands_in_new_scope[0]) == ('#ff0000', CommandTypes.COLOR)
+    assert flatten(commands_in_new_scope[1]) == ('sleep_ms(1000)', CommandTypes.SLEEP)
+    assert flatten(commands_in_new_scope[2]) == ('#00ff00', CommandTypes.COLOR)
+    assert flatten(commands_in_new_scope[3]) == ('sleep_ms(1000)', CommandTypes.SLEEP)
+    assert flatten(commands_in_new_scope[4]) == ('#0000ff', CommandTypes.COLOR)
+    assert flatten(commands_in_new_scope[5]) == ('sleep_ms(1000)', CommandTypes.SLEEP)
 
 
 # TODO: also verify that run_forever works if the squiggly is on a new line
 # TODO: also verify an error if the loop end token is not found
 # TODO: also verify an error if an unmatched loop end token is found
+# TODO: also support nested loops
 def test_script_operations():
     commands = [
         "x = 0",

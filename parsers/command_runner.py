@@ -33,6 +33,34 @@ class CommandScope:
         self.command_pointer = 0
         self.runtime_error = None
 
+        self.build_command_scopes()
+
+    def build_command_scopes(self):
+        scope_start = -1
+        scope_end = -1
+        for i, command in enumerate(self.parse_results):
+
+            try:
+                command.new_scope
+            except AttributeError:
+                pass
+            else:
+                if command.new_scope:
+                    scope_start = i
+                    continue
+            if command.result_type == CommandTypes.END_LOOP:
+                scope_end = i
+                break
+
+        if scope_start > -1:
+            new_scope = self.parse_results[scope_start + 1: scope_end]
+            self.parse_results[scope_start].scope = new_scope
+            # TODO: if not a forever loop, something like '+ self.parse_results[scope_end:]'
+            # TODO: if is a forever loop and there are unreachable lines, flag an error
+            self.parse_results = self.parse_results[:scope_start + 1]
+            return True
+        return False
+
     def step_command(self):
         if self.runtime_error is not None:
             return
